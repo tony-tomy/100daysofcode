@@ -197,3 +197,105 @@ y = arr.view()
 
 print(x.base)
 print(y.base)
+
+# ndarray attributes 
+
+"""
+ndim : Returns number of dimensions.
+shape: Returns Shape in tuple.
+size : Total number of elements.
+dtype : Type of each element.
+itemsize : Size of each element in Bytes.
+nbytes : Total bytes consumed by all elements.
+"""
+print(y.ndim, y.shape, y.size, y.dtype, y.itemsize, y.nbytes)
+
+y = np.array([3+4j, 0.4+7.8j])
+print(y.dtype)
+
+n = [[-1, -2, -3, -4], [-2,-4, -6, -8]]
+
+y = np.array(n)
+
+print(type(y))
+
+print(y.ndim, y.shape, y.size, y.dtype, y.nbytes)
+
+# Array creation methods : zero method
+
+x = np.zeros(shape=(2,4))
+print(x)
+
+# Array creation methos : full method
+
+y = np.full(shape=(2,3), fill_value=10.5)
+print(y)
+
+# Numeric sequence generators
+"""
+arange : Numbers created based on step value.
+
+Syntax - numpy.arange([start, ]stop, [step, ]dtype=None)
+"""
+
+x = np.arange(3, 15, 2.5) # 2.5 is step
+print(x)
+
+"""
+linspace : Numbers created based on size value.
+
+Syntax - numpy.linspace(start, stop, #num inbetween, endpoint=True, retstep=False, dtype=None)
+"""
+
+y = np.linspace(3, 15, 5) # 5 is size of array 'y'
+print(y)
+
+# Random number generation
+
+np.random.seed(100) # setting seed
+x = np.random.rand(2) # 2 random numbers between 0 and 1
+
+print(x)
+
+np.random.seed(100) # setting seed
+y = np.random.randint(10, 50, 3) # 3 random integers between 10 and 50
+
+print(y)
+
+# Simulating Normal Distribution
+
+np.random.seed(100)
+x = np.random.randn(3) # Standard normal distribution
+
+print(x)
+
+np.random.seed(100)
+x = 10 + 2*np.random.randn(3) # normal distribution with mean 10 and sd 2
+
+print(x)
+
+# Reading data from a file  loadtxt()
+
+from io import StringIO
+import numpy as np
+
+x = StringIO('''88.25 93.45 72.60 90.90
+72.3 78.85 92.15 65.75
+90.5 92.45 89.25 94.50
+''')
+
+d = np.loadtxt(x,delimiter=' ')
+
+print(d)
+
+print(d.ndim, d.shape)
+
+x = np.array([[-1,0,1], [-2, 0, 2]])
+
+y = np.zeros_like(x)
+print(y)
+
+z = np.eye(2)
+print(z)
+
+print(np.array(([1, 2], (3,4))).shape)

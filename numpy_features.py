@@ -295,7 +295,152 @@ x = np.array([[-1,0,1], [-2, 0, 2]])
 y = np.zeros_like(x)
 print(y)
 
-z = np.eye(2)
+z = np.eye(2) # eye() is used for returning a matrix i.e. a 2D array having 1's at its diagonal and 0's elsewhere
 print(z)
 
 print(np.array(([1, 2], (3,4))).shape)
+
+# Define a random 3-D array x4 of shape (3, 4, 2) and of numbers between 0 and 1.
+
+x4 = np.random.rand(3,4,2)
+
+print(x4)
+
+x5 = np.arange(2,40,2)
+
+print(x5)
+
+# Reshaping an ndarray using reshape()
+
+np.random.seed(100)
+x = np.random.randint(10, 100, 8)
+print(x, end='\n\n')
+y = x.reshape(2,4)
+print(y, end='\n\n')
+z = x.reshape(2,2,2)
+print(z, '\n\n')
+
+# Stacking array vertically
+
+x = np.array([[-1, 1], [-3, 3]])
+y = np.array([[-2, 2], [-4, 4]])
+print(np.vstack((x,y)))
+
+# Stacking array horizontally
+
+x = np.array([[-1, 1], [-3, 3]])
+y = np.array([[-2, 2], [-4, 4]])
+z = np.array([[-5, 5], [-6, 6]])
+print(np.hstack((x,y,z)))
+
+# Spliting array vertically
+
+x = np.arange(30).reshape(6, 5)
+res = np.vsplit(x, 2)
+print(res[0], end='\n\n')
+print(res[1])
+
+res = np.vsplit(x, (2, 5))  # Spliting array vertically to three arrays
+print(res[0], end='\n\n')
+print(res[1], end='\n\n')
+print(res[2])
+
+# Spliting array horizontally
+
+x = np.arange(10).reshape(2, 5)
+res = np.hsplit(x, (2,4))
+print(res[0], end='\n\n')
+print(res[1], end='\n\n')
+print(res[2])
+
+x = np.arange(6).reshape(2,3)
+
+y = np.hsplit(x,(2,))
+print(y[0])
+
+x = np.arange(4).reshape(2,2)
+y = np.arange(4, 8).reshape(2,2)
+
+print(np.hstack((x,y)))
+
+# Basic operations with scalar
+
+x = np.arange(6).reshape(2,3)
+print(x + 10, end='\n\n')
+print(x * 3, end='\n\n')
+print(x % 2)
+
+# Basic Operations between Arrays
+
+x = np.array([[-1, 1], [-2, 2]])
+y = np.array([[4, -4], [5, -5]])
+print(x + y, end='\n\n')
+print(x * y)
+
+# perform operations on arrays with varying size and shape.
+
+x = np.array([[-1, 1], [-2, 2]])
+y = np.array([-10, 10])
+print(x * y)
+
+# Universal function 
+
+x = np.array([[0,1], [2,3]])
+print(np.square(x), end='\n\n')
+print(np.sin(x))
+
+print(x.sum(), end='\n\n')
+print(x.sum(axis=0), end='\n\n') # can use axis to sum a specific dimension
+print(x.sum(axis=1))
+
+x = np.arange(30).reshape(5,6)
+print(x.argmax(axis=1)) # Return indices of maximum value along the axis
+
+# Create a array x of shape (5, 6), having random integers between -30 and 30
+
+x = np.random.randint(-30,30, size=(5, 6)) 
+
+print(x)
+
+# Compute the mean, standard deviation, and variance numpy.mean(), numpy.std(), numpy.var()
+
+x = 10 + 2*np.random.randn(3) # mean 10 and stansard deviation.
+
+print(np.mean(x))
+
+print(np.std(x))
+
+print(np.var(x))
+
+# Iterating through array
+
+x = np.array([[-1, 1], [-2, 2]])
+for row in x:                           # using for
+    print('Row :',row)
+
+for a in np.nditer(x):                  # using nditer : iterate through each element.
+    print(a)
+
+# Boolean indexing : Checking if every element of an array satisfies a condition, results in a Boolean array
+
+x = np.arange(10).reshape(2,5)
+condition = x % 2 == 0
+print(condition)
+print(x[condition])
+
+#
+
+x = np.array([[0, 1], [1, 1], [2, 2]])
+print(x.sum(-1))
+
+x = np.array([[1, 2], [3, 4], [5, 6]])
+print(x[[0, 1, 2], [0, 1, 1]])
+
+x = np.arange(30).reshape(3,5,2)
+print(x[1,::2,1])
+
+x = np.arange(4)
+print(x.flatten())
+
+x = np.arange(12).reshape(3,4)
+print(x[-2])

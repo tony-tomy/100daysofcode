@@ -228,4 +228,100 @@ print(add(2, 3))
 
 print(add.data) 
 
+##################################################################
+
+def mul_decorator(func):
+    def wrapper(*args, **kwargs):
+        print("function ",func.__name__, " called with arguments ", args, " and kwargs", kwargs )
+
+        result = func(*args, **kwargs)
+
+        print("function ", func.__name__, " returns ", result)
+        return result
+
+    return wrapper
+
+@mul_decorator
+def mul(a,b):
+    return a*b
+
+mul(5,6)
+mul(7, b=9)
+
+
+###################################################################
+
+# Creating a decorator 
+class function_1: 
+	def __init__(self, func): 
+		self.func = func 
+		self.stats = [] 
+
+	def __call__(self, *args, **kwargs): 
+		try: 
+			result = self.func(*args, **kwargs) 
+		except Exception as e: 
+			self.stats.append((args, kwargs, e)) 
+			raise e 
+		else: 
+			self.stats.append((args, kwargs, result)) 
+			return result 
+
+	@classmethod
+	def function_2(cls, func): 
+		return cls(func) 
+
+
+@function_1.function_2 
+def func(x, y): 
+	return x / y 
+
+print(func(6, 2)) 
+
+print(func(x = 6, y = 4)) 
+
+#func(5, 0)   # exception handling 
+print(func.stats) 
+print(func) 
+
+
+##############################################################################
+
+# Memorisation using decorators in python
+
+# Simple recursive program to find factorial 
+def facto(num): 
+	if num == 1: 
+		return 1
+	else: 
+		return num * facto(num-1) 
+		
+
+print(facto(5)) 
+
+# Factorial program with memoization using 
+# decorators. 
+
+# A decorator function for function 'f' passed 
+# as parameter 
+def memoize_factorial(f): 
+	memory = {} 
+
+	# This inner function has access to memory 
+	# and 'f' 
+	def inner(num): 
+		if num not in memory:		 
+			memory[num] = f(num) 
+		return memory[num] 
+
+	return inner 
+	
+@memoize_factorial
+def facto(num): 
+	if num == 1: 
+		return 1
+	else: 
+		return num * facto(num-1) 
+
+print(facto(5)) 
 

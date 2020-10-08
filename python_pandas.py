@@ -119,3 +119,47 @@ print(result['Author'])
 # Accesing multiple columns 
 
 print(result[['Author','Article']])  # Column names are given as list
+
+df_3  = result.loc[1:3]  # slicing function based on label or boolean
+
+print(df_3)
+
+df_4 = result.iloc[:2]   # slicing function based on integer position
+
+print(df_4)
+
+df_1 = result.iloc[[2,3,0]]  # Selecting rows via integer listing
+
+print(df_1)
+
+df_5 = result.loc[((result.index % 10 == 1) | (result.index % 10 == 3))]  # Boolean function for selecting rows.
+
+print(df_5)
+
+# Pass a boolean function which checks if an index string ends with 1 or 4 
+
+heights_A=pd.Series([176.2,158.4,167.6,156.2,161.4], index=['s1','s2','s3','s4','s5'])
+weights_A=pd.Series([85.1,90.2,76.8,80.4,78.9], index=['s1','s2','s3','s4','s5'])
+df_A=pd.DataFrame({'Student_height':heights_A, 'Student_weight':weights_A})
+df_s1s4 = df_A.loc[(df_A.index.str.endswith('1') | df_A.index.str.endswith('4'))]
+
+print(df_s1s4)
+
+df = pd.DataFrame({'A':[34, 78, 54], 'B':[12, 67, 43]}, index=['r1', 'r2', 'r3'])
+
+print(df.B)
+
+df['C'] = [12,98,45]  # Expression to add new column to the existing df
+
+print(df)
+
+print(df.iloc[1])  # returns the second row
+
+df = pd.DataFrame({'A':[34, 78, 54], 'B':[12, 67, 43]}, index=['r1', 'r2', 'r3'])
+
+df.loc['r4'] = [67, 78]  # Adding new row
+
+print(df) 
+
+
+

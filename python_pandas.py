@@ -162,4 +162,39 @@ df.loc['r4'] = [67, 78]  # Adding new row
 print(df) 
 
 
+# Pnadas final quiz
+print('Final Answers')
 
+df = pd.DataFrame({'A' : [1,2,3], 'B' :[4,5,6], 'C':[7,8,9], 'D':[10,11,12]},index = ['r1', 'r2', 'r3'])
+print(df[lambda x : x.index.str.endswith('3')])
+
+df = pd.DataFrame({'A':[34, 78, 54], 'B':[12, 67, 43]}, index=['r1', 'r2', 'r3'])
+
+print(df.loc[:'r3'])
+
+df.loc['r4'] = [67, 78]
+
+print(df[:2])
+
+df = pd.DataFrame({'A' : [1,2,3], 'B' :[4,5,6], 'C':[7,8,9], 'D':[10,11,12]},index = ['r1', 'r2', 'r3'])
+
+print(df.loc[:, lambda x: x.columns.isin(['C','D'])])
+
+del df['D']
+
+np.random.seed(100)
+df = pd.DataFrame({ 'A' : 100 + 25 * np.random.randn(10), 'B': 50 + 12 *np.random.randn(10)},
+index=[ 'r1', 'r2', 'r3', 'row4', 'row5', 'row6', 'r7', 'r8', 'r9', 'row10'])
+
+g = df.groupby(df.index.str.len())
+print(df)
+print(g.aggregate({'A':len, 'B':np.sum}))
+
+s = pd.Series([89.2, 76.4, 98.2, 75.9], index=list('abcd'))
+print('b' in s)
+
+s = pd.Series([9.2, 'hello', 89])
+print(s.dtype)
+
+df = pd.DataFrame({'A' : [1,2,3], 'B' :[4,5,6], 'C':[7,8,9], 'D':[10,11,12]},index = ['r1', 'r2', 'r3'])
+print(df.loc[df.B > 5])

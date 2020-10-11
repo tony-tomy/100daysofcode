@@ -69,3 +69,107 @@ print(d + pd.Timedelta('1 days 2 hours'))
 
 # Data Cleaning 
 
+# Standard missing values .isnull() : Nan will only be true
+
+# Non standard missing values 
+
+# missing_values = ['n/a','na','--']
+# df = pd.read_csv('file_name',na_values= missing_values)  df will be populated with NaN where ever the missing values are present
+
+"""
+Another method to clean a boolean column from int vales is
+
+cnt =0
+for row in df['column']:
+    try:
+        int(row)
+        df.loc[cnt, 'column'] = np.nan
+    except ValueError:
+        pass
+    cnt+=1
+
+"""
+
+# Sumarizing missing values 
+
+# df.isnull().sum()
+
+# df.isnull().values.any() -- any missing values
+
+# df.isnull().sum().sum()  -- Total missing values
+
+# df.['col'].fillna(value, inplace = True)   inplace attribute is set to true to makes df changes permenantly
+
+# df.loc[row,col] = for replacing 
+
+# df.dropna() drops all rows with atleast one null value
+
+# Data Aggregation
+
+"""
+Filtering
+
+df[df.col > val]   - numeric filtering
+
+df[df[col] != 'String Val']  - filtering character data
+
+& (and),  | (or), isin(list)      are the connctors used 
+
+
+"""
+df = pd.DataFrame({'temp':pd.Series(28 + 10*np.random.randn(10)),
+                   'rain':pd.Series(100 + 50*np.random.randn(10)),
+                   'location':list('AAAAABBBBB')
+})
+print(df.head(2))
+
+replacements = {
+'location': {'A':'Hyderabad', 'B':'Mumbai'}
+}
+df = df.replace(replacements, regex=True)  # code replace A with Hyderabad and B with Mumbai
+print(df.head(2))
+
+mumbai_data = df.loc[df.location.str.contains('umb'),:]  # filtering loction containing 'umb'
+
+print(mumbai_data.head(2))
+
+regions = df.groupby('location')
+print(regions.groups)
+print(regions.mean())  # groupby method can be used to group data and perform various function on each group.
+
+
+# Merging data  -- merge
+
+df1 = pd.DataFrame({'HPI':[80,85,88,85],
+                    'Int_rate':[2, 3, 2, 2],
+                    'US_GDP_Thousands':[50, 55, 65, 55]},
+                   index = [2001, 2002, 2003, 2004])
+
+df2 = pd.DataFrame({'HPI':[80,85,88,85],
+                    'Int_rate':[2, 3, 2, 2],
+                    'US_GDP_Thousands':[50, 55, 65, 55]},
+                   index = [2005, 2006, 2007, 2008])
+
+df3 = pd.DataFrame({'HPI':[80,85,88,85],
+                    'Unemployment':[7, 8, 9, 6],
+                    'Low_tier_HPI':[50, 52, 50, 53]},
+                   index = [2001, 2002, 2003, 2004])
+
+print(pd.merge(df1,df2, on = 'HPI'))  # merge on single column default inner join (how) - control the join
+
+print(pd.merge(df1,df2, on = ['HPI','Int_rate'])) # merge on multiple columns to remove duplicate
+
+df1.set_index('HPI', inplace= True)
+df3.set_index('HPI', inplace= True)
+
+Joined = df1.join(df3)  # join uses index value to join two dfs
+print(Joined)
+
+
+s1 = pd.Series([0, 1, 2, 3])
+s2 = pd.Series([0, 1, 2, 3])
+s3 = pd.Series([0, 1, 4, 5])
+d = pd.concat([s1, s2, s3], axis=1)
+
+print(d)
+print(d.shape)

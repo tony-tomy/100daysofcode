@@ -228,3 +228,31 @@ def check_twice4(lst,ele):
 print(check_twice4([1,2,3,1,2],1))
 
 '''
+
+class Person(object):
+    def __init__(self,name):
+        print('My name is ',name)
+
+class Bob(Person):
+    def __init__(self,name= 'Bob'):
+        print('My name is Bob')
+
+def ClassID(self):
+    print('I am the father')
+
+class Sue(Person):
+    def __init__(self,name = 'Sue'):
+        print('My name is Sue')
+
+def ClassID(self):
+    print('I am the monther')
+
+class Child(Bob,Sue):
+    def __init__(self,name='X'):
+        super(Child,self).__init__(name)
+
+def ClassID(self):
+    print('I am the child')
+
+Ann = Child('Ann')
+Ann.ClassID()

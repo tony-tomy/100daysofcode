@@ -148,7 +148,7 @@ The sql function on a SQLContext allows applications to run SQL queries programm
 val sc: SparkContext // An existing SparkContext.
 val sqlContext = new org.apache.spark.sql.SQLContext(sc)
 val df = sqlContext.read.json("home/spark/input.json")
-input.registerTempTable("students")
+df.registerTempTable("students")
 val teenagers = sqlContext.sql("SELECT name, age FROM students WHERE age >= 13 AND age <= 19")
 
 Dataset
@@ -239,6 +239,12 @@ res0: Array[Int] = Array(1, 2, 3, 4, 5)
 Accumulators
 Accumulators are known as the variables that are only “added” via an associative and commutative operation and can, hence, be efficiently supported in parallel.
 
+val accum = sc.longAccumulator("My Accumulator")
+
+sc.parallelize(Array(1, 2, 3, 4)).foreach(x => accum.add(x))
+
+accum.value
+
 They can be utilized to implement sums or counters.
 
 Programmers can include support for new types.
@@ -247,8 +253,171 @@ Spark natively offers support for accumulators of numeric types.
 
 RDD Operations
 
+val file = sc.textFile("hdfs://.../wordcounts-*.gz")
+val counts = file.flatMap(line => line.split(" "))
+                   .map(word => (word, 1))
+                   .reduceByKey(_ + _)
+counts.saveAsTextFile("hdfs://.../wordcountOutput")
+
+flatMap, map,reduceByKey and saveAsTextFile are the operations on the RDDs
+
+Transformations
+
+Transformations are functions that use an RDD as the input and return one or more RDDs as the output.
+randomSplit, cogroup, join, reduceByKey, filter, and map are examples of few transformations.
+Transformations do not change the input RDD, but always create one or more new RDDs by utilizing the computations they represent.
+By using transformations, you incrementally create an RDD lineage with all the parent RDDs of the last RDD.
+Transformations are lazy, i.e. are not run immediately. Transformations are done on demand.
+
+filter(func): Returns a new dataset (RDD) that are created by choosing the elements of the source on which the function returns true.
+
+map(func): Passes each element of the RDD via the supplied function.
+
+union(): New RDD contains elements from source argument and RDD.
+
+intersection(): New RDD includes only common elements from source argument and RDD.
+
+cartesian(): New RDD cross product of all elements from source argument and RDD
+
+Actions
+
+Actions return concluding results of RDD computations.
+Actions trigger execution utilizing lineage graph to load the data into original RDD, and then execute all intermediate transformations and write final results out to file system or return it to Driver program.
+Count, collect, reduce, take, and first are few actions in spark.
+
+count(): Get the number of data elements in the RDD
+
+collect(): Get all the data elements in an RDD as an array
+
+reduce(func): Aggregate the data elements in an RDD using this function which takes two arguments and returns one
+
+take (n): Fetch first n data elements in an RDD computed by driver program.
+
+foreach(func): Execute function for each data element in RDD. usually used to update an accumulator or interacting with external systems.
+
+first(): Retrieves the first data element in RDD. It is similar to take(1).
+
+saveAsTextFile(path): Writes the content of RDD to a text file or a set of text files to local file system/HDFS.
+
+records = spark.textFile(“hdfs://...”)
+errors = records.filter(_.startsWith(“ERROR”))
+messages = errors.map(_.split(‘\t’)(2))
+cachedMessages = messages.cache()
+cachedMessages.filter(_.contains(“400”)).count
+
+Lazy Evaluation
+
+When we call a transformation on RDD, the operation is not immediately executed. Alternatively, Spark internally records 
+meta-data to show this operation has been requested. It is called as Lazy evaluation
+
+Hive Integration
+Hive comes packaged with the Spark library as HiveContext that inherits from SQLContext. Utilizing HiveContext, you can create and find tables in the HiveMetaStore and write queries on it using HiveQL.
+
+When hive-site.xml is not configured, the context automatically produces a metastore named as metastore_db and a folder known as warehouse in the current directory.
+
+Data Load from Hive to Spark
+
+scala> val sqlContext = new org.apache.spark.sql.hive.HiveContext(sc)
+
+scala> sqlContext.sql("CREATE TABLE IF NOT EXISTS employee(id INT, name STRING, age INT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'")
+
+scala> sqlContext.sql("LOAD DATA LOCAL INPATH 'employee.txt' INTO TABLE employee")scala> sqlContext.sql("LOAD DATA LOCAL INPATH 'employee.txt' INTO TABLE employee")
+
+scala> val result = sqlContext.sql("FROM employee SELECT id, name, age")
+
+scala> result.show()
+
+A Spark application includes a single driver process and a collection of executor processes scattered over nodes on the cluster.
+
+Both the executors and the driver usually run as long as the application runs.
+
+Spark Driver
+Program that produces the SparkContext, connecting to a given Spark Master.
+
+Declares the actions and transformations on RDDs of data.
+
+Spark Executors
+Runs the tasks, return results to the driver.
+
+Offers in memory storage for RDDs that are cached by user programs.
+
+Multiple executors per nodes possible
+
+Cluster Managers
+Standalone – a simple cluster manager added with Spark that makes it simple to establish a cluster.
+
+Apache Mesos – a cluster manager that can run service applications and Hadoop MapReduce.
+
+Hadoop YARN – the resource manager in Hadoop 2.
+
+Commonly Used Options
+class: entry point for your application (e.g. org.apache.spark.examples.SparkPi)
+
+master: master URL for the cluster (e.g. spark://23.195.26.187:7077)
+
+deploy-mode: Whether to deploy your driver on the worker nodes (cluster) or locally as an external client (client) (default: client)
+
+conf: Arbitrary Spark configuration property in key=value format.
+
+application-jar: Path to a bundled jar with the application and dependencies.
+
+application-arguments: Arguments passed to the main method of your main class, if any.
+
+Deployment Modes
+Choose which mode to run using the --deploy-mode flag
+
+Client - Driver runs on a dedicated server (e.g.: Edge node) inside a dedicated process. Submitter starts the driver outside of the cluster.
+
+Cluster - Driver runs on one of the cluster's Worker nodes. The Master selects the worker. The driver operates as a dedicated, standalone process inside the Worker.
+
+Running a Spark Job
+Spark submit program initiated with spark driver; creates logical DAG.
+
+spark-submit /usr/spark-2.2.0/examples/src/main/python/pi.py
+
+Spark Driver program checks with the cluster manager-YARN (Mesos or Standalone) for resource availability for executors and launches it.
+
+Executors created in Nodes, register to spark driver.
+
+Spark driver converts the actions and transformations defined in the main method and allocate to executors.
+
+Executors performs the transformations and; actions return
+
+values to the driver.
+
+While reading from an HDFS, each executor directly applies the subsequent Operations, to the partition in the same task
 
 
+RDD Caching and Persisting
+
+RDDs can be cached with the help of cache operation. They can also be persisted using persist operation.
+
+Cache persists with default storage level MEMORY_ONLY.
+
+RDDs can also be unpersisted to eliminate RDD from a permanent storage like memory and disk
+
+result = input.map(<Computation>) 
+
+result.persist(LEVEL)
+
+
+Final Lab
+
+import org.apache.spark.sql.SparkSession
+
+val data = spark.sparkContext.textFile("C:/tmp/files/text01.csv")
+
+type data
+
+val splitrdd = data.map(line=>line.split(","))
+
+val mofm = splitrdd.map(x=>(x(13),1))
+
+val reduced_rdd = mofm.reduceByKey(_ + _).map(item => item.swap).sortByKey(false).take(5)
+
+val output = sc.parallelize(reduced_rdd)
+
+output.saveAsTextFile("file path")
 
 
 

@@ -230,5 +230,111 @@ Two different approaches for receiving data are
 Flume style push based
 Pull based using a custome sink
 
+Windowing
+
+We may often come across situations where our interest is only on what happened, say for the last One hour of time and would want 
+these statistics to refresh every other minute.
+
+Note : Here One hour is the window length, while one minute is the slide interval.
+
+Window Operation
+Window Operations is a feature provided by Spark Streaming.
+
+Window Operations allows you to apply transformations over a sliding window of data.
+
+Batch Interval - This is the interval at which a DStream is created. We specify this interval while we create the Streaming Context(ssc).
+
+Window Duration/Size - This is a duration over which we perform certain fold operations. Window duration should be a multiple of batch interval.
+
+Sliding Interval - This is interval over which, sliding of the window occurs. This interval has to be a multiple of batch interval.
+
+Lab 2:
+
+import org.apache.spark.streaming.Seconds
+import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.streaming.Duration
+
+val ssc = new StreamingContext(sc, Seconds(5))
+val windowLength = new Duration(20 * 1000)
+val slideInterval = new Duration(15 * 1000)
+
+val fileDStream = ssc.textFileStream("file:///usr/spark-2.2.0/data/streaming")
+val window = fileDStream.window(windowLength,slideInterval)
+
+window.print
+
+ssc.start()
+ssc.awaitTermination()
+
+
+Checkpointing
+
+A streaming application is expected to operate 24/7 without fail, hence it has to be designed very carefully. It should be capable of recovering from system failures, JVM crashes etc.
+
+To enable this, Spark Streaming uses a mechanism called Checkpointing.
+
+Its required to Checkpoint or store enough information to any of the fault-tolerant storage system so that it can recover from failures.
+
+Metadata Checkpointing
+Checkpointing information to systems like HDFS. Usually used to recover from failure of the node running the driver of the streaming application.
+
+By metadata we mean;
+
+Configuration - Configuration which was used to create the streaming application.
+DStream operations - The set of DStream operations defined in the application.
+Incomplete batches- Batches whose jobs are queued but have not completed yet.
+Note : primarily used for recovery from driver failures.
+
+Data Checkpointing
+Saving the generated RDDs to a storage system like HDFS.
+
+Data Checkpointing has great relevance in cases where the dependency chain keep on growing with time and the recovery of RDD in any intermediate state becomes difficult.
+
+In-order to avoid unbounded increase in the recovery process intermediate RDDs of stateful transformations are periodically checkpointed to a reliable storage systems.
+
+
+Reference Link : https://spark.apache.org/docs/latest/streaming-programming-guide.html   , A Quick Example
+
+Final Lab
+
+import org.apache.spark._
+import org.apache.spark.streaming._
+import org.apache.spark.streaming.StreamingContext._ // not necessary since Spark 1.3
+
+// Create a local StreamingContext with two working thread and batch interval of 1 second.
+// The master requires 2 cores to prevent a starvation scenario.
+
+val conf = new SparkConf().setMaster("local[2]").setAppName("NetworkWordCount")
+val ssc = new StreamingContext(conf, Seconds(1))
+
+// Create a DStream that will connect to hostname:port, like localhost:9999
+val lines = ssc.socketTextStream("localhost", 9999)
+This lines DStream represents the stream of data that will be received from the data server. Each record in this DStream is a line of text. Next, we want to split the lines by space characters into words.
+
+// Split each line into words
+val words = lines.flatMap(_.split(" "))
+flatMap is a one-to-many DStream operation that creates a new DStream by generating multiple new records from each record in the source DStream. In this case, each line will be split into multiple words and the stream of words is represented as the words DStream. Next, we want to count these words.
+
+import org.apache.spark.streaming.StreamingContext._ // not necessary since Spark 1.3
+// Count each word in each batch
+val pairs = words.map(word => (word, 1))
+val wordCounts = pairs.reduceByKey(_ + _)
+
+
+// Print the first ten elements of each RDD generated in this DStream to the console
+wordCounts.print()
+The words DStream is further mapped (one-to-one transformation) to a DStream of (word, 1) pairs, which is then reduced to get the frequency of words in each batch of data. Finally, wordCounts.print() will print a few of the counts generated every second.
+
+Note that when these lines are executed, Spark Streaming only sets up the computation it will perform when it is started, and no real processing has started yet. To start the processing after all the transformations have been setup, we finally call
+
+ssc.start()             // Start the computation
+ssc.awaitTermination()  // Wait for the computation to terminate
+The complete code can be found in the Spark Streaming example NetworkWordCount.
+
+If you have already downloaded and built Spark, you can run this example as follows. You will first need to run Netcat (a small utility found in most Unix-like systems) as a data server by using
+
+$ nc -lk 9999
+
+
 
 '''

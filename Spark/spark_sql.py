@@ -262,7 +262,398 @@ Combines the features of DataFrame and RDD.
 Serves as a functional programming interface for working with structured data.
 Overcomes the limitations of RDD and DataFrames - the absence of automatic optimization in RDD and absence of compile-time type safety in Dataframes.
 
+Features of Dataset
+Offers optimized query using **Tungsten**and Catalyst Query optimizer. These will be discussed in upcoming topics.
+Capable of analyzing during compile-time.
+Capable of converting type-safe dataset to untyped DataFrame using methods - toDS():Dataset[A], toDF():DataFrame and toDF(columnnames:String):DataFrame.
+Delivers high performance due to faster computation.
+Low memory consumption.
+Provides unified API for Java and Scala.
 
+Creating Datasets
+Dataset uses a specialized Encoder to serialize the objects for processing or transmitting over the network.
+
+Dataset can be created in the following ways:
+
+Encoders are created for case classes. Call .toDS() on a sequence to convert the sequence to a Dataset.
+
+    val dsCaseClass = Seq(Person("John", 35)).toDS()
+    dsCaseClass.show()
+
+Dataset from RDD
+A dataset can be created from RDD as shown:
+
+    val ds=rdd.DS()
+    ds.show()
+
+Dataset from DataFrame
+Dataset can be created from DataFrame as well. Call df.as[SomeCaseClass] to convert the DataFrame to a Dataset.
+
+ val peopleDS = spark.read.json("examples/src/main/resources/data.json").as[Person]
+ peopleDS.show()
+
+Lab 01:
+
+spark-shell
+
+import org.apache.spark.sql.SparkSession
+
+val spark= SparkSession.builder.appName("My Spark Application").master("local[*]").config("spark.sql.warehouse.dir", "/root/spark-warehouse").getOrCreate
+
+Call the function spark.range to get the output starting from 5 to 50, with increments of 5
+val numDS = spark.range(5, 50, 5)
+
+numDS.show()
+
+Call the function 'orderby' to reverse the order in the DataSet and display the first 5 values
+numDS.orderBy(desc("id")).show(5)
+
+Compute descriptive stats and display them
+numDS.describe().show()
+
+
+DataFrames released in Spark 1.3 on 2013.
+DataSet released in Spark 1.6 on 2015.
+
+DataFrames is an organized form of distributed data into named columns that is similar to a table in a relational database.
+Dataset is an upgraded release of DataFrame that includes the functionality of object-oriented programming interface, type-safe and fast.
+
+In DataFrames, data is represented as a distributed collection of row objects.
+In DataSets, data is represented as rows internally and JVM Objects externally.
+
+After RDD transformation into dataframe, it cannot be regenerated to its previous form.
+After RDD transformation into a dataset, it is capable of converting back to original RDD.
+
+In dataframe, a runtime error will occur while accessing a column that is not present in the table. It does not provide compile-time type safety.
+In dataset, compile time error will occur in the same scenario as dataset provides the compile-time type safety.
+
+The Dataframe API provides a Tungsten execution backend that handles the memory management explicitly and generates bytecode dynamically.
+The Dataset API provides the encoder that handles the conversion from JVM objects to table format using Spark internal Tungsten binary format.
+
+Dataframe supports the programming languages such as Java, Python, Scala, and R.
+Dataset supports Scala and Java only.
+
+Datatypes in Spark SQL
+
+Numeric Datatypes
+ByteType - Represents one-byte signed integer numbers ranging from -128 to 127.
+IntegerType - Represents four-byte signed integer numbers.
+FloatType - Represents four-byte single precision floating point numbers.
+DecimalType - Represents arbitrary-precision signed decimal numbers.
+
+StringType - Represents character string values.
+
+BinaryType - Represents byte sequence values.
+
+BooleanType - Represents boolean values.
+
+TimestampType - Represents date and time values including values of fields - year, month, day, hour, minute, and second.
+
+Complex Datatypes - ArrayType
+ArrayType(elementType, containsNull)
+
+Refers to sequence of elements with the type of elementType.
+containsNull is used to indicate if elements in a ArrayType value can have null values.
+Let's create a DataFrame with an ArrayType column to list best cricket players of some countries.
+
+val playersDF = spark.createDF(
+List(
+ ("India", Array("Sachin", "Dhoni")),
+ ("Australia", Array("Ponting"))), 
+List(
+("team_name", StringType, true),
+("top_players", ArrayType(StringType, true), true)
+)
+)
+
+MapType(keyType, valueType, valueContainsNull)
+
+Contains a set of key-value pairs.
+keyType denotes the data type of keys, and valueType denotes the data type of values.
+Keys cannot have null values.
+valueContainsNull is used to verify whether values of a MapType value can have null values.
+
+val singerDF = spark.createDF(
+List(
+("sublime", Map(
+  "good_song" -> "santeria",
+  "bad_song" -> "doesn't exist")
+),
+("prince_royce", Map(
+  "good_song" -> "darte un beso",
+  "bad_song" -> "back it up")
+)
+), 
+List(
+("name", StringType, true),
+("songs",MapType(StringType, 
+ StringType, true), true)
+ )
+)
+
+StructType(fields)
+
+Represents values with the structure described by a sequence of StructFields (fields). StructField(name, dataType, nullable):
+
+Represents a field in a StructType.
+
+name indicates the name of a field, and datatype indicates the data type of a field.
+
+nullable is used to indicate if values of this fields can have null values.
+
+Let's create a DataFrame with a StructType.
+
+val rdd = sc.parallelize
+    (Array(Row(ArrayBuffer(1,2,3,4))))
+val df = sqlContext.createDataFrame(
+        rdd,StructType(Seq(StructField 
+      ("list", ArrayType(IntegerType, 
+      false), false)
+)
+
+Aggregations
+An aggregation is an act of collecting together.
+
+Spark SQL has:
+
+Built-in aggregations such as functions designed for DataFrames - avg(), max(), min(),count(),approx_count_distinct(), etc.
+User-defined aggregations - both UnTyped and Type-Safe.
+
+Untyped Aggregation Functions
+To implement a custom untyped user-defined aggregation function, the user has to extend the UserDefinedAggregateFunction abstract class.
+
+Creating a custom aggregation function to calculate the average.
+
+ object CalculateAverage extends UserDefinedAggregateFunction
+Aggregate function can have input arguments
+
+def inputSchema: StructType = StructType(StructField("inputColumn", LongType) :: Nil)
+Values in the aggregation buffer with data types
+
+def bufferSchema: StructType = {
+StructType(StructField("total", LongType) :: StructField("count", LongType) :: Nil)
+}
+Mention the data type of the returned value of the aggregation function
+
+ def dataType: DataType = DoubleType
+
+Initialize the values of aggregation buffer
+
+def initialize(buffer: MutableAggregationBuffer): Unit = {
+buffer(0) = 0L
+buffer(1) = 0L
+}
+Here, the given aggregation buffer is updated with new input data given:
+
+ def update(buffer: MutableAggregationBuffer, input: Row): Unit = {
+if (!input.isNullAt(0)) {
+  buffer(0) = buffer.getLong(0) + input.getLong(0)
+  buffer(1) = buffer.getLong(1) + 1
+}
+}
+
+Two aggregation buffers merged here and stores the updated buffer values to buffer1.
+
+def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit = {
+buffer1(0) = buffer1.getLong(0) + buffer2.getLong(0)
+buffer1(1) = buffer1.getLong(1) + buffer2.getLong(1)
+}
+The final average calculation is done here.
+
+def evaluate(buffer: Row): Double = buffer.getLong(0).toDouble / buffer.getLong(1)
+The aggregation function is registered here for further accessing.
+
+spark.udf.register("calculateAverage", CalculateAverage)
+val result = spark.sql("SELECT calculateAverage(age) as average_age FROM people")
+
+result.show()
+
+Type Safe Aggregation Functions
+To implement a custom type safe user-defined aggregation function, the user has to extend the Aggregator abstract class.
+
+Creating a custom aggregation function to calculate the average. People is a base class as input, Average is the buffer and Double is the return type.
+
+object CalculateAverage extends Aggregator[People, Average, Double]
+Initializing and compiling two buffer values to produce a new value.
+
+ def zero: Average = Average(0L, 0L)
+ def reduce(buffer: Average, people: People): Average = {
+buffer.total += people.age
+buffer.count += 1
+buffer
+}
+Intermediate values are merged here:
+
+def merge(b1: Average, b2: Average): Average = {
+b1.total += b2.total
+b1.count += b2.count
+b1
+}
+
+Aggregation function calculation is done here:
+
+ def finish(reduction: Average): Double = reduction.sum.toDouble / reduction.count
+Encoder for the intermediate value type is specified here:
+
+def bufferEncoder: Encoder[Average] = Encoders.product
+Encoder for the final output value type is specified here:
+
+ def outputEncoder: Encoder[Double] = Encoders.scalaDouble
+
+Type Safe Aggregation Functions
+Read JSON:
+
+val ds = spark.read.json("examples/src/main/resources/data.json").as[Person]
+ds.show()
+
+Change the function to a TypedColumn and give it a name.
+
+val averageAge = CalculateAverage.toColumn.name("average_age")
+val result = ds.select(averageAge)
+result.show()
+
+Spark SQL Optimization
+Optimization refers to the fine-tuning of a system to make it more efficient and to reduce its resource utilization.
+
+Spark SQL Optimization is achieved by Catalyst Optimizer.
+
+Catalyst Optimizer is:
+
+The core of Spark SQL.
+Provides advanced programming language features to build a query optimizer.
+Based on functional programming construct in Scala.
+Supports rule-based optimization (defined by a set of rules to execute the query) and cost-based optimization (defined by selecting the most suitable way to execute a query).
+To manipulate the tree, the catalyst contains the tree and the set of rules.
+
+Tree
+Tree is the main datatype in Catalyst that contains node objects.
+
+Every node will have a node type and zero or more children. The new nodes created are immutable in nature and are defined as subclasses of TreeNode class in Scala. These objects can be manipulated using functional transformations as explained in the following example.
+
+Consider three node classes:
+
+Constant value:
+
+Literal(value:Int)
+Attribute value from an input:
+
+attribute(name:String) 
+Subtraction of two expressions:
+
+Sub(left:TreeNode,right:TreeNode)
+
+Rule
+Trees can be manipulated using rules which can be defined as a function from one tree to another tree. This rule can run the arbitrary code on the input tree.
+
+The common approach is to use a pattern matching function and further the subtree replaced with a specific structure.
+
+Using transform function on trees, we can recursively apply pattern matching on all nodes of the tree, transforming the ones that match each pattern to a result.
+
+Example:
+
+tree.transform 
+{
+case
+   Sub(worth(c1),worth(c2))
+       => worth(c1+c2) 
+ }
+
+The pattern matching expression that is passed to transform is a partial function. It only needs to match to a subset of all possible input trees.
+
+The catalyst will check to that part of the tree the given rule applies and then skip automatically over the trees that do not match.
+
+The rule can match the multiple patterns with the same transform call.
+
+Example:
+
+tree.transform 
+ {
+   case Sub(worth(c1), worth(c2))
+        => worth(c1-c2)
+   case Sub(left , worth(0)) => left
+   case Sub(worth(0), right) => right
+}
+
+Spark SQL Execution
+
+Front End: Hive Query, SQL Query, DataFrame
+
+Catalyst : Unresolved logical plan -> Logical Plan -> Optimised logical plan
+                                    ^
+                          Schema catalog
+
+Back End : Physical plan -> Cost Model -> Selected physical plans -> RDD's
+
+In Spark SQL, the Catalyst performs the following functions:
+
+Analysis
+Logical Optimization
+Physical Planning
+Code Generation
+
+1] Analysis Phase
+The beginning of Spark SQL optimization is with relation to be computed either from abstract syntax tree returned by SQL parser or dataframe object created using API.
+
+Here in both cases,the query may contains unresolved attributes which means the type of attribute is unknown and have not matched it to an input table.
+
+SELECT value from PROJECT
+In the above query,the type of value is not known and not even sure whether its valid existing column.
+
+Catalyst rules and Catalog object is used in Spark SQL to track all data sources to resolve these unresolved attributes. This is done by creating an unresolved logical plan and then apply the below steps.
+
+Lookup the relation BY NAME FROM CATALOG.
+Map the named attribute like 'value' as in example above.
+Determine the attribute which refer to the same value to give them unique ID.
+Propagating and pushing types through expressions.
+
+2] Logical Optimization Phase
+In this phase of Spark SQL optimization applies the standard rule-based optimization to the logical plan. It includes-
+
+constant folding
+predicate pushdown
+project pruning
+null propagation
+It is extremely easy to add rules for a wide variety of situations.
+
+3] Physical Planning Phase
+In this phase of Spark SQL Optimization,one or more physical plan is formed from the logical plan,using physical operator matches the Spark execution engine.
+
+Here Cost-based optimization is used to select join algorithms. The framework supports broader use of cost-based optimization for small relation SQL uses broadcast join.
+
+Using the rule, it can estimate the cost recursively for the whole tree.
+
+4] Code Generation Phase
+In code generation phase of Spark SQL optimization,java byte code is generated to run on each machine.
+
+Its very tough to build code generation engines. Catalyst make use of the special feature of Scala language,QUASIQUOTES to make code generation easier.
+
+Quasiquotes allow the programmatic construction of AST (Abstract syntax tree)in scala language.At runtime this can then fed to the Scala compiler to generate bytecode.
+
+Catalyst can transform a tree which represents an expression in SQL to AST for Scala code to evaluate that expression,compile and run the generated code.
+
+Performance Tuning Options in Spark SQL
+Following are the different Spark SQL performance tuning options available.
+
+1. spark.sql.codegen
+
+Used to improve the performance of large queries.
+The value of spark.sql.codegen should be true.
+The default value of spark.sql.codegen is false.
+Since it has to run a compiler for each query, performance will be poor for very short queries.
+2. spark.sql.inMemorycolumnarStorage.compressed
+
+We can compress the in-memory columnar storage automatically based on statistics of data.
+The value of spark.sql.inMemorycolumnarStorage.compressed should be true.
+Its default value will be false.
+
+3. spark.sql.inMemoryColumnarStorage.batchSize
+
+We can boost up memory utilization by giving the larger values for this parameter spark.sql.inMemoryColumnarStorage.batchSize.
+The default value will be 10000.
+4. spark.sql.parquet.compression.codec
+
+We can enable high speed and reasonable compression using the parameter spark.sql.parquet.compression.codec.
+The snappy library can be used for compression and decompression.
 
 
 

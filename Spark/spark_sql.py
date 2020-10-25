@@ -655,8 +655,91 @@ The default value will be 10000.
 We can enable high speed and reasonable compression using the parameter spark.sql.parquet.compression.codec.
 The snappy library can be used for compression and decompression.
 
+Lab : 02
+
+Task
+Create a json file named "People.json" using the command vim People.json, and then copy the following data to the file through IDE: {"name":"Rahul","age":"35"} {"name":"Sachin","age":"46"}
+
+Read the json file and create a DataFrame with the json data. Display the result.
+
+val df = spark.read.json("People.json")
+
+df.show()
+
+Create a case class using the following command: case class Person(name: String, age: String)
+
+Read the json file and create a DataSet with the json data using case class. Display the result.
+
+val peopleDS = spark.read.json("People.json").as[Person]
+ 
+peopleDS.show()
+
+Lab : 03
+
+Task
+Create a json file named "People.json" using the command vim People.json, and then copy the following data to the file through IDE: {"name":"Rahul","age":"35"} {"name":"Sachin","age":"46"}
+
+Read the json file and create a DataFrame with the json data. Display the result.
+
+val DF = spark.read.json("People.json")
+
+DF.show()
+
+Save the Dataframe to a Parquet file format:
+
+// DataFrames can be saved as Parquet files, maintaining the schema information
+DF.write.parquet("data.parquet")
+
+Read the saved parquet file to a Dataframe
+
+val parquetFileDF = spark.read.parquet("data.parquet")
+
+Display the Dataframe contents
+
+parquetDF.show()
 
 
+Lab : 03
+
+Read the csv file from the Spark CSV Reader.
+
+Read the csv file to the Dataframe cdf.
+
+While reading the csv file, keep Header and Inferschema as true.
+
+Verify the Dataframe by displaying its schema and first 5 contents.
+
+val cdf = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load("demography.csv")
+
+cdf.show(5)
+
+Find the Average of Total Population.
+
+cdf.select(avg($"Total Population")).show()
+
+Save the Average to a Parquet file avg
+
+Find the Total of Total Males
+
+cdf.select(sum($"Total Males")).show()
+
+val output = cdf.select(sum($"Total Males"))
+
+
+val diamonds = spark.read.format("csv")
+  .option("header", "true")
+  .option("inferSchema", "true")
+  .load("/databricks-datasets/Rdatasets/data-001/csv/ggplot2/diamonds.csv")
+
+display(diamonds)
+
+apt-get update; apt-get install vim -y;.
+
+import org.apache.spark.sql.functions._
+
+import spark.implicits._
+
+df.select(avg($"RBIs")).show()
 
 
 '''

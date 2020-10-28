@@ -613,6 +613,62 @@ Netflix – Movie recommendation engine from user data.
 
 User data is also used for content creation.
 
+Final Lab :
+
+Entering PySpark Shell
+Enter the pyspark shell:
+
+pyspark
+
+Import the Spark session package:
+
+from __future__ import print_function
+
+from pyspark.sql import *
+
+from pyspark import SparkContext
+
+from pyspark.sql.readwriter import DataFrameWriter
+
+from pyspark.sql import SparkSession
+
+Create the Spark session:
+
+spark = SparkSession \
+    .builder \
+    .appName("Python Spark SQL basic example") \
+    .config("spark.some.config.option", "some-value") \
+    .getOrCreate()
+
+Create a DataFrame:
+
+df = spark.createDataFrame([("1","Jack", 22,"Data Science"), ("2","Luke", 21,"Data Analytics"),("3","Leo", 24,"Micro Services"),("4","Mark", 21,"Data Analytics")],["ID", "Name","Age","Area of Intrest"])
+
+Display the schema:
+
+df.printSchema()
+
+Describe the column 'Age', and observe the various statistical parameters:
+
+df.describe('Age').show()
+
+Select the columns ID, Name, and Age, and display the result in descending order:
+
+df.select('ID','Name','Age').orderBy('Name',ascending=False).show()
+
+Stop the Spark environment:
+
+spark.stop()
+
+Exit from the shell:
+
+exit()
+
+
+
+
+
+
 
 
 

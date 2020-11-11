@@ -1,0 +1,53 @@
+Basics
+
+Cloud Computing is a way for delivering services or resources on-demand.
+
+- National Institute of Standards and Technology (NIST)
+
+Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing 
+resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal 
+management effort or service provider interaction.
+
+Cloud Components
+The components are broadly classified into Frontend Components and Backend Components.
+
+Frontend Components
+Clients: Clients are the devices through which the end users interact. They are divided into three broad categories: mobile, thin and 
+thick clients.Smartphones and tablets constitute mobile clients, while computers without an internal hard drive is a thin client, and 
+thick clients are your typical computers.
+
+Backend Components
+Datacenter: It is a server or a collection of servers.
+Distributed Servers: These servers are spread across multiple locations.
+Storage, security and other such infrastructures add to the backend list.
+Through a network layer, cloud establishes the connection between the frontend and backend devices.
+
+Cloud Characteristics
+
+1. Elasticity
+2. On-demand
+3. Provider-pooled computing resources
+4. Metered service usage
+5. Broad network access
+
+Cloud computing is enabled through these key factors.
+
+Cloud Datacenters
+Virtualization
+Cloud APIs
+Cloud storage
+
+Virtualization
+
+The process of creating a virtual environment in a resource, to enable execution of services without interfering with other activities done by the resource.
+
+An ability that allows you to share the physical instance of an application or resource with multiple users.
+
+Virtualization - Features
+Prominent features of virtualization include:
+
+Partitioning: You can partition a resource to support many applications and hardware.
+
+Isolation: Every virtual instance is isolated from one another as well as from the resource.
+
+Encapsulation: You can encapsulate a virtual instance as a single entity to easily identify the service it offers.

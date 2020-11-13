@@ -1,0 +1,140 @@
+Azure services
+
+Compute and Networking Services
+
+Virtual Machines
+Azure RemoteApp
+Azure Cloud Services
+Azure Virtual Networks
+Azure ExpressRoute
+Traffic Manager
+
+Storage and Backup Services
+
+Azure Storage
+Azure Import/Export Service
+Azure Backup
+Azure Site Recovery
+
+Identity and Access Management Services
+
+Azure Active Directory
+Azure Multi-Factor Authentication
+
+Application Services
+
+Azure App Services
+API Management
+Notification Hubs
+Event Hubs
+
+Data and Analytics Services
+
+SQL Database
+HDInsight®
+Azure Redis Cache
+Azure Machine Learning
+DocumentDB
+Azure Search
+
+Media and Content Delivery Services
+
+Azure Media Services
+Azure CDN
+Azure Service Bus
+
+Azure Marketplace - an online applications and services marketplace that offers,
+
+VM images and extensions
+APIs and Applications
+Machine Learning and Data services
+VM Depot - a community-based catalog of open source virtual machine images that can be deployed directly from Azure.
+
+GitHub - a web-based Git repository that is free to use for public and open source projects.
+
+Azure Trust Center - offers guidelines for integrated security monitoring and policy management across Azure subscriptions. Also, it provides data security & data privacy guidelines essential to comply with regulatory controls.
+
+Azure Deployment Models
+Azure Service Management Model (ASM) using Classic Portal. This was the first approach that was introduced by Microsoft. Here the resources are coupled and can be deployed using ASM PowerShell Module.
+
+Azure Resource Management Model (ARM) using New Portal. The resources are decoupled and hence can be configured independently. JSON templates provide simple orchestration and rollback functions. They have their own ARM PowerShell Module as well.
+
+For example, while deploying a VM - compute, Vnet and storage resources are coupled in ASM, and hence can not be configured independently. Whereas with ARM, these resources are can be configured independently.
+
+ARM is the recommended model of deployment and in this course, we align to this model.
+
+Lab 1 : Azure Essentials - Creating storage account and uploading files into storage account  
+Solution url : https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-use-files-cli
+
+if [ -f /opt/get-azure ]; then /opt/get-azure && source ~/.azureenv; else curl -O https://gist.githubusercontent.com/frescoplaylab/a06df129432f55ad14779cd75461e6c6/raw/82be68f978af82219bc67db65fbb3eeabbc799a2/get_azure_credentials; . get_azure_credentials && source ~/.azureenv; fi
+
+az login -u $username -p $password
+
+Click the following command to make the resource group default, so that you need not use the resource group in the commands.
+az configure --defaults group=$resource
+
+Create Storage Account
+az storage account create -n mystorageaccount -g MyResourceGroup -l westus --sku Standard_LRS 
+(Create a storage account 'mystorageaccount' in resource group 'MyResourceGroup' in the West US region with locally redundant storage.)
+az storage account create -n myfrescodemostorage -g $resource -l westus --sku Standard_LRS
+
+eg : 
+export storageAccountName="mystorageacct$RANDOM"
+
+az storage account create \
+    --resource-group $resourceGroupName \
+    --name $storageAccountName \
+    --location $region \
+    --kind StorageV2 \
+    --sku Standard_LRS \
+    --enable-large-file-share \
+    --output none
+
+Get Storage Account Key
+az storage account keys list -g $resource -n myfrescodemostorage
+key=$(az storage account keys list -g $resource -n myfrescodemostorage --query [0].value -o tsv) (assign first key to a variable)
+
+eg: 
+export storageAccountKey=$(az storage account keys list \
+    --resource-group $resourceGroupName \
+    --account-name $storageAccountName \
+    --query "[0].value" | tr -d '"')
+
+create a variable
+export storageAccountName="myfrescodemostorage"
+
+Creating Azure File Share
+shareName="myshare"
+
+az storage share create \
+    --account-name $storageAccountName \
+    --account-key $key \
+    --name $shareName 
+
+
+Creating Directory
+
+az storage directory create \
+   --account-name $storageAccountName \
+   --account-key $key \
+   --share-name $shareName \
+   --name "myDirectory" \
+   --output none
+
+Uploading the file
+
+git clone https://github.com/Azure-Samples/php-docs-hello-world
+
+cd file_path
+
+az storage file upload \
+    --account-name $storageAccountName \
+    --account-key $key \
+    --share-name $shareName \
+    --source "index.php" \
+    --path "myDirectory/index.php"
+
+Deleting the resources
+
+Clean up resources
+az group delete --name $resource

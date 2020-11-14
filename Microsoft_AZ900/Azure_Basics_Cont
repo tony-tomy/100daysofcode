@@ -138,3 +138,92 @@ Deleting the resources
 
 Clean up resources
 az group delete --name $resource
+
+Managing Resources
+
+Here are the tools at your disposal to manage resources,
+
+Azure PowerShell
+ARM and ASM Portals
+Azure CLI
+Azure Rest APIs
+Azure SDKs
+
+Azure PowerShell provides a set of cmdlets for managing your Azure resources and for Automating the scheduled task.
+Azure PowerShell Module can be installed in several different ways,
+
+From PowerShell Gallery
+Using MSI installer from the GitHub repository
+Using Microsoft Web Platform Installer
+
+Check if PowerShellGet is installed on your system using:
+
+>Get-Module PowerShellGet -list | Select-Object Name,Version,Path
+(If PowerShellGet is not installed, download it by executing below command).
+Install-Module -Name PowerShellGet -Force
+Exit
+
+Install ARM Module
+You can install Azure Resource Manager (ARM) modules from the PowerShell Gallery using:
+Install-Module AzureRM
+PowerShell gallery is not configured as a Trusted repository. Hence you will be prompted to "Allow installing modules from PSGallery". Choose 'Yes' or 'Yes to All' to continue.
+
+Once installed, load the module in the PowerShell session using:
+
+Import-Module AzureRM
+Validate the installation by Checking the version of Azure PowerShell using:
+Get-Module AzureRM -list | Select-Object Name,Version,Path
+
+Install ASM module
+For Classic mode use following command to install Azure PowerShell,
+Install-Module Azure
+and
+
+Import-Module Azure
+Validate the installation by Checking the version of Azure PowerShell using:
+Get-Module Azure -list | Select-Object Name,Version,Path
+
+ARM and ASM Portals
+Azure Service Management (ASM) is the traditional way of provisioning Azure Resources. ASM portal, also called Classic Portal uses ASM API calls to provision and manage Azure resources.
+
+Azure Resource Manager (ARM) is the service that is now more widely used to provision resources on Azure. The ARM Portal also called the New portal uses ARM API calls to provision resources. Also, when you use tools like Azure PowerShell, you are invoking ARM API calls.
+
+Advantages of ARM
+Resource Group - ARM groups resources, making it much easier to manage them.
+Smarter Provisioning - ARM refers ARM templates to figure out resource requirement, dependencies and provisions resources optimally.
+Role-based Access control(RBAC) - gives greater control by configuring role-based access control at resource and resource group levels.
+Tags - can be applied to resources to logically organize all of the resources in the same subscription.
+Billing - In an organization, costs can be viewed for the entire group or for a group of resources sharing the same tag.
+
+ARM Templates
+ARM templates are commonly used to automate deployment. Resource groups and resource properties like the size of DB, type of storage account are defined in these JSON documents.
+
+ARM inspects requirements in ARM templates, figures out resource dependencies and provisions resources in an order or even simultaneously when there is no direct dependency between certain resources.
+
+GitHub Resource Manager contains a number of Azure Quickstart Templates which can be used to build and deploy.
+
+Another option is to create custom templates, using JSON Editor. Visual Studio or Visual Studio Code a lightweight, open-source editor can be used to create these templates. 
+
+Azure CLI 2.0 is an open-source, cross-platform, shell-based command line interface for managing Azure resources.
+
+You can use it in your browser with Azure Cloud Shell, or you can install it on macOS, Linux, and Windows and run it from the command line.
+
+Commands are structured as:
+
+>azure <topic> <verb> <options>
+or
+>az <topic> <verb> <options>
+Example to list the virtual machines within an account
+>azure vm list 
+Example to create a resource group named "MyRG" in the centerus region of Azure
+>az group create -n MyRG -l centerus 
+
+Azure REST APIs
+One of the most powerful ways to manage Azure is via the Azure REST APIs. Representational State Transfer (REST) APIs are service endpoints that support sets of HTTP operations (methods) to manage your resources.
+
+It forms the connecting glue between your applications and Azure.
+
+Azure SDKs
+Azure SDKs provide a framework which you can use to build, deploy and manage various solutions and services you may need on Azure.
+
+

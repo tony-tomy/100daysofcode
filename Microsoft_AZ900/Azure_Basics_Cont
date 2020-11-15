@@ -226,4 +226,139 @@ It forms the connecting glue between your applications and Azure.
 Azure SDKs
 Azure SDKs provide a framework which you can use to build, deploy and manage various solutions and services you may need on Azure.
 
+Azure VM
+
+Azure Virtual Machines provides Scalable Computing Environment to host wide range Infra services and Applications.
+Azure Virtual Machines follow Infrastructure as a Service (IaaS) model and lets you create VMs in the cloud. VM's are provisioned with:
+
+Compute
+Storage
+Networking capabilities
+Operating system
+
+Azure VMs are best for workloads that:
+
+Require High availability
+Experience Unpredictable Growth
+Experience Sudden Spikes
+
+The first Step to creating VM is to choose the right VM size. Here are the various VM sizes that can cater to every kind of requirement.
+
+General Purpose - ideal for Testing and Development.
+Compute Optimized - recommended for medium traffic web servers and network appliances.
+Memory Optimized - used for relational DB servers, medium to large caches, and for in-memory analytics.
+Storage Optimized - used for Big Data, SQL, and NoSQL databases.
+GPU - Ideal for heavy graphic rendering and video editing.
+High Performance Compute - optimal for high-throughput network interfaces (RDMA).
+
+Azure Marketplace provides a large image gallery, which includes:
+
+Recent operating system images of Windows Server, Linux, and SQL Server.
+You can also store your own images in Azure, by capturing an existing virtual machine and uploading the image.
+
+Windows Server
+
+Windows Server 2008 R2 and later versions are available in Azure Market Place.
+Windows Server 2003 and later versions are supported for deployment. However, OS images must be uploaded from On-Premises.
+
+Linux OS
+
+Azure supports many Linux distributions and versions including CentOS, Core OS, Debian, Oracle Linux, Red Hat Enterprise Linux, and Ubuntu.
+Microsoft does not support OS that is past their End of Support date without a Custom Support Agreement (CSA). For example, Windows Server 2003/2003 R2.
+
+Basic steps for deploying a virtual machine
+
+Select an image or disk to use for the new virtual machine from Azure Market Place.
+Provide Required information such as hostname, username, and password for the new virtual machine.
+Provide Optional information like domain membership, virtual networks, storage account, cloud service, and availability set.
+Go ahead and provision the machine.
+
+Lab 2 : Azure Essentials - Virtual Machine
+
+Create an Azure VM
+
+VmName="ExampleVm"
+AdminPassword="ARe@11y5ecur3P@ssw0rd!"
+
+az vm create \
+    --resource-group $resource \
+    --name $VmName \
+    --image win2016datacenter \
+    --admin-username azureuser \
+    --admin-password $AdminPassword \
+    --size Standard_B1s \
+    --use-unmanaged-disk \
+    --storage-sku Standard_LRS
+
+List of VMs
+
+az vm list
+
+Stopping or Deleting the VM
+
+az vm delete --resource-group $resource --name $VmName
+
+Azure Virtual Network
+
+Once you create a VM, you will need to place it in a virtual network to receive IP address configurations and to connect to other VMs or other resources that you create in Azure.
+
+You can create Azure network resources by using either the ARM Portal, Classic Portal, Network Configuration File, Azure PowerShell module, Azure command-line interface (Azure CLI), or by using deployment templates.
+
+You can attach multiple network interface cards (NICs) to each of your VMs.
+
+Multiple NICs are used for many network virtual appliances and WAN Optimization solutions, as it provides high network traffic management capability, including isolation of traffic between a front-end NIC and back-end NIC(s).
+
+Example - Palo alto Firewall appliance which contains 4 NICs for,
+DMZ
+Trusted Zone
+Untrusted Zone
+Firewall Management
+
+Limitations of Multiple NICs
+All VMs in a Availability set need to use either multi-NIC or single NIC. There cannot be a mixture of multi-NIC VMs and single NIC VMs within an availability set.
+
+Once deployed, a VM with single NIC cannot be configured with multi NICs (and vice-versa), without deleting and re-creating it.
+
+Network Security Groups
+
+VMs can have connectivity to the Internet when public IP address is assigned to the VMs or to the cloud service. Under such scenarios, Network Security Group (NSG) provides advanced security protection for the VMs.
+
+NSGs contain inbound and outbound rules that specify whether the traffic is approved or denied.
+
+NSGs Rule can be applied at the following levels,
+
+NIC (ARM deployment model)
+VM (classic deployment)
+All VMs in a Subnet (both deployment models)
+
+Consider a requirement where Application Server should communicate with Internet (User) using HTTP Protocol only.
+
+To achieve this, NSG1 - web-rule can be set to allow HTTP traffic to the FrontEnd subnet.
+Also, assume a requirement where DataBase Server should not communicate with internet and it should get SQL traffic only from Application Server.
+
+For this, NSG2 - DB Rule can be set as
+
+sql-rule to allow SQL traffic only from the FrontEnd subnet.
+web-rule to deny all internet bound traffic from the BackEnd subnet.
+
+NSG Rule Properties
+Name - is a unique identifier for the rule.
+Direction - specifies whether the traffic is inbound or outbound.
+Priority - If multiple rules match the traffic, rules with higher priority apply.
+Access - specifies whether the traffic is allowed or denied.
+Source IP address prefix - identifies from where traffic originates.
+Source port range - specifies source ports.
+Destination IP address prefix - identifies the traffic destination IP range
+Destination port range - specifies destination ports
+Protocol - specifies a protocol that matches the rule.
+
+Things to Remember
+By default 100 NSGs can be created per region per subscription. This can be extended to 400 by contacting Azure support.
+
+A single NSG can have 200 rules which can be raised to 500 by contacting Azure support.
+
+Only one NSG can be applied to a VM, subnet, or NIC. However, the same NSG can be applied to multiple resources
+
+
+
 

@@ -359,6 +359,197 @@ A single NSG can have 200 rules which can be raised to 500 by contacting Azure s
 
 Only one NSG can be applied to a VM, subnet, or NIC. However, the same NSG can be applied to multiple resources
 
+Lab 03 : Azure Essentials - Virtual Network
 
+Create a virtual network
 
+az network vnet create \
+  --name myVirtualNetwork \
+  --resource-group $resource \
+  --subnet-name default
 
+List all virtual network
+
+az network vnet list
+
+az network vnet delete -g $resource -n myVirtualNetwork
+
+Lab 04 : Creating NSG
+
+Create a NSG
+
+az network nsg create -g $resource -n MyNsg 
+
+delete a NSG
+
+az network nsg delete -g $resource -n MyNsg
+
+Intersite Connectivity Options
+It is very common to come across a scenario where you have an On-Premise data center that needs to connect to resources deployed on Azure. There are four different options to handle such scenarios.
+
+Point to Site VPN and Site to Site VPN were covered in detail in the Azure Essential course, So, now we will concentrate on Vnet to Vnet Connectivity and Express Route
+
+The following VPN connections requires VPN Gateway:
+
+Point-to-site
+Site-to-site
+VNet-to-Vnet - Between different Azure Regions - Between different Azure Subscription
+IaaS v1 VNet-to-IaaS v2 VNet
+Multisite
+ExpressRoute
+
+Features of VPN Gateway
+A VPN gateway is a type of virtual network gateway that sends encrypted traffic across Azure virtual networks and also from Azure virtual network to an on-premises location.
+
+Each virtual network can have only one VPN gateway.
+Multiple connections can be made with the same VPN gateway.
+When multi VPNs connect to the same VPN gateway, all VPN tunnels share the bandwidth that is available for the gateway.
+
+Vnet to Vnet Connectivity
+VNet-to-VNet connectivity is similar to connecting a VNet to an on-premises site location, except that both ends of the connection are VNets.
+
+VMs and cloud service components in each VNet can communicate as if they were on the same VNet.
+
+In VNet-to-VNet model, the connected VNets can be in the:
+
+same or different regions
+same or different subscriptions
+same or different deployment models
+
+ExpressRoute Connectivity
+Microsoft Azure ExpressRoute can be used to extend the on-premises networks into the Microsoft cloud over a dedicated private connection.
+
+Typically ExpressRoute is used to establish the connections to Microsoft cloud services, such as Microsoft Azure, Office 365, and CRM Online. Also, it is used to transfer data between on-premises and Azure to achieve cost benefits.
+
+Since they do not go over the public Internet, they are
+
+More Secure
+Highly Reliability
+Faster and Lower Latency
+
+VPN Tunnel
+
+Azure supports a maximum of 30 VPN tunnels per VPN gateway.
+Each point-to-site, site-to-site and VNet-to-VNet VPN counts as one of those VPN tunnels.
+Redundant tunnels are not supported.
+VPN Gateway
+
+A single VPN gateway can support up to 128 connections from client computers.
+All VPN tunnels to a virtual network share the available bandwidth on the Azure VPN gateway.
+Address spaces
+
+Address spaces must not overlap. Hence must be planned for virtual networks in Azure and on-premises networks.
+
+Azure Storage
+
+To use any of the Azure Storage services like Blob storage, File storage, and Queue storage, you will first create a storage account, and then you can transfer data to/from a specific service in that storage account.
+
+Once created, Azure Storage resources can be accessed by any language that can make HTTP/HTTPS requests. Additionally, Azure Storage offers programming libraries for several popular languages to simplify many aspects of working with Azure Storage.
+
+Azure storage is broadly grouped into 3 categories:
+
+Storage for Virtual Machines
+Unstructured Data storage
+Structured Data storage
+
+Storage for Virtual Machines:
+
+Disks - Persistent block storage for Azure VMs.
+Files - Fully managed file share on the cloud.
+Unstructured Data storage:
+
+Blobs - Highly scalable, REST based Cloud Object Storage.
+Data Lake Store - Hadoop Distributed File System (HDFS) as a Storage.
+Structured Data storage:
+
+Azure SQL DB - Fully managed Database-as-a-service built on SQL.
+Tables - Key Value, high scale, auto-scaling NoSQL store.
+DocumentDB - NoSQL document database service.
+
+VM Disks
+Virtual machines in Azure use disks as a place to store Operating system, Applications, and Data.
+
+VM's also can have one or more data disks
+Standard Storage Account uses Hard Disk Drive(HDD) as VM disk.
+Premium Storage Account uses Solid State Drive(SSD) as VM disk.
+Temporary Disk is a Non Persistent storage and uses SSD storage.
+All disks are stored as Virtual Hard Disk's (VHD), and the maximum capacity of the VHD is limited to 1023 GB.
+
+VM File Storage
+
+File storage offers shared storage using the standard SMB 3.0 protocol.
+
+It can be accessed as a mounted drive or Map network Drive as typical SMB share in Desktops.
+On-premises applications can access file data in a share via the File storage API.
+Common uses of File storage:
+
+Applications that rely on file shares.
+Files like Configuration files that need to be accessed from multiple VMs.
+Diagnostic data like logs that can be written to a file share and processed later.
+Tools and utilities used by multiple developers.
+
+Storage Accounts
+Types of General Purpose Storage Account
+
+Standard storage - most widely used storage accounts that can be used for all types of data (tables, queues, files, blobs and VM disks).
+Premium storage - high-performance storage for page blobs, which are primarily used for VHD files.
+Performance tiers of Blob Storage Account
+
+Hot access - for files that are accessed frequently. You pay a higher cost for storage, but the cost of accessing the files is much lower. Example: File Share.
+
+Cool access - to store large amounts of rarely accessed data for lower cost. Example: Backup Data.
+
+Standard storage accounts are backed by magnetic drives (HDD) and provide the lowest cost per GB.
+Premium storage accounts are backed by solid state drives (SSD) and offer consistent low-latency performance.
+Hence it is not possible to convert standard storage account to Premium Storage account or vice versa.
+
+Premium Storage
+
+Microsoft recommends using Premium Storage for all VMs.
+
+Premium storage has high bandwidth with extremely low latency and it offers less than 1ms read latency(cache). Also, premium storage disks for virtual machines support up to 64 TB of storage, 80,000 IOPS per VM and 50,000 IOPS per disk.
+
+To improve total IOPS throughput we recommend striping across multiple disks and using SSD premium disks.
+Premium Storage is only supported on Azure GS and DS series of virtual machines.
+Premium Storage supports only Locally Redundant Storage (LRS) Replication.
+In Premium (SSD), the size of the VM disk is restricted to 128, 512, and 1023 GB.
+
+Azure Storage tools, make the life of a storage administrator much easier. Here are few of the most commonly used tools.
+
+Azure Portal and Azure PowerShell
+Azure Storage Explorer - a useful GUI tool to inspect and alter data in Azure Storage. It can be used to upload, download, and manage blobs, files, queues, and tables from any platform, anywhere.
+AZ Copy - a command-line utility to copy blob, and file data within a storage account or across accounts.
+Azure Import/Export service - to import or export large amounts of blob data to or from a storage account.
+
+Data Security:
+
+Data in transit can be secured using client-side encryption, HTTPS or SMB 3.0 protocol.
+Data at rest can be secured using Storage Service Encryption.
+OS and Data disks used by VMs can be encrypted using Azure Disk Encryption.
+
+Security Management:
+
+Storage Access Policy: define policies to grant and revoke access at a granular level, with a time limit.
+Role-Based access control: use default and custom defined roles to control access to the storage accounts
+Audit and monitor authorization: using request information available in storage analytics logs.
+Storage Account Access keys and Shared Access Signatures (SAS) can be used to secure data access.
+
+Lab 05 : Web App on Azure Storage
+
+Create App Service Plan
+az appservice plan create -g $resource -n MyPlan
+
+Write the command to create a Web app.
+az webapp create -g $resource -p MyPlan -n MyDemoUniqueAppName
+
+Check the Web app list 
+az webapp list
+
+Write the command to Manage web app deployment via source control.
+az webapp deployment source config --branch master --manual-integration --name MyDemoUniqueAppName --repo-url $gitrepo --resource-group $resource
+
+Delete webapp
+az webapp delete --name MyDemoUniqueAppName --resource-group $resource
+
+Delete appservice plan
+az appservice plan delete --name MyPlan --resource-group $resource

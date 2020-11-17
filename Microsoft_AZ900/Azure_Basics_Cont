@@ -553,3 +553,214 @@ az webapp delete --name MyDemoUniqueAppName --resource-group $resource
 
 Delete appservice plan
 az appservice plan delete --name MyPlan --resource-group $resource
+
+Azure Blob Storage
+
+Azure Blob storage is a service that stores Unstructured data in the cloud as blobs/objects. All blobs must be in a container and a container can store an unlimited number of blobs.
+
+Common uses of Blob storage:
+
+Serving images or documents directly to a browser.
+Storing files for distributed access.
+Streaming videos and audios.
+Storing data for backup & restore, disaster recovery, and archiving.
+Storing data for analysis by an on-premises or Azure-hosted service.
+Blob storage is also referred to as Object storage.
+
+Azure Storage offers three types of blobs: Block blobs, Page blobs, and Append blobs.
+
+Block blobs
+
+Suitable for Sequential Read\Write operations.
+Ideal for storing text or binary files, such as documents and media files.
+Append blobs
+
+Optimized for Append operations.
+Can be used for logging scenarios.
+Page blobs
+
+Optimized for Random read/write operations.
+Can be used for storing VHD files of Azure VM as OS and Data disks.
+
+Managing Blob Storage
+Blob storage typically requires transacting Huge amounts of data from On-Premises to Azure and vice-versa.
+
+Examples of Huge Data:
+
+Large Virtual Hard Disks (VHDs) - Using Upload and Download Commands
+TBs of Backup Data - Using Export and Import services
+Generally uploading and downloading VHD files is done through Azure PowerShell or Storage Explorer. Azure PowerShell provides a very efficient way for moving these large files through following cmdlets:
+
+Add-AzureRmVHD - Uploads a VHD from an on-premises virtual machine to a blob storage in Azure.
+Save-AzureRmVHD - Saves downloaded VHD images locally.
+
+Import and Export Services
+
+Import and Export is another service that is suitable for scenarios when several TBs of data needs to be transferred. Transferring such volume of data over the network is not feasible due to limited bandwidth and high network costs.
+
+Example: Backup data to or from Azure.
+
+Import Service - Securely transfers large amounts of data to Azure blob storage by shipping hard disk drives to an Azure DC.
+Export Service - Transfers data from Azure blob storage to hard disk drives and ship to the on-premises site.
+Usage Scenarios:
+
+Migrating data to the cloud.
+Content distribution to a different Datacenter.
+Backup and Recovery data.
+
+Azure App Services
+
+Web apps: web based applications that can scale with business requirements
+Mobile Apps: mobile applications that can run on any device
+Logic apps: For automating business processes and integrating systems and data across clouds without writing code.
+API apps: For hosting RESTful APIs that other services can leverage, such as in IoT scenarios
+
+There are five layers available: Free, Shared, Basic, Standard and Premium.
+
+Note:
+
+An application can only be associated with one service plan. However, a service plan can have, multiple applications associated with it.
+The application must be in the same subscription and geographic location to share a plan.
+Apps that share a plan can use all the capabilities and features that are defined by the plan's tier
+
+Azure App Service can also be managed by using the following tools,
+
+Azure PowerShell
+Azure Command Line Interface (CLI)
+REST APIs
+Templates
+ARM and ASM portals
+
+Locking Resources
+Azure App Services protects the resources using Locks.
+
+Locks can be applied to a subscription, resource group, or a resource such as a web application.
+
+It prevents deleting or modification of resources by other users.
+
+Lock Levels:
+
+CanNotDelete: where authorized users can read and modify a resource, but they can't delete.
+ReadOnly: where authorized users can read from a resource, but they can not perform any actions on it.
+Locks are different from Role Based Access control(RBAC).
+
+Custom Domain Name Configuration
+When a Application is hosted on Azure, it can be accessed using a default domain name <app name>.azurewebsites.net.
+
+However, it is preferred to access the application using our own URL, such as https://play.fresco.me
+
+Custom Domain name can be directly purchased through the Azure App services portal or one can carry forward their own Domain Name.
+
+Site Extensions
+
+Site Extensions are used to extend functionality and provides ease management of Web Applications.
+
+A full list of available site extensions is available on the Site Exensions page, https://www.siteextensions.net/.
+It also provides pointers to project sites, licenses, owner details etc for each extension.
+Examples of Site Extensions:
+
+Application insights: provides monitoring capabilities.
+New Relic: provides monitoring capabilities.
+Php Manager: tool for managing PHP installations.
+Jekyll: Adds support for Jekyll on a Web App.
+
+App Service Deployment Options
+There are a number of different options available for deployment of web app services such as,
+
+Basic
+
+FTP
+Web Deploy
+Alternative
+
+OneDrive/DropBox
+Kudu
+Source Control / Continuous Deployment
+
+Visual Studio Online
+Local Git
+GitHub
+BitBucket
+
+Kudu based Deployments
+Kudu is the engine behind source control based deployments into Azure App Service. Every Azure website has an associated 'scm' service site, which runs both Kudu and other Site Extensions.
+
+Accessing the Kudu service
+
+If your website URL is http://mysite.azurewebsites.net/, the root URL of the Kudu service is https://mysite.scm.azurewebsites.net.
+
+Lab 06 : Creating Locks
+
+Create a Lock
+az lock create --name lockName --resource-group $resource --lock-type ReadOnly
+
+List all Locks
+az lock list
+
+Delete Lock
+az lock delete --name lockName --resource-group $resource
+
+Azure Database Services Intro
+In Azure Essentials we learn about different types of Data services in Azure, such as,
+
+SQL Database
+SQL Data Warehouse
+Document DB
+Table Storage
+Redis Cache
+Data Factory
+Data Lake
+
+Azure SQL (PaaS) Vs SQL Server (IaaS)
+
+Azure SQL Database (PaaS): is native to the cloud and is optimized for SaaS app development. It reduces overall costs to the minimum for provisioning and managing many databases as you do not have to manage any VMs, OS or DB software.
+
+SQL Server on Azure Virtual Machines (IaaS): is optimized for migrating existing applications to Azure or in hybrid deployments. It is a perfect choice when an organization already has IT resources available to maintain the VMs.
+
+Database Transaction Unit
+
+A DTU is a measure of the resources that are guaranteed to be available to a standalone Azure SQL database. It is a measure that combines CPU, memory and I/O values.
+DTU is used to decide which Service Tier is suitable for your Database requirement.
+Larger the number, better the performance. DTU provides a way to see the overall performance levels, need driving it and be able to relate that to cost.
+An elastic DTU (eDTU) is a measure of the resources across a set of databases, called an elastic pool.
+
+There are three different Service Tiers to accommodate a variety of workload requirements.
+
+Basic - Suitable for small databases, and low volume needs
+Standard - Suitable for most cloud based apps
+Premium - Suitable for high transnational volumes with super critical workloads
+All these options provide an uptime SLA of 99.99% and hourly billing. Also, it is possible to change service tiers and performance levels dynamically.
+
+Migrating SQL DB
+
+Pre-requisites of Migration
+
+Test for compatibility of the DB with Azure SQL
+Fix Compatability issues if found
+Perform migration
+Migration can be done in multiple ways, Acceptable Downtime decides the type of Migration.
+
+For minimal downtime, use SQL Server transactional replication and replicate your data over the Network.
+When downtime is acceptable, use Export to DAC package and ImportDAC package in Azure SQL
+
+Data Analytics with HDInsight
+HDInsight is a Microsoft managed Hadoop service running in Azure that provides a range of open source data analytics cluster models.
+
+Microsoft makes the Hadoop components available in a distributed model in Azure where it manages the cluster. Making it easy to provision and manage them with high availability and reliability.
+
+It is available as a service under the Intelligence and Analytics grouping of services within Azure.
+
+HDInsight - Cluster Types
+HDInsight currently provides several different optimized open source analytic cluster types:
+
+Hadoop - Petabyte scale processing with Hadoop components like Hive, Pig, Sqoop.
+HBase - Fast and scalable NoSQL Offering.
+Storm - Allows processing of infinite streams of data in real-time.
+Spark - Fast data analytics and cluster using in-memory processing.
+Interactive Hive (preview) - Enterprise Data Warehouse with in-memory analytics using Hive and Long Live and Process (LLAP)
+R Server - Terabyte scale, provides enterprise-grade R analytics used for machine learning models.
+Kafka (preview): High throughput, low latency, real-time streaming platform, typically used in streaming and IoT scenarios
+
+
+
+

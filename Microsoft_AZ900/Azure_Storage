@@ -1,0 +1,33 @@
+
+Azure Storage
+
+Azure Storage is a Microsoft's cloud storage solution for modern enterprises and applications to store data
+
+Advantages of Azure Storage
+
+Scalability: It is easily scalable. You can start with a small size blob and scale to infinite size depending on the demand without affecting the production.
+Durability: Data in Azure storage is very durable with multiple levels of redundancy in which you have just to mention the type of redundancy and Azure does the rest of the work for you.
+Availability: Replication option enables you to store copies of your data in different availability zones, and in the event of zone or node destruction, the data is still available.
+Security: All data in the Storage is encrypted; both in rest and transit. Also, with key vault, only you have control over encryption keys making your data more secure.
+Accessibility: The data in storage can be easily accessed through the available SDKs in a wide variety of languages. Azure Storage supports scripting in Azure PowerShell or Azure CLI.
+Management: Management is easy because Azure takes care of any critical problems and maintenance of the servers.
+
+Intro to Unstructured Storage
+
+Azure unstructured data consists of disk storage, file store, sync, and blob storage
+
+Storage Account: To use any of the Azure Storage services, you need to create a storage account within the Azure account. Resources in this account can be accessed by any language that can make HTTP/HTTPS request.
+Azure Blob: Binary Large Object (BLOB) is a collection of binary data that may be a file, video, text, image, etc. Azure Blob storage is Microsoft's object storage solution for the cloud.
+Container: A container provides a grouping of a set of blobs. All blobs must be in a container. A Storage account can hold an unlimited number of containers. Likeways, a container can store an unlimited number of blobs.
+
+VM Disks: Virtual Machines in Azure use disks as a place to store, which is either Hard Disk Drives (HDD) or Solid-state Drives (SSD), based on the storage account type.
+Standard Storage: Standard Storage account is a type of storage account backed by magnetic drives (HDD) that provide low cost per GB and can be used for all kinds of data (blobs, files, tables).
+Premium Storage: Premium storage has high bandwidth with extremely low latency. It offers less than 1 ms read latency (cache), and uses SSD. Premium Storage supports only Locally Redundant Storage (LRS) Replication
+
+
+Storage Explorer: It is a useful GUI tool to inspect and alter data in Azure Storage. It can be used to upload, download, and manage blobs, files, queues, and tables from any platform, anywhere. It is provided by Microsoft.
+Block Blobs: In block blobs, the blobs are comprised of blocks that are identified by unique block ID. The maximum size of blocks is restricted to 100MB, and each block blob can have 50,000 blocks which are ideal for storing text or binary files, such as documents and media files.
+Page Blobs: Page blobs are the collection of 512-byte pages optimized for random read and write. These are used for storing VHD files of Azure VM as OS and Data disks. The maximum size of page blobs is 8TB.
+Append Blob: This type is used to append blobs that are used for logging scenarios. The maximum size of append blob is 195 GB.
+
+

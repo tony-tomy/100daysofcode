@@ -30,4 +30,110 @@ Block Blobs: In block blobs, the blobs are comprised of blocks that are identifi
 Page Blobs: Page blobs are the collection of 512-byte pages optimized for random read and write. These are used for storing VHD files of Azure VM as OS and Data disks. The maximum size of page blobs is 8TB.
 Append Blob: This type is used to append blobs that are used for logging scenarios. The maximum size of append blob is 195 GB.
 
+VM Machine Storage
+
+A virtual machine uses three types of disks, they are:
+
+Operating System Disk: It is created along with the virtual machine by Azure. It is generally mounted as C drive, which is 2 GB in size.
+Temporary Disk: This disk holds temporary contents, although, you are not suggested to store anything there. If the VM is redeployed for any reason, the drive is wiped out and starts fresh. The primary function of that temporary disk is simply for the page file.
+Data Disk stores all the data required to be worked upon. This disk is huge and has high performance.
+
+Data Disks are where the working data and all the application data reside. The size of VM decides the number of data disks that can be attached to a VM. Data disks are stored in a BLOB in an Azure storage account.
+
+Data disks could be of type Standard or Premium, both of which may be again managed or unmanaged.
+Standard storage uses HDDs with a maximum IOPS (I/O Operations per second) of 50000 and the number of disks up to 100 (each disk is of 4 GB).
+Premium storage has an unlimited IOPS and has 35 TB of storage and 10 TB of snapshots.
+
+With Managed disks, Azure does all the management such as storage account creation, replication and also makes sure disks are kept secure.
+With unmanaged disks, you will have the additional responsibility of all these administering tasks.
+Pricing is per storage: For Unmanaged model, it uses storage account pricing. For the Managed model, it is simply based on the size of the disk.
+
+Azure CLI 2.0 is known as a command line tool used for accessing the resources in Azure. The CLI is designed to make scripting easy, flexible query data, support long-running operations as non-blocking processes, and more.
+
+Let's check some basic commands:
+
+Creating Storage Account:
+az storage account create --name accName --resource-group ResGrpName --sku standard_LRS --location useast.
+Creating a Container:
+az storage container create --name mycontainer --public-access blob/container
+Use "blob" to allow public read access for blobs. Use "container" to allow public read and list access to the entire container.
+
+Uploading a blob:
+az storage blob upload --container mycontainer --name blobname --file filepath.
+Downloading a blob:
+az storage blob download --resource-group resgrpName --name blobName --file savingPath.
+Deleting a Storage Account:
+az storage account delete --name accname.
+
+Uploading a blob:
+az storage blob upload --container mycontainer --name blobname --file filepath.
+Downloading a blob:
+az storage blob download --resource-group resgrpName --name blobName --file savingPath.
+Deleting a Storage Account:
+az storage account delete --name accname.
+
+Lab 01 :  Create an unmanaged VM and attach data disks to it
+
+assign the resource group as default
+az configure --defaults group=$resource
+
+1)Create a storage account with name as per your wish and create a container with the name vmblob
+az storage account create -n myfrescoaccount -g $resource -l westus --sku Standard_LRS
+
+key=$(az storage account keys list -g $resource -n myfrescoaccount --query [0].value -o tsv)
+
+az storage container create \
+    --account-name myfrescoaccount \
+    --name vmblob \
+    --account-key $key \
+    --auth-mode key
+
+2) Create an unmanaged virtual machine in the resource group created by the katacoda account, with an admin username and admin password, and the following data:
+image = Win2012R2Datacenter  , size = Standard_DS1_V2
+
+az vm create -n unmanagedvm -g $resource --image Win2012R2Datacenter --size Standard_DS1_V2 \
+--use-unmanaged-disk --admin-username frescouser --admin-password frescopwd@12345
+
+3) Attach a new unmanaged data disk of 512 GB to the VM.
+
+az vm unmanaged-disk attach -g $resource --vm-name unmanagedvm --new --size-gb 512
+
+4) Convert the existing unmanaged VM to a managed VM, and restart the VM.
+
+# deallocate the VM
+az vm deallocate --resource-group $resource --name unmanagedvm
+
+# Convert VM to Managed Disks
+az vm convert --resource-group $resource --name unmanagedvm
+
+# Start the VM back up again
+az vm start --resource-group $resource --name unmanagedvm
+
+
+
+Lab 02 : Azure Storage : Upload a Blob to the Storage Account
+
+Create a storage account with blob encryption and only https traffic enabled.
+az storage account create -n myfrescostorageact -g $resource --encryption-services blob --https-only true
+
+key=$(az storage account keys list -g $resource -n myfrescostorageact --query [0].value -o tsv)
+
+Create a blob container in the account.
+az storage container create \
+    --account-name myfrescostorageact \
+    --name blobcontainer \
+    --account-key $key \
+    --auth-mode key
+
+Upload a blob into the container of the storage account
+az storage blob upload \
+    --account-name myfrescostorageact \
+    --container-name blobcontainer \
+    --name index.php \
+    --file index.php \
+    --account-key $key \
+    --auth-mode key
+
+
+Azure File Storage
 

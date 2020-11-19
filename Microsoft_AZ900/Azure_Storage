@@ -137,3 +137,118 @@ az storage blob upload \
 
 Azure File Storage
 
+Azure File Storage provides shared storage for applications using Server Message Block (SMB) 3.0 protocol. Azure file shares can be mounted concurrently by cloud or on-premises deployments.
+Applications that run in Azure cloud services or virtual machines can mount a File storage share to access file data, just as a desktop application. The Azure File shares can be cached on a Windows server using File Sync for faster access.
+Azure Files also support snapshots of file shares. Share snapshots capture the shared state at that point in time which provides a backup during accidental deletions, data corruption, general backup, etc
+
+Typical uses of File Storage are:
+
+Migrating on-premises applications that depend on file shares to run on Azure cloud services or virtual machines.
+Storing shared application settings, e.g., in configuration files.
+Storing diagnostic data like crash dumps, metrics, and logs in a shared location.
+Storing utilities and tools required for administering or developing Azure cloud services or virtual machines.
+
+Azure File Sync
+
+Storage Space is an administrative layer on top of storage pools that are formed by combining some physical hard disks in Windows servers.
+
+From a user perspective, the storage space is represented as disks and volumes. You can access the volume from your operating system by using a drive letter.
+
+Storage spaces are used for the following reasons:
+
+Continuous Availability - Storage pools can be clustered across multiple nodes in the failover cluster. If a node fails, the storage will be seamlessly made available by a different node.
+Multi-tenancy - Storage spaces hosting scenarios that do not require tenant storage isolation will offer multi-tenancy. It follows the familiar Windows security model and hence can be fully integrated with Active Directory Domain Services.
+Simplicity - Storage Spaces are easily managed with Server Manager or Windows PowerShell. It also provides notifications when the amount of available capacity in a storage pool hits a configurable threshold.
+Data Integrity - Storage Spaces includes background scrubbing and intelligent error correction to allow continuous service availability despite storage component failures.
+
+Structured Storage
+
+Azure offers the following Structured Storage Services to store structured and semi-structured data,
+
+Azure Table Storage
+Queue Storage
+Document or Cosmos DB
+Azure SQL DB
+Azure’s Structured Storage is a highly available, resilient and affordable platform (IaaS and PaaS) for storing the business critical data\applications.
+
+Azure Table Storage
+Let's learn one of the crucial and most used structured storage service "Table".
+
+Azure Table storage service is used to store structured NoSQL data in the cloud. Tables form a flexible store for flexible datasets, datasets that do not require complex joins, foreign keys.
+
+Features:
+
+NoSQL datastore accepts authenticated calls from inside and outside the Azure cloud.
+NoSQL provides a key/attribute store with a schemaless design.
+As it is schemaless, it's easy to adapt your data as the needs of your application evolves.
+It is a cost-effective solution.
+Access to Table storage data is fast with the OData protocol.
+Table storage can be accessed directly as
+ http://<storage account>.table.core.windows.net/<table>
+
+Azure tables are ideal to store and query huge set of structured, non-relational data.
+
+Tables storage will scale as demand increases.
+
+Common Scenarios are:
+
+Used in Storing huge amount of structured data that serves` web applications
+Storing datasets that doesn't need complex joins, foreign keys, and stored procedures and can be customized for faster access
+Quickly querying data using a clustered index
+
+Table Storage component
+
+Storage Account is a globally unique entity that is the basis for authentication and it is the parent namespace for the Table service.
+Table is a collection of entities that don't have a forced schema on entities, in which a single table can contain many entities that have a different set of properties.
+Entity is a set of properties, similar to that of rows in a database which can be up to 1 MB in size.
+Properties - They are name-value pairs; each entity can consist of up to 255 properties to store data.
+
+An entity in a table can have up to 255 properties, of which three are system properties:
+
+PartitionKey - Entities with the same partition key can be queried more quickly, and inserted/updated in atomic operations.
+
+RowKey - An entity's row key is its unique identifier within a partition.
+Timestamp - The server manages the value of Timestamp, which cannot be modified.
+The total size of all data in an entity's properties cannot be more than 1 MB.
+The PartitionKey and RowKey must uniquely identify every entity in a table.
+
+Azure Queues
+
+Azure Queue Storage is a storage service used for storing large numbers of messages that can be accessed from anywhere via authenticated calls.
+
+The size of a single message can be 64kb.
+The time for which the messages stay in the queue is 7 Days.
+Queues can extend up to the total capacity limit of Storage account.
+
+Common use cases:
+
+Creating a backlog of work to process asynchronously.
+Passing messages from an Azure web role to an Azure worker role.
+Queue storage can be accessed as http://<account>.queue.core.windows.net/<QueueName>
+
+Azure CLI 2.0 Commands
+To create a Queue:
+az storage queue create --name Qname --account-name myAcc --account-key Mykey.
+To delete the existing Queue:
+az storage queue delete --name Qname --account-name Myacc --account-key Acckey 
+To put a message in a Queue:
+az storage message put --content mymessage --queue-name qname 
+To get a message in Queue:
+az storage message get --queue-name Qname
+To retrieve one or more messages from the front of the queue:
+az storage message peek --queue-name Qname.
+
+To create a table:
+az storage table create --name tablename --account-name Accname --access-key Acckey
+To delete a table:
+az storage table delete --name tablename --account-name Accname --access-key Acckey
+To insert a storage entity into a table:
+az storage entity insert --connection-string $connectionString --entity PartitionKey=AAA RowKey=BBB Content=ASDF2 --table-name tableName
+To update an existing entity:
+az storage entity merge --entity PartitionKey=AAA RowKey=BBB Content=ASDF2 --table-name tableName --account-key accKey --account-name accountName --connection-string $connectionString
+To delete an entity:
+az storage entity delete --partition-key KEY --row-key RKEY --table-name TName.
+
+
+
+

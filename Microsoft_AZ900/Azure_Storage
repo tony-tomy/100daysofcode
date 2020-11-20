@@ -249,6 +249,152 @@ az storage entity merge --entity PartitionKey=AAA RowKey=BBB Content=ASDF2 --tab
 To delete an entity:
 az storage entity delete --partition-key KEY --row-key RKEY --table-name TName.
 
+Lab 03 : CRUD operations on Azure Table Storage
+
+1) Create a storage account with only https traffic enabled
+
+az storage account create -n myfrescostorageact -g $resource --https-only true
+
+key=$(az storage account keys list -g $resource -n myfrescostorageact --query [0].value -o tsv)
+
+2) Create a table named Frescotab in the storage account.
+
+az storage table create --name Frescotab --account-name myfrescostorageact 
+
+3) Operations on Entities
+
+Add two entities apart from PartitionKey and RowKey. For example, customers and contacts.
+
+az storage entity insert --entity PartitionKey=AAA RowKey=BBG customers=XYZ contacts=999 --table-name Frescotab \
+    --account-name myfrescostorageact --account-key $key
+
+Add five or more lines of datasets to the table.
+
+different RowKey inserted.
+
+Update one or more entities by changing the name of customer.
+
+az storage entity merge --entity PartitionKey=AAA RowKey=BBG customers=XXX contacts=999 \
+                        --table-name Frescotab \
+                        --account-key $key \
+                        --account-name myfrescostorageact
+
+Check the updated entities.
+
+az storage entity query --table-name Frescotab --account-key $key --account-name myfrescostorageact
+
+Delete a single line of a dataset.
+
+az storage entity delete --partition-key AAA \
+                         --row-key BBG \
+                         --table-name Frescotab \
+                         --account-key $key \
+                         --account-name myfrescostorageact
+
+Lab 03 : Working with Queues
+
+
+What are Azure SQL Databases?
+Azure SQL Database is a relational database that is offered as-a-service from Azure offering predictable performance and it is highly scalable, and each database is isolated.
+Also, Azure SQL databases also provide monitoring and alerting as failover options.
+With active geo-replication, the data is backed up in three copies in same or different locations. These secondaries can be used for read-only access.
+After failover, the new primary has a different connection endpoint.
+
+Database Tires 
+
+Basic - for databases that have a single active operation, or for dev and test deployments.
+Standard - for low to medium input/output databases and supports concurrent queries, as well as Azure web applications.
+Premium - The Premium tier is designed for high transaction volumes and input/outputs. It supports multiple concurrent users, and Microsoft recommends that you use this database for mission-critical databases.
+PremiumRS - This tier is recommended for input/output intensive workloads when high availability is not required. But you can use it for high-performance test and dev workloads.
+
+SQL Database renders dynamically scalable performance in two diverse purchasing models - a vCore-based purchasing model and a DTU-based purchasing model.
+
+vCore based model - In this model, you can independently choose the computing and storage resources. It also lets you use the Azure Hybrid Benefit for SQL Server to gain on your savings.
+Database Transaction Units (DTU) based model - This model is based on a combined measure of computing, storage, and IO resources. Performance levels are expressed in terms of DTUs for single databases and elastic DTUs (eDTUs) for elastic pools.
+
+Logical servers in Azure SQL offers both purchasing models: a DTU-based purchasing model and a vCore-based purchasing model.
+Managed Instances in Azure SQL Database offer only the vCore-based purchasing model.
+
+DTU and eDTU
+The performance of SQL Database is based on DTU.
+
+According to Microsoft, a DTU is a unit of measure of the resources that are guaranteed to be available to a single Azure SQL Database at a specific performance level within a single database tier. A DTU combines CPU, memory, data I/O, and transaction I/O.
+Databases can be placed into an elastic pool on a SQL Database server that shares a pool of resources among those databases. The shared pool of resources are measured by elastic Database transition units (eDTU).
+
+The advantages of an elastic pool are:
+
+They are scaled automatically.
+They provide predictable costs.
+They are widely used for varying and unpredictable usage patterns
+
+Determining DTUs for Workloads
+If you are planning to move your on-premises Databases to Azure SQL Database, Azure provides a DTU Calculator to find the approximate DTUs required for setting up the database.
+
+For an existing Azure Database, you can use SQL Data query performance insight. This Query performance insight provides a deeper insight into the resource consumption (DTU's) of Database, the top queries by CPU/Duration/Execution count, which can potentially be tuned for improved performance.
+
+Azure SQL Data Sync
+SQL Data Sync is a service developed on Azure SQL Database that allows you to synchronize the selected data bi-directionally across various SQL Server and SQL databases instances. Let's look into the following video to know more about it.
+
+Azure SQL Database CLI 2.0 Commands
+To create a MySQL Database with given charset and collation rules
+az mysql db create --resource-group testgroup --server-name testsvr --name testdb --charset {valid_charset} --collation {valid_collation}
+To delete a DB:
+az mysql db delete -g testgroup -s testsvr -n testdb
+List all DB in a server:
+az mysql db list -g testgroup -s testsvr
+To show an existing Db:
+az mysql db show -g testgroup -s testsvr -n testdb
+
+Azure Content Delivery Network (CDN)
+
+The Azure Content Delivery Network (CDN) caches static web content at strategically placed locations from the Origin and provide maximum throughput for delivering content to the end users.
+
+Benefits of CDN
+Improved performance and user experience for end users, particularly in applications in which multiple round-trips are required to load content.
+Large scaling and better handling of high instantaneous loads.
+It distributes users requests and serves content directly from edge servers reducing traffic sent to the origin.
+
+CDN Workflow
+
+A user (John) requests a file (file1) using a URL, <endpointname>.azureedge.net.
+DNS routes the request to the POP location, which is geographically closest to the user.
+Now, consider that the edge servers does not have the requested file in their cache memory, then it requests the needed file from the origin.
+Then the origin server returns the required file to the edge server.
+Now the edge server caches the file in the memory and returns to the actual requester (John).
+Then the file remains cached until the Time To Live (TTL) expires. The default TTL for the cache is 7 days.
+Other users can also access the file from that same POP.
+Here, origin can be anything like Azure's - Web App, Cloud Service, Storage account, or any publicly accessible web server.
+
+Scenarios of CDN
+Common Scenarios where CDN can be used:
+Media Services to deliver video worldwide. The video is usually large and requires a lot of bandwidth.
+Scenarios where CDN may be less useful:
+
+For the content with a low hit rate setting.
+For private data, like supply chain ecosystems or large enterprises.
+
+CDN - Planning Factors
+
+Performance – When considering performance, be sure this applies to all intended destinations.
+Location – Select the ones that are more reliable and enhances the performance and viewing experience.
+Scalability – After implementation, it should be easily expandable when it is needed.
+Flexibility – Is the vendor service compatible with every form of technology your end users will potentially utilize? This is likely to include PCs, Mac computers, tablets, and smartphones.
+Support – After signing up, will you receive the level of support you require with a continuous, reliable service?
+Cost-effective – The available services may vary greatly in cost. Make sure that you are not signing up for a long-term service that cannot truly accommodate your needs at a cost-effective price.
+
+Azure CDN CLI 2.0 Commands
+To create a new CDN profile:
+az cdn profile create --name testcdn --resource-group testgrp --sku premium_verizon
+To create an endpoint with the origin as storage:
+az cdn endpoint create --name testcdn --origin storage.blob.core.windows.net --profile-name profile --no-http
+To delete an endpoint:
+az cdn endpoint delete -g group -n endpoint --profile-name profile-name
+To preload content for an endpoint:
+az cdn endpoint load -g group -n endpoint --profile-name profile-name --content-paths '/scripts/app.js' '/styles/main.css'
+content to be preloaded are to be mentioned in the above command.
+To purge the preloaded content:
+az cdn endpoint purge -g group -n endpoint --profile-name profile-name --content-paths '/scripts/app.js' '/styles/*'
+
 
 
 

@@ -395,6 +395,131 @@ content to be preloaded are to be mentioned in the above command.
 To purge the preloaded content:
 az cdn endpoint purge -g group -n endpoint --profile-name profile-name --content-paths '/scripts/app.js' '/styles/*'
 
+Managing Storage
 
+the day-to-day management storage tasks that include:
+
+Backup and data recovery
+Azure Site Recovery (ASR)
+Storage Analytics
+Storage Security
+Backup and Site Recovery are important for implementing a Business continuity and an effective disaster recovery solution.
+
+Azure Backup
+
+Azure Backup is a simple, highly reliable, secure, and cost-effective Backup as a Service (BaaS) solution
+
+Recovery Service Vault
+Where would you backup all your unused or seldom used data? Let's learn where and how.
+
+To back up your files and folders, a vault is needed in the region where you want to store the data.
+
+The Azure Backup service has two types of vaults namely, the Backup vault and the Recovery Services vault, to store and recover the backup data.
+
+It is recommended to use a Recovery Services vault, as it protects resources that are deployed by both Azure Service Management (ASM) and Azure Resource Manager (ARM) methods.
+
+Azure Backup service vaults allow for:
+
+Block-level data de-duplication within and across multiple files and versions of files.
+Compression of files.
+Improves backup speeds and optimizes the Storage.
+
+Deployment Scenarios
+Azure Backup service can be deployed in the following scenarios:
+
+Backup of Azure IaaS VM
+Backup Agent
+Azure Backup Server
+System Center Data Protection Manager (SCDPM)
+All Azure Backup components irrespective of their location can be used to back up data to a Recovery Services vault in Azure.
+
+Azure VM Backup
+Azure Backup Extensions are used to Backup Azure IaaS VMs (for both Windows and Linux).
+
+The Azure Backup service takes the initiative to start the backup job at the scheduled time triggering the backup extension to take a point-in-time snapshot.
+Once the Backup service completes taking the snapshot, the data gets transferred to the vault.
+When this transfer of data is complete, the snapshot taken is removed, and a new recovery point is created.
+The BaaS uses the VMSnapshot extension in Windows, and the VMSnapshotLinux extension in Linux.
+
+Restore Data
+Once you have created your backup, you can use the Backup Agent to Recover Data.
+
+Steps to Restore:
+
+Select Recovery Mode - Identify the server where the backup was created.
+Select Volume and Date- You can restore from any point in time.
+Select Items to Recover- Select the files and folders you wish to restore.
+Specify Recovery Options- You can restore to the original location or another location in the same machine.
+
+Azure Backup can retain your data for a maximum of 99 years to meet regulatory requirements.
+
+Azure Backup doesn't consider the temporary disk of the virtual machine for backup.
+
+Benefits of Azure Backup
+Reasons to use Azure Backup:
+
+Automatic storage management- It automatically allocates and manages backup storage, and uses a pay-as-you-use model.
+Unlimited scaling - It uses the underlying power and scale of the Azure cloud, with its nonintrusive autoscaling capabilities.
+Highly reliable - Data is stored in GRS, which maintains six copies of your data across two Azure datacenters. With a 99.9% service availability.
+Data encryption - Allows for secure transmission and storage of customer data in the public cloud.
+Multiple Storage Options: Azure Backup provides two types of replication locally namely, geo-redundant storage (GRS) and redundant storage (LRS). You can select between these two options based on your requirement.
+Unlimited data transfer - There is no limit on the in and out data transfer.
+Application-consistent backup - i.e., recovery point includes all the required data to restore the backup that avoids additional fixures.
+Long-term retention - You can use Recovery Services vaults for short-term and long-term data retention. It doesn't have any time constraint.
+
+Unsupported Workloads
+You cannot back up the following volumes or drives:
+
+Removable Media - such as USB drives
+Read-only Volumes - volume must be writable for the volume shadow copy service (VSS) to function.
+Offline Volumes- volume must be online for VSS to function.
+Network share- volume must be local to the server to be backed up using online backup.
+Bitlocker-protected volumes- volume must be unlocked before the backup can occur.
+File System Identification- NTFS is the only file system supported.
+
+Azure Site Recovery ASR
+
+Azure Site Recovery ensures business continuity by keeping your apps that are deployed in VMs and physical servers available if a site goes down. This is one way to achieve Bussiness Continuity and Disaster Recovery (BCDR).
+
+ASR provides two types of functionalities such as:
+Replication - handles synchronization of designated systems between a Primary site (PS) and a Secondary site (SS).
+Orchestration - provides orderly failover and failback between the PS and SS sites.
+Secondary Site can be an on-premises data center or on Azure.
+
+Azure Site recovery (ASR) is utilized for the following reasons:
+
+It takes out the requirement for disaster recovery sites via computerizing the replication of the virtual machines in view of approaches that you set and control. Site Recovery is heterogeneous and can secure Hyper-V, VMware, and physical servers.
+Safeguarding of complex workloads like SQL server, Sharepoint, SAP, and Oracle.
+Migration of apps to Azure is just a few clicks away, or opt Azure on a temporary basis when you encounter a surge in demand.
+Site Recovery continuously monitors the state and health of your protected instances.
+
+Replication and Orchestration
+ASR performs Replication and Orchestration for Hyper-V workloads on On-Premises and System Center Virtual Machine Manager (SCVMM) Private cloud.
+It performs only Orchestration for VMware workloads.
+ASR uses Hyper-V replica for Hyper-V VMs.
+Image components and Unified agent for Physical\Linux servers\Vmware workloads.
+
+Azure Site Recovery Scenarios
+Most common scenarios are:
+
+Migrate Azure VM Between Region
+Hyper-V VM to Azure (With VMM)
+Hyper-V VM to Secondary Site (With VMM)
+Hyper-V to Azure (Without VMM)
+Hyper-V VM to Secondary Site Using SAN Replication (Without VMM)
+Vmware/Physical to Azure
+Vmware VM/Physical to Secondary Site
+Migrate Amazon VM to Azure
+
+Azure Site Recovery between Azure Regions
+
+The following deployment steps are common for all the scenarios such as,
+
+Create a vault.
+Enable replication for the VMs you want to migrate, and choose Azure as the source.
+Once the initial replication is complete, you can run a Test failover from one Azure region to another.
+Using the Recovery Plans to describe the scope of Planned, Unplanned and Test Failovers.
+
+Storage Monitoring - Need
 
 

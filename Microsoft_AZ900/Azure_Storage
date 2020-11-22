@@ -522,4 +522,241 @@ Using the Recovery Plans to describe the scope of Planned, Unplanned and Test Fa
 
 Storage Monitoring - Need
 
+Applications that are deployed in PaaS or IaaS can use multiple storage options available, such as Azure Storage Tables, Blobs, Queues, or Files, in addition to relational and document Databases.
+These storages must be analyzed or monitored for any issues, requests and usage patterns so that the business is not affected in any manner.
+Diagnosing and troubleshooting the distributed application is more complex in the cloud environment than in On-Premises.
+In Azure Azure Storage Analytics performs and provide metrics data for a storage account.
+You can also set alerts for any undesired action in the storage account.
+
+Storage Analytics
+For new storage accounts, Analytics metrics are activated by default.
+
+The aggregated data for logging is stored in blobs and for metrics, it is stored in tables. Storage Analytics has a 20TB limit on the amount of stored data.
+Azure Storage Analytics performs and provides metrics data for a storage account which is,
+Metrics for all storage services.
+Logs for blobs, queues, and tables.
+You can configure monitoring via the Azure portal or Windows PowerShell, or Programmatically the storage client libraries.
+To download and store the metrics for a long-term analysis, it can be done by using Storage tools or programmatically only.
+
+Storage Metrics
+When one creates a new storage account, Storage Metrics is enabled by default.
+
+There are two types of metrics:
+
+Aggregate
+Collects metrics such as ingress/egress, availability, latency, and success percentage.
+These metrics are aggregated for the blob, queue, table, and file services.
+Per API
+In addition to the aggregate metrics, collects the same set of metrics for each storage operation in the Azure Storage service API.
+
+Metrics Configuration
+Configure monitoring for a storage account
+
+In Portal, open the dashboard of the Storage Account that you want to configure monitoring.
+Select Diagnostics in the MONITORING section of the menu blade.
+Select the type of metrics data for each service that you wish to monitor, and the retention policy for the data. You can also disable monitoring as well.
+When you finish the monitoring configuration, select Save.
+
+Metrics Chart
+Once you configured the monitoring, Storage Analytic Service starts collecting the Data that takes up to one hour for the data to appear in its Charts as illustrated.
+Hourly Storage metrics are stored with table names as $MetricsHourPrimaryTransactionsBlob and minute metrics as $MetricsMinutePrimaryTransactionsBlob in a similar fashion for Files,Queue,Tables.
+
+Retention Policy
+
+Default Retention period is 7 Days.
+Enabling the retention policy (1 to 365 days) enables automatic deletion at free of cost.
+
+Storage Analytics Logging
+Storage Analytics logs detailed information about successful and failed requests to a storage service, which is utilized to monitor individual requests and then to diagnose issues.
+
+Storage Analytics logging is really not enabled by default for the storage account. It can be enabled through Portal or PowerShell or any other source.
+
+The types of requests logged are:
+
+Successful request
+Failed Requests
+Requests using a SAS
+Requests to analytics data.
+It also logs anonymous request like Successful requests, Failed requests, and server error.
+All the logs are stored in block bobs in a container named $logs and have the name in format.
+<service-name>/YYYY/MM/DD/hhmm/<counter>.log
+
+Logging Configuration
+Storage Analytics logging can be enabled using Portal, Powershell, CLI, and Programmatically.
+
+In Portal, open the dashboard of the Storage Account that you want to configure monitoring.
+Select Diagnostics in the MONITORING section of the menu blade.
+Enable logs for any of the services like blobs, file, table queues for respective read, write or delete.
+Set the required Retention period, default is seven days.
+
+Storage Alert
+Using alerts feature, you can get notified when undesired actions occur.
+
+Alert Action:
+
+It will send an email notification to the service co-administrators and administrator.
+It will send an email to people that you specify as per need.
+It will call a webhook.
+It can start the execution of an Azure Runbook.
+
+Alert Configuration
+To launch the Alert rules blade, keep scrolling down to the MONITORING section of the Menu blade and select Alert rules.
+
+Select Add alert to open the Add an alert rule blade.
+Select a Resource and enter a Name and Description for your new alert rule.
+Select the Metric for which you'd like to add an alert, an alert Condition, and a Threshold.
+Select the Period. Metrics that reach or exceed the Threshold` within the period trigger an alert.
+Configure Email and Webhook notifications.
+
+Cost is associated - Metrics data is written by the Storage Analytics services of a storage account which is billable. For more information, see Storage Analytics and Billing.
+Azure Files supports Storage Analytics metrics, but does not yet support logging.
+Storage accounts with Zone-Redundant Storage (ZRS) replication doesn't support Storage Analytics.
+Storage Analytics has a 20 TB limit which is independent of the total limit for your storage account.
+Default Retention Period is seven days
+
+Storage Analytics CLI 2.0 Commands
+To update the metric settings for a storage account:
+az storage metrics update --retention 7 --services blob/table/queue/files --account-name dnmae --account-key account_key 
+To update the logging settings for a storage account:
+ az storage logging update --log r/w/d --retention 7 --services blob/table/queue --account-key account_key --account-name dname 
+
+Storage Security
+
+Securing storage account - These storage accounts are secured by Access keys. Only specific users can have access to these keys so that they can perform operations on the data present, and also these can be rotated regularly using Azure Key vault.
+Securing access to data - You can control the access to data either by Storage account keys or using Shared Access Signature.
+Encryption in rest - Storage Service Encryption (SSE) is enabled at the storage account level and automatically encrypts and decrypts the data. Also, the data and OS disks are encrypted by Azure Disk Encryption using industry-standard BitLocker encryption technology.
+Encryption in transit - Enabling encryption in transit between client and Azure by using secure HTTPS protocol for communication over the public internet and using SMB 3.0 protocol for file shares.
+
+Storage Account Security
+While creating a storage account, you have the privilege to select the deployment model i.e.Classic or Resource Manager.
+In the classic model, all or nothing has access to resources. So Resource Manager model is recommended to create a storage account because, in this, we can restrict the access as per your need. Controlling it on a more individual level using Role-Based Access Control (RBAC).
+For example: You can give specific users access to the storage account keys, and restricting others just to read the data.
+
+Role Based Access Control (RBAC)
+Each Azure subscription includes an Azure Active Directory (AD) to it. Only the users, applications and groups from that AD can have access to the resources that use resource manager deployment model.
+This type of security is known as Role Based Access Control (RBAC).
+RBAC can be accessed using Azure Portal or CLI or PowerShell and REST APIs.
+
+Roles for Storage
+Various roles can be used for accessing the storage account and data they are:
+
+Owner – They have the ultimate access.
+Contributor - With this access role, a user can have control over access keys. Thus they can have access to data stored, but they can't assign access to others.
+Reader - They can read the properties of the storage account, but they can't access it.
+Storage Account contributor - Users with this role have an undisputed access to all in a storage Account.
+User Access Administrator - They can manage access to the storage account.
+Virtual Machine Contributor - They can manage virtual machines but not to the linked storage account to the VM. But can list the storage account keys, so people having this role can update the data.
+
+Working with Roles
+Following are the key points to remember when working with roles:
+
+Assigning access to the user, group or application is basically assigning a role to the account.
+Depending on the role assigned, the user will have Actions and Not Actions that he can perform and he is bound to them.
+You can define custom roles if your needs are not met by the Azure defined roles.
+The user must be set up in your Azure Active Directory (AD) before you can assign a role to them.
+A report can be generated of who assigned/removed what kind of role to/from whom.
+
+Data Access Security
+Data in the Storage account can be accessed securely using two ways:
+
+Access Keys
+Shared Access Signature (SAS).
+
+Access Keys
+In the previous tasks, we have used Access keys while making requests to the storage account.
+
+When a Storage account is created, two 512-bit keys known as Storage access keys are generated
+
+Using a storage account, keys gains access to the data plane for that storage account.
+
+Managing Access Keys:
+
+Store your access keys securely using Azure Key Vault and don't share them.
+It is recommended to regenerate your access keys regularly.
+Once you regenerate it, update the new keys in Azure resources that access this storage account.
+These keys can be regenerated using the Azure Portal or Azure CLI or PowerShell or Azure REST APIs service.
+
+Shared Access Signature (SAS)
+It is not recommended to share the keys with anyone else. So what would you do if you want to provide access to a user to the required data? For such cases, SAS comes into play.
+A SAS is a URI that grants restricted access rights to Azure Storage resources. This SAS is shared with clients whom you don't want to provide the Access keys but provide the access to resources.
+An account-level SAS can provide access to multiple storage services in Azure Storage. In tables, you can also grant the range of values that are accessible by specifying the partition and row key ranges. You can also restrict the requests made to use a specific protocol (HTTPS or HTTP/HTTPS) using SAS.
+
+Types of Shared Access Signatures:
+A service-level SAS can be used to access specific resources in a storage account.
+An account-level SAS: In addition to access provided by service-level SAS. It can give the ability to create containers, tables, queues, and file shares.
+
+Data Security
+Data in transit - Always encrypt storage data between the client and Azure Storage using the HTTPS protocol, or SMB3.0 while using File Share.
+
+Also, Client-side encryption and HTTPS protocol add additional security during transit.
+Data at rest - Two main Azure features provide encryption at rest.
+Storage Service Encryption (SSE) is enabled at the storage account level and automatically encrypts and decrypts the data. It cannot be disabled.
+Azure Disk Encryption - allows you to encrypt the OS disks and data disks used by a Virtual Machine. For Windows VMs, encryption of drives is done using BitLocker encryption technology. For Linux, the encryption of drives is done using the DM-Crypt technology and they are integrated with Azure key vault allowing you to manage encryption keys.
+
+Cross Origin Resource Sharing
+Cross-origin resource sharing (CORS) is a mechanism that uses additional HTTP headers. The headers tell the browser to allow a web application is running at one domain (origin) to possess permission to access chosen resources from a server at a different domain.
+When an application running in one domain makes an HTTP request for a resource from a different domain; this is called a cross-origin HTTP request. For various security reasons, browsers prevent cross-origin HTTP requests that are started from within the scripts, such as JavaScript.
+To overcome this, Azure allows Cross-Origin Resource Sharing (CORS). Using this, you can specify domains that can access the storage account.
+By default, CORS is disabled on all storage accounts and can be enabled using REST APIs or the storage client library. CORS Rule is an XML.
+
+Sample CORS Rule
+Check out this sample CORS rule.
+
+<Cors>    
+    <CorsRule>
+        <AllowedOrigins>http://www.contoso.com, http://www.fabrikam.com</AllowedOrigins>
+        <AllowedMethods>PUT,GET</AllowedMethods>
+        <AllowedHeaders>x-ms-meta-data*,x-ms-meta-target*,x-ms-meta-abc</AllowedHeaders>
+        <ExposedHeaders>x-ms-meta-*</ExposedHeaders>
+        <MaxAgeInSeconds>200</MaxAgeInSeconds>
+    </CorsRule>
+<Cors>
+
+Creating a Custom Role Using Azure CLI
+The built-in roles in Azure may not meet the needs at times. So Azure provides the flexibility to create your custom roles using Azure Powershell, CLI 2.0, and various SDKs.
+To create a Custom Role, you should have the permission to create like an Owner or User Access Administration.
+Custom roles can be created using:
+az role definition create --role-definition ~/roles/VMoperator.json
+
+Example Custom Rule
+The VMOperator contains:
+
+{
+  "Name": "Virtual Machine Operator",
+  "IsCustom": true,
+  "Description": "Can monitor and restart virtual machines.",
+  "Actions": [
+    "Microsoft.Storage/*/read",
+    "Microsoft.Network/*/read",
+    "Microsoft.Compute/*/read",
+    "Microsoft.Compute/virtualMachines/start/action",
+    "Microsoft.Compute/virtualMachines/restart/action",
+    "Microsoft.Authorization/*/read",
+    "Microsoft.Resources/subscriptions/resourceGroups/read",
+    "Microsoft.Insights/alertRules/*",
+    "Microsoft.Support/*"
+  ],
+  "NotActions": [
+
+  ],
+  "AssignableScopes": [
+    "/subscriptions/11111111-1111-1111-1111-111111111111",
+    "/subscriptions/33333333-3333-3333-3333-333333333333"
+  ]
+}
+
+In the above example, the role named Virtual Machine Operator have read access to all storage, network, compute and start and stop of virtual machines, alert rule access, etc. and it can be used in two subscriptions.
+
+Course Summary
+Finally, you have arrived at the end of the course. You have so far seen the following topics.
+
+Azure Storage
+Unstructured data Storage in Azure - Blobs, files, Disks.
+Structured data Storage in Azure - Tables and Queues.
+A brief introduction of Databases.
+Azure CDN and its importance, how it is useful in delivering content to users.
+Data Backup and Site recovery to ensure business continuity.
+Monitoring Storage Account using Analytics Metrics
+Securing the Storage account using Azure AD, SAS, RBAC, etc.
+
 

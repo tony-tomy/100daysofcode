@@ -1,0 +1,766 @@
+Azure services
+
+Compute and Networking Services
+
+Virtual Machines
+Azure RemoteApp
+Azure Cloud Services
+Azure Virtual Networks
+Azure ExpressRoute
+Traffic Manager
+
+Storage and Backup Services
+
+Azure Storage
+Azure Import/Export Service
+Azure Backup
+Azure Site Recovery
+
+Identity and Access Management Services
+
+Azure Active Directory
+Azure Multi-Factor Authentication
+
+Application Services
+
+Azure App Services
+API Management
+Notification Hubs
+Event Hubs
+
+Data and Analytics Services
+
+SQL Database
+HDInsight®
+Azure Redis Cache
+Azure Machine Learning
+DocumentDB
+Azure Search
+
+Media and Content Delivery Services
+
+Azure Media Services
+Azure CDN
+Azure Service Bus
+
+Azure Marketplace - an online applications and services marketplace that offers,
+
+VM images and extensions
+APIs and Applications
+Machine Learning and Data services
+VM Depot - a community-based catalog of open source virtual machine images that can be deployed directly from Azure.
+
+GitHub - a web-based Git repository that is free to use for public and open source projects.
+
+Azure Trust Center - offers guidelines for integrated security monitoring and policy management across Azure subscriptions. Also, it provides data security & data privacy guidelines essential to comply with regulatory controls.
+
+Azure Deployment Models
+Azure Service Management Model (ASM) using Classic Portal. This was the first approach that was introduced by Microsoft. Here the resources are coupled and can be deployed using ASM PowerShell Module.
+
+Azure Resource Management Model (ARM) using New Portal. The resources are decoupled and hence can be configured independently. JSON templates provide simple orchestration and rollback functions. They have their own ARM PowerShell Module as well.
+
+For example, while deploying a VM - compute, Vnet and storage resources are coupled in ASM, and hence can not be configured independently. Whereas with ARM, these resources are can be configured independently.
+
+ARM is the recommended model of deployment and in this course, we align to this model.
+
+Lab 1 : Azure Essentials - Creating storage account and uploading files into storage account  
+Solution url : https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-use-files-cli
+
+if [ -f /opt/get-azure ]; then /opt/get-azure && source ~/.azureenv; else curl -O https://gist.githubusercontent.com/frescoplaylab/a06df129432f55ad14779cd75461e6c6/raw/82be68f978af82219bc67db65fbb3eeabbc799a2/get_azure_credentials; . get_azure_credentials && source ~/.azureenv; fi
+
+az login -u $username -p $password
+
+Click the following command to make the resource group default, so that you need not use the resource group in the commands.
+az configure --defaults group=$resource
+
+Create Storage Account
+az storage account create -n mystorageaccount -g MyResourceGroup -l westus --sku Standard_LRS 
+(Create a storage account 'mystorageaccount' in resource group 'MyResourceGroup' in the West US region with locally redundant storage.)
+az storage account create -n myfrescodemostorage -g $resource -l westus --sku Standard_LRS
+
+eg : 
+export storageAccountName="mystorageacct$RANDOM"
+
+az storage account create \
+    --resource-group $resourceGroupName \
+    --name $storageAccountName \
+    --location $region \
+    --kind StorageV2 \
+    --sku Standard_LRS \
+    --enable-large-file-share \
+    --output none
+
+Get Storage Account Key
+az storage account keys list -g $resource -n myfrescodemostorage
+key=$(az storage account keys list -g $resource -n myfrescodemostorage --query [0].value -o tsv) (assign first key to a variable)
+
+eg: 
+export storageAccountKey=$(az storage account keys list \
+    --resource-group $resourceGroupName \
+    --account-name $storageAccountName \
+    --query "[0].value" | tr -d '"')
+
+create a variable
+export storageAccountName="myfrescodemostorage"
+
+Creating Azure File Share
+shareName="myshare"
+
+az storage share create \
+    --account-name $storageAccountName \
+    --account-key $key \
+    --name $shareName 
+
+
+Creating Directory
+
+az storage directory create \
+   --account-name $storageAccountName \
+   --account-key $key \
+   --share-name $shareName \
+   --name "myDirectory" \
+   --output none
+
+Uploading the file
+
+git clone https://github.com/Azure-Samples/php-docs-hello-world
+
+cd file_path
+
+az storage file upload \
+    --account-name $storageAccountName \
+    --account-key $key \
+    --share-name $shareName \
+    --source "index.php" \
+    --path "myDirectory/index.php"
+
+Deleting the resources
+
+Clean up resources
+az group delete --name $resource
+
+Managing Resources
+
+Here are the tools at your disposal to manage resources,
+
+Azure PowerShell
+ARM and ASM Portals
+Azure CLI
+Azure Rest APIs
+Azure SDKs
+
+Azure PowerShell provides a set of cmdlets for managing your Azure resources and for Automating the scheduled task.
+Azure PowerShell Module can be installed in several different ways,
+
+From PowerShell Gallery
+Using MSI installer from the GitHub repository
+Using Microsoft Web Platform Installer
+
+Check if PowerShellGet is installed on your system using:
+
+>Get-Module PowerShellGet -list | Select-Object Name,Version,Path
+(If PowerShellGet is not installed, download it by executing below command).
+Install-Module -Name PowerShellGet -Force
+Exit
+
+Install ARM Module
+You can install Azure Resource Manager (ARM) modules from the PowerShell Gallery using:
+Install-Module AzureRM
+PowerShell gallery is not configured as a Trusted repository. Hence you will be prompted to "Allow installing modules from PSGallery". Choose 'Yes' or 'Yes to All' to continue.
+
+Once installed, load the module in the PowerShell session using:
+
+Import-Module AzureRM
+Validate the installation by Checking the version of Azure PowerShell using:
+Get-Module AzureRM -list | Select-Object Name,Version,Path
+
+Install ASM module
+For Classic mode use following command to install Azure PowerShell,
+Install-Module Azure
+and
+
+Import-Module Azure
+Validate the installation by Checking the version of Azure PowerShell using:
+Get-Module Azure -list | Select-Object Name,Version,Path
+
+ARM and ASM Portals
+Azure Service Management (ASM) is the traditional way of provisioning Azure Resources. ASM portal, also called Classic Portal uses ASM API calls to provision and manage Azure resources.
+
+Azure Resource Manager (ARM) is the service that is now more widely used to provision resources on Azure. The ARM Portal also called the New portal uses ARM API calls to provision resources. Also, when you use tools like Azure PowerShell, you are invoking ARM API calls.
+
+Advantages of ARM
+Resource Group - ARM groups resources, making it much easier to manage them.
+Smarter Provisioning - ARM refers ARM templates to figure out resource requirement, dependencies and provisions resources optimally.
+Role-based Access control(RBAC) - gives greater control by configuring role-based access control at resource and resource group levels.
+Tags - can be applied to resources to logically organize all of the resources in the same subscription.
+Billing - In an organization, costs can be viewed for the entire group or for a group of resources sharing the same tag.
+
+ARM Templates
+ARM templates are commonly used to automate deployment. Resource groups and resource properties like the size of DB, type of storage account are defined in these JSON documents.
+
+ARM inspects requirements in ARM templates, figures out resource dependencies and provisions resources in an order or even simultaneously when there is no direct dependency between certain resources.
+
+GitHub Resource Manager contains a number of Azure Quickstart Templates which can be used to build and deploy.
+
+Another option is to create custom templates, using JSON Editor. Visual Studio or Visual Studio Code a lightweight, open-source editor can be used to create these templates. 
+
+Azure CLI 2.0 is an open-source, cross-platform, shell-based command line interface for managing Azure resources.
+
+You can use it in your browser with Azure Cloud Shell, or you can install it on macOS, Linux, and Windows and run it from the command line.
+
+Commands are structured as:
+
+>azure <topic> <verb> <options>
+or
+>az <topic> <verb> <options>
+Example to list the virtual machines within an account
+>azure vm list 
+Example to create a resource group named "MyRG" in the centerus region of Azure
+>az group create -n MyRG -l centerus 
+
+Azure REST APIs
+One of the most powerful ways to manage Azure is via the Azure REST APIs. Representational State Transfer (REST) APIs are service endpoints that support sets of HTTP operations (methods) to manage your resources.
+
+It forms the connecting glue between your applications and Azure.
+
+Azure SDKs
+Azure SDKs provide a framework which you can use to build, deploy and manage various solutions and services you may need on Azure.
+
+Azure VM
+
+Azure Virtual Machines provides Scalable Computing Environment to host wide range Infra services and Applications.
+Azure Virtual Machines follow Infrastructure as a Service (IaaS) model and lets you create VMs in the cloud. VM's are provisioned with:
+
+Compute
+Storage
+Networking capabilities
+Operating system
+
+Azure VMs are best for workloads that:
+
+Require High availability
+Experience Unpredictable Growth
+Experience Sudden Spikes
+
+The first Step to creating VM is to choose the right VM size. Here are the various VM sizes that can cater to every kind of requirement.
+
+General Purpose - ideal for Testing and Development.
+Compute Optimized - recommended for medium traffic web servers and network appliances.
+Memory Optimized - used for relational DB servers, medium to large caches, and for in-memory analytics.
+Storage Optimized - used for Big Data, SQL, and NoSQL databases.
+GPU - Ideal for heavy graphic rendering and video editing.
+High Performance Compute - optimal for high-throughput network interfaces (RDMA).
+
+Azure Marketplace provides a large image gallery, which includes:
+
+Recent operating system images of Windows Server, Linux, and SQL Server.
+You can also store your own images in Azure, by capturing an existing virtual machine and uploading the image.
+
+Windows Server
+
+Windows Server 2008 R2 and later versions are available in Azure Market Place.
+Windows Server 2003 and later versions are supported for deployment. However, OS images must be uploaded from On-Premises.
+
+Linux OS
+
+Azure supports many Linux distributions and versions including CentOS, Core OS, Debian, Oracle Linux, Red Hat Enterprise Linux, and Ubuntu.
+Microsoft does not support OS that is past their End of Support date without a Custom Support Agreement (CSA). For example, Windows Server 2003/2003 R2.
+
+Basic steps for deploying a virtual machine
+
+Select an image or disk to use for the new virtual machine from Azure Market Place.
+Provide Required information such as hostname, username, and password for the new virtual machine.
+Provide Optional information like domain membership, virtual networks, storage account, cloud service, and availability set.
+Go ahead and provision the machine.
+
+Lab 2 : Azure Essentials - Virtual Machine
+
+Create an Azure VM
+
+VmName="ExampleVm"
+AdminPassword="ARe@11y5ecur3P@ssw0rd!"
+
+az vm create \
+    --resource-group $resource \
+    --name $VmName \
+    --image win2016datacenter \
+    --admin-username azureuser \
+    --admin-password $AdminPassword \
+    --size Standard_B1s \
+    --use-unmanaged-disk \
+    --storage-sku Standard_LRS
+
+List of VMs
+
+az vm list
+
+Stopping or Deleting the VM
+
+az vm delete --resource-group $resource --name $VmName
+
+Azure Virtual Network
+
+Once you create a VM, you will need to place it in a virtual network to receive IP address configurations and to connect to other VMs or other resources that you create in Azure.
+
+You can create Azure network resources by using either the ARM Portal, Classic Portal, Network Configuration File, Azure PowerShell module, Azure command-line interface (Azure CLI), or by using deployment templates.
+
+You can attach multiple network interface cards (NICs) to each of your VMs.
+
+Multiple NICs are used for many network virtual appliances and WAN Optimization solutions, as it provides high network traffic management capability, including isolation of traffic between a front-end NIC and back-end NIC(s).
+
+Example - Palo alto Firewall appliance which contains 4 NICs for,
+DMZ
+Trusted Zone
+Untrusted Zone
+Firewall Management
+
+Limitations of Multiple NICs
+All VMs in a Availability set need to use either multi-NIC or single NIC. There cannot be a mixture of multi-NIC VMs and single NIC VMs within an availability set.
+
+Once deployed, a VM with single NIC cannot be configured with multi NICs (and vice-versa), without deleting and re-creating it.
+
+Network Security Groups
+
+VMs can have connectivity to the Internet when public IP address is assigned to the VMs or to the cloud service. Under such scenarios, Network Security Group (NSG) provides advanced security protection for the VMs.
+
+NSGs contain inbound and outbound rules that specify whether the traffic is approved or denied.
+
+NSGs Rule can be applied at the following levels,
+
+NIC (ARM deployment model)
+VM (classic deployment)
+All VMs in a Subnet (both deployment models)
+
+Consider a requirement where Application Server should communicate with Internet (User) using HTTP Protocol only.
+
+To achieve this, NSG1 - web-rule can be set to allow HTTP traffic to the FrontEnd subnet.
+Also, assume a requirement where DataBase Server should not communicate with internet and it should get SQL traffic only from Application Server.
+
+For this, NSG2 - DB Rule can be set as
+
+sql-rule to allow SQL traffic only from the FrontEnd subnet.
+web-rule to deny all internet bound traffic from the BackEnd subnet.
+
+NSG Rule Properties
+Name - is a unique identifier for the rule.
+Direction - specifies whether the traffic is inbound or outbound.
+Priority - If multiple rules match the traffic, rules with higher priority apply.
+Access - specifies whether the traffic is allowed or denied.
+Source IP address prefix - identifies from where traffic originates.
+Source port range - specifies source ports.
+Destination IP address prefix - identifies the traffic destination IP range
+Destination port range - specifies destination ports
+Protocol - specifies a protocol that matches the rule.
+
+Things to Remember
+By default 100 NSGs can be created per region per subscription. This can be extended to 400 by contacting Azure support.
+
+A single NSG can have 200 rules which can be raised to 500 by contacting Azure support.
+
+Only one NSG can be applied to a VM, subnet, or NIC. However, the same NSG can be applied to multiple resources
+
+Lab 03 : Azure Essentials - Virtual Network
+
+Create a virtual network
+
+az network vnet create \
+  --name myVirtualNetwork \
+  --resource-group $resource \
+  --subnet-name default
+
+List all virtual network
+
+az network vnet list
+
+az network vnet delete -g $resource -n myVirtualNetwork
+
+Lab 04 : Creating NSG
+
+Create a NSG
+
+az network nsg create -g $resource -n MyNsg 
+
+delete a NSG
+
+az network nsg delete -g $resource -n MyNsg
+
+Intersite Connectivity Options
+It is very common to come across a scenario where you have an On-Premise data center that needs to connect to resources deployed on Azure. There are four different options to handle such scenarios.
+
+Point to Site VPN and Site to Site VPN were covered in detail in the Azure Essential course, So, now we will concentrate on Vnet to Vnet Connectivity and Express Route
+
+The following VPN connections requires VPN Gateway:
+
+Point-to-site
+Site-to-site
+VNet-to-Vnet - Between different Azure Regions - Between different Azure Subscription
+IaaS v1 VNet-to-IaaS v2 VNet
+Multisite
+ExpressRoute
+
+Features of VPN Gateway
+A VPN gateway is a type of virtual network gateway that sends encrypted traffic across Azure virtual networks and also from Azure virtual network to an on-premises location.
+
+Each virtual network can have only one VPN gateway.
+Multiple connections can be made with the same VPN gateway.
+When multi VPNs connect to the same VPN gateway, all VPN tunnels share the bandwidth that is available for the gateway.
+
+Vnet to Vnet Connectivity
+VNet-to-VNet connectivity is similar to connecting a VNet to an on-premises site location, except that both ends of the connection are VNets.
+
+VMs and cloud service components in each VNet can communicate as if they were on the same VNet.
+
+In VNet-to-VNet model, the connected VNets can be in the:
+
+same or different regions
+same or different subscriptions
+same or different deployment models
+
+ExpressRoute Connectivity
+Microsoft Azure ExpressRoute can be used to extend the on-premises networks into the Microsoft cloud over a dedicated private connection.
+
+Typically ExpressRoute is used to establish the connections to Microsoft cloud services, such as Microsoft Azure, Office 365, and CRM Online. Also, it is used to transfer data between on-premises and Azure to achieve cost benefits.
+
+Since they do not go over the public Internet, they are
+
+More Secure
+Highly Reliability
+Faster and Lower Latency
+
+VPN Tunnel
+
+Azure supports a maximum of 30 VPN tunnels per VPN gateway.
+Each point-to-site, site-to-site and VNet-to-VNet VPN counts as one of those VPN tunnels.
+Redundant tunnels are not supported.
+VPN Gateway
+
+A single VPN gateway can support up to 128 connections from client computers.
+All VPN tunnels to a virtual network share the available bandwidth on the Azure VPN gateway.
+Address spaces
+
+Address spaces must not overlap. Hence must be planned for virtual networks in Azure and on-premises networks.
+
+Azure Storage
+
+To use any of the Azure Storage services like Blob storage, File storage, and Queue storage, you will first create a storage account, and then you can transfer data to/from a specific service in that storage account.
+
+Once created, Azure Storage resources can be accessed by any language that can make HTTP/HTTPS requests. Additionally, Azure Storage offers programming libraries for several popular languages to simplify many aspects of working with Azure Storage.
+
+Azure storage is broadly grouped into 3 categories:
+
+Storage for Virtual Machines
+Unstructured Data storage
+Structured Data storage
+
+Storage for Virtual Machines:
+
+Disks - Persistent block storage for Azure VMs.
+Files - Fully managed file share on the cloud.
+Unstructured Data storage:
+
+Blobs - Highly scalable, REST based Cloud Object Storage.
+Data Lake Store - Hadoop Distributed File System (HDFS) as a Storage.
+Structured Data storage:
+
+Azure SQL DB - Fully managed Database-as-a-service built on SQL.
+Tables - Key Value, high scale, auto-scaling NoSQL store.
+DocumentDB - NoSQL document database service.
+
+VM Disks
+Virtual machines in Azure use disks as a place to store Operating system, Applications, and Data.
+
+VM's also can have one or more data disks
+Standard Storage Account uses Hard Disk Drive(HDD) as VM disk.
+Premium Storage Account uses Solid State Drive(SSD) as VM disk.
+Temporary Disk is a Non Persistent storage and uses SSD storage.
+All disks are stored as Virtual Hard Disk's (VHD), and the maximum capacity of the VHD is limited to 1023 GB.
+
+VM File Storage
+
+File storage offers shared storage using the standard SMB 3.0 protocol.
+
+It can be accessed as a mounted drive or Map network Drive as typical SMB share in Desktops.
+On-premises applications can access file data in a share via the File storage API.
+Common uses of File storage:
+
+Applications that rely on file shares.
+Files like Configuration files that need to be accessed from multiple VMs.
+Diagnostic data like logs that can be written to a file share and processed later.
+Tools and utilities used by multiple developers.
+
+Storage Accounts
+Types of General Purpose Storage Account
+
+Standard storage - most widely used storage accounts that can be used for all types of data (tables, queues, files, blobs and VM disks).
+Premium storage - high-performance storage for page blobs, which are primarily used for VHD files.
+Performance tiers of Blob Storage Account
+
+Hot access - for files that are accessed frequently. You pay a higher cost for storage, but the cost of accessing the files is much lower. Example: File Share.
+
+Cool access - to store large amounts of rarely accessed data for lower cost. Example: Backup Data.
+
+Standard storage accounts are backed by magnetic drives (HDD) and provide the lowest cost per GB.
+Premium storage accounts are backed by solid state drives (SSD) and offer consistent low-latency performance.
+Hence it is not possible to convert standard storage account to Premium Storage account or vice versa.
+
+Premium Storage
+
+Microsoft recommends using Premium Storage for all VMs.
+
+Premium storage has high bandwidth with extremely low latency and it offers less than 1ms read latency(cache). Also, premium storage disks for virtual machines support up to 64 TB of storage, 80,000 IOPS per VM and 50,000 IOPS per disk.
+
+To improve total IOPS throughput we recommend striping across multiple disks and using SSD premium disks.
+Premium Storage is only supported on Azure GS and DS series of virtual machines.
+Premium Storage supports only Locally Redundant Storage (LRS) Replication.
+In Premium (SSD), the size of the VM disk is restricted to 128, 512, and 1023 GB.
+
+Azure Storage tools, make the life of a storage administrator much easier. Here are few of the most commonly used tools.
+
+Azure Portal and Azure PowerShell
+Azure Storage Explorer - a useful GUI tool to inspect and alter data in Azure Storage. It can be used to upload, download, and manage blobs, files, queues, and tables from any platform, anywhere.
+AZ Copy - a command-line utility to copy blob, and file data within a storage account or across accounts.
+Azure Import/Export service - to import or export large amounts of blob data to or from a storage account.
+
+Data Security:
+
+Data in transit can be secured using client-side encryption, HTTPS or SMB 3.0 protocol.
+Data at rest can be secured using Storage Service Encryption.
+OS and Data disks used by VMs can be encrypted using Azure Disk Encryption.
+
+Security Management:
+
+Storage Access Policy: define policies to grant and revoke access at a granular level, with a time limit.
+Role-Based access control: use default and custom defined roles to control access to the storage accounts
+Audit and monitor authorization: using request information available in storage analytics logs.
+Storage Account Access keys and Shared Access Signatures (SAS) can be used to secure data access.
+
+Lab 05 : Web App on Azure Storage
+
+Create App Service Plan
+az appservice plan create -g $resource -n MyPlan
+
+Write the command to create a Web app.
+az webapp create -g $resource -p MyPlan -n MyDemoUniqueAppName
+
+Check the Web app list 
+az webapp list
+
+Write the command to Manage web app deployment via source control.
+az webapp deployment source config --branch master --manual-integration --name MyDemoUniqueAppName --repo-url $gitrepo --resource-group $resource
+
+Delete webapp
+az webapp delete --name MyDemoUniqueAppName --resource-group $resource
+
+Delete appservice plan
+az appservice plan delete --name MyPlan --resource-group $resource
+
+Azure Blob Storage
+
+Azure Blob storage is a service that stores Unstructured data in the cloud as blobs/objects. All blobs must be in a container and a container can store an unlimited number of blobs.
+
+Common uses of Blob storage:
+
+Serving images or documents directly to a browser.
+Storing files for distributed access.
+Streaming videos and audios.
+Storing data for backup & restore, disaster recovery, and archiving.
+Storing data for analysis by an on-premises or Azure-hosted service.
+Blob storage is also referred to as Object storage.
+
+Azure Storage offers three types of blobs: Block blobs, Page blobs, and Append blobs.
+
+Block blobs
+
+Suitable for Sequential Read\Write operations.
+Ideal for storing text or binary files, such as documents and media files.
+Append blobs
+
+Optimized for Append operations.
+Can be used for logging scenarios.
+Page blobs
+
+Optimized for Random read/write operations.
+Can be used for storing VHD files of Azure VM as OS and Data disks.
+
+Managing Blob Storage
+Blob storage typically requires transacting Huge amounts of data from On-Premises to Azure and vice-versa.
+
+Examples of Huge Data:
+
+Large Virtual Hard Disks (VHDs) - Using Upload and Download Commands
+TBs of Backup Data - Using Export and Import services
+Generally uploading and downloading VHD files is done through Azure PowerShell or Storage Explorer. Azure PowerShell provides a very efficient way for moving these large files through following cmdlets:
+
+Add-AzureRmVHD - Uploads a VHD from an on-premises virtual machine to a blob storage in Azure.
+Save-AzureRmVHD - Saves downloaded VHD images locally.
+
+Import and Export Services
+
+Import and Export is another service that is suitable for scenarios when several TBs of data needs to be transferred. Transferring such volume of data over the network is not feasible due to limited bandwidth and high network costs.
+
+Example: Backup data to or from Azure.
+
+Import Service - Securely transfers large amounts of data to Azure blob storage by shipping hard disk drives to an Azure DC.
+Export Service - Transfers data from Azure blob storage to hard disk drives and ship to the on-premises site.
+Usage Scenarios:
+
+Migrating data to the cloud.
+Content distribution to a different Datacenter.
+Backup and Recovery data.
+
+Azure App Services
+
+Web apps: web based applications that can scale with business requirements
+Mobile Apps: mobile applications that can run on any device
+Logic apps: For automating business processes and integrating systems and data across clouds without writing code.
+API apps: For hosting RESTful APIs that other services can leverage, such as in IoT scenarios
+
+There are five layers available: Free, Shared, Basic, Standard and Premium.
+
+Note:
+
+An application can only be associated with one service plan. However, a service plan can have, multiple applications associated with it.
+The application must be in the same subscription and geographic location to share a plan.
+Apps that share a plan can use all the capabilities and features that are defined by the plan's tier
+
+Azure App Service can also be managed by using the following tools,
+
+Azure PowerShell
+Azure Command Line Interface (CLI)
+REST APIs
+Templates
+ARM and ASM portals
+
+Locking Resources
+Azure App Services protects the resources using Locks.
+
+Locks can be applied to a subscription, resource group, or a resource such as a web application.
+
+It prevents deleting or modification of resources by other users.
+
+Lock Levels:
+
+CanNotDelete: where authorized users can read and modify a resource, but they can't delete.
+ReadOnly: where authorized users can read from a resource, but they can not perform any actions on it.
+Locks are different from Role Based Access control(RBAC).
+
+Custom Domain Name Configuration
+When a Application is hosted on Azure, it can be accessed using a default domain name <app name>.azurewebsites.net.
+
+However, it is preferred to access the application using our own URL, such as https://play.fresco.me
+
+Custom Domain name can be directly purchased through the Azure App services portal or one can carry forward their own Domain Name.
+
+Site Extensions
+
+Site Extensions are used to extend functionality and provides ease management of Web Applications.
+
+A full list of available site extensions is available on the Site Exensions page, https://www.siteextensions.net/.
+It also provides pointers to project sites, licenses, owner details etc for each extension.
+Examples of Site Extensions:
+
+Application insights: provides monitoring capabilities.
+New Relic: provides monitoring capabilities.
+Php Manager: tool for managing PHP installations.
+Jekyll: Adds support for Jekyll on a Web App.
+
+App Service Deployment Options
+There are a number of different options available for deployment of web app services such as,
+
+Basic
+
+FTP
+Web Deploy
+Alternative
+
+OneDrive/DropBox
+Kudu
+Source Control / Continuous Deployment
+
+Visual Studio Online
+Local Git
+GitHub
+BitBucket
+
+Kudu based Deployments
+Kudu is the engine behind source control based deployments into Azure App Service. Every Azure website has an associated 'scm' service site, which runs both Kudu and other Site Extensions.
+
+Accessing the Kudu service
+
+If your website URL is http://mysite.azurewebsites.net/, the root URL of the Kudu service is https://mysite.scm.azurewebsites.net.
+
+Lab 06 : Creating Locks
+
+Create a Lock
+az lock create --name lockName --resource-group $resource --lock-type ReadOnly
+
+List all Locks
+az lock list
+
+Delete Lock
+az lock delete --name lockName --resource-group $resource
+
+Azure Database Services Intro
+In Azure Essentials we learn about different types of Data services in Azure, such as,
+
+SQL Database
+SQL Data Warehouse
+Document DB
+Table Storage
+Redis Cache
+Data Factory
+Data Lake
+
+Azure SQL (PaaS) Vs SQL Server (IaaS)
+
+Azure SQL Database (PaaS): is native to the cloud and is optimized for SaaS app development. It reduces overall costs to the minimum for provisioning and managing many databases as you do not have to manage any VMs, OS or DB software.
+
+SQL Server on Azure Virtual Machines (IaaS): is optimized for migrating existing applications to Azure or in hybrid deployments. It is a perfect choice when an organization already has IT resources available to maintain the VMs.
+
+Database Transaction Unit
+
+A DTU is a measure of the resources that are guaranteed to be available to a standalone Azure SQL database. It is a measure that combines CPU, memory and I/O values.
+DTU is used to decide which Service Tier is suitable for your Database requirement.
+Larger the number, better the performance. DTU provides a way to see the overall performance levels, need driving it and be able to relate that to cost.
+An elastic DTU (eDTU) is a measure of the resources across a set of databases, called an elastic pool.
+
+There are three different Service Tiers to accommodate a variety of workload requirements.
+
+Basic - Suitable for small databases, and low volume needs
+Standard - Suitable for most cloud based apps
+Premium - Suitable for high transnational volumes with super critical workloads
+All these options provide an uptime SLA of 99.99% and hourly billing. Also, it is possible to change service tiers and performance levels dynamically.
+
+Migrating SQL DB
+
+Pre-requisites of Migration
+
+Test for compatibility of the DB with Azure SQL
+Fix Compatability issues if found
+Perform migration
+Migration can be done in multiple ways, Acceptable Downtime decides the type of Migration.
+
+For minimal downtime, use SQL Server transactional replication and replicate your data over the Network.
+When downtime is acceptable, use Export to DAC package and ImportDAC package in Azure SQL
+
+Data Analytics with HDInsight
+HDInsight is a Microsoft managed Hadoop service running in Azure that provides a range of open source data analytics cluster models.
+
+Microsoft makes the Hadoop components available in a distributed model in Azure where it manages the cluster. Making it easy to provision and manage them with high availability and reliability.
+
+It is available as a service under the Intelligence and Analytics grouping of services within Azure.
+
+HDInsight - Cluster Types
+HDInsight currently provides several different optimized open source analytic cluster types:
+
+Hadoop - Petabyte scale processing with Hadoop components like Hive, Pig, Sqoop.
+HBase - Fast and scalable NoSQL Offering.
+Storm - Allows processing of infinite streams of data in real-time.
+Spark - Fast data analytics and cluster using in-memory processing.
+Interactive Hive (preview) - Enterprise Data Warehouse with in-memory analytics using Hive and Long Live and Process (LLAP)
+R Server - Terabyte scale, provides enterprise-grade R analytics used for machine learning models.
+Kafka (preview): High throughput, low latency, real-time streaming platform, typically used in streaming and IoT scenarios
+
+
+
+

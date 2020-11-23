@@ -1,4 +1,4 @@
 {
     "python.pythonPath": "C:\\Users\\tonyt\\.msvscode.hdinsight\\hdinsightJupyter\\Scripts\\python.exe",
-    "python.dataScience.jupyterLaunchTimeout": 240000
+    "jupyter.jupyterLaunchTimeout": 240000
 }

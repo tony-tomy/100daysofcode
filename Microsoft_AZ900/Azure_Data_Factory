@@ -1,0 +1,160 @@
+
+Azure Data Factory
+
+Azure Data Factory is a managed cloud integration service that is built for these complex hybrid extract-load-transform (ETL), 
+extract-transform-load (ELT), and data integration projects.
+
+It is a cloud-based data integration service that supports to create data-driven workflows (pipelines) in the cloud for data transformation, data orchestration, and automating data movement.
+Azure Data Factory (ADF) allows to create and schedule pipelines that ingest data from different data stores.
+It can process the transformation of data by using compute services such as Azure HDInsight (Hadoop), Azure Data Lake Analytics, and Azure Machine Learning.
+
+Key Components in ADF
+There are a set of top-level concepts to be familiar with them before diving into the Azure Data Factory.
+
+Pipeline:
+It is the logical grouping of activities that perform a task, where each can operate individually or independently in parallel. 
+A data factory can contain one or more pipelines. The major benefit of these pipelines is, it allows us to manage a set of operations instead of managing each operation individually.
+
+Activity:
+An activity is represented as a processing step or task in a pipeline such as you can have a copy activity for copying data between data stores. It performs three kinds of activities such as data transformation, data movement, and control activities.
+
+Datasets:
+Datasets represent data structures with a data store that points to data that needs to use in your activities as inputs and outputs.
+
+Linked Services:
+Linked services are used to represent connection objects for sources, destinations and compute resources that contains the connection strings (connection information needed for data factory to connect with external resources).
+
+These four components comprise the ADF that works together to compose pipelines with steps to move and transform data.
+
+Note: An Azure subscription can have more than one data factory instances.
+
+Triggers and Pipeline Runs
+
+Triggers:
+Triggers represent the processing unit that determines when a pipeline execution needs to be kicked off. These are of different types for different events.
+
+Pipeline Runs:
+It is an instance of the pipeline execution that is instantiated by passing arguments to the parameters, which are defined in pipelines. The arguments can be passed manually or within the trigger definition.
+
+ADF Pricing
+The pricing is broken down into four ways that you are paying for this service.
+
+Azure activity runs vs Self-hosted activity runs:
+There are different pricing models for these. For the Azure activity runs, it is about copying activity. So you are moving data from 
+an Azure Blob to an Azure SQL database or Hive activity running the high script on an Azure HDInsight cluster. With self-hosted 
+activity runs, you can copy activity moving from an on-premises SQL Server to an Azure Blob Storage, a stored procedure to an Azure Blob Storage, or a stored procedure activity running a stored procedure on an on-premises SQL Server.
+
+Volume of data moved:
+It is measured in data movement units (DMUs). You should be aware of it, as this will change from default to auto, by using all the 
+DMUs it can handle. This is paid on an hourly basis. Let’s say you specify and use two DMUs. It takes an hour to move that data. 
+The other option is that you could use eight DMUs and it takes 15 minutes. This price is going to end up the same. You’re using 4X the DMUs, but it’s happening in a quarter of the time.
+
+SSIS integration run times:
+Here, you’re using A-series and D-series compute levels. When you go through these, you will understand that it depends on the compute 
+requirements to invoke the process (how much CPU, how much RAM, how much attempt storage you need).
+
+The inactive pipeline:
+You’re paying a small account for pipelines (about 40 cents currently). A pipeline is considered inactive if it’s not associated with a 
+trigger and hasn’t been run for over a week. Yes, it’s a minimal charge, but they do add up. When you start to wonder where some of those charges come from, it’s good to keep this in mind.
+
+Supported Regions
+The regions currently supporting for provisioning the data factory are West Europe, East US, and East US 2.
+
+However, the data factory can access data stores and compute resources from other regions to move data between data stores or process 
+data using compute services, the service that powers data movement in data factory is available globally in many areas.
+
+On-Premises Data Sources, Data Gateway
+As you know, Azure lets you connect with the on-premises data sources such as SQL server, and SQL server analysis services. for queries or processing by provisioning the data gateway.
+
+The data gateway provides secure data transfer between on-premises data sources and your Azure services in the cloud. It requires the following steps:
+
+Download and run setup in an on-premise computer.
+Registering your gateway by specifying a name and recovery key.
+Creating a gateway resource in Azure in a subscription.
+Connecting data sources to the gateway resource.
+Note: You can register your gateway resource in any region, but it recommended to be in the same region of your data factory.
+
+Azure Data Factory can be managed such as creating ADF, creating pipelines, monitoring pipelines through various ways such as:
+
+Azure Portal
+Azure PowerShell
+Azure Resource Manager Templates
+Using REST API
+Using .NET SDK
+
+Datasets
+Datasets identify data such as files, folders, tables, documents within different data stores. For example, an Azure SQL dataset 
+specifies the schema and table in the SQL database from which the activity should read the data.
+
+Before creating a dataset, you have to create a linked service to link your data store to the data factory.
+
+Both linked service and datasets are defined in JSON format in ADF.
+
+Linked Service Structure
+Linked Service structure is defined in a JSON format as below for an AzureStorage linked service.
+
+{
+    "name": "AzureStorageLinkedService",
+    "properties": {
+        "type": "AzureStorage",
+        "typeProperties": {
+            "connectionString": {
+                "type": "SecureString",
+                "value": "DefaultEndpointsProtocol=https;AccountName=<accountname>;AccountKey=<accountkey>"
+            }
+        },
+        "connectVia": {
+            "referenceName": "<name of Integration Runtime>",
+            "type": "IntegrationRuntimeReference"
+        }
+    }
+}
+
+Dataset Structure
+Dataset structure is defined in JSON format for an AzureBlob dataset as shown below.
+
+{
+    "name": "AzureBlobInput",
+    "properties": {
+        "type": "AzureBlob",
+        "linkedServiceName": {
+                "referenceName": "MyAzureStorageLinkedService",
+                "type": "LinkedServiceReference",
+        },
+
+        "typeProperties": {
+            "fileName": "input.log",
+            "folderPath": "adfgetstarted/inputdata",
+            "format": {
+                "type": "TextFormat",
+                "columnDelimiter": ","
+            }
+        }
+    }
+}
+
+Workflow of Pipelines
+
+Connect and Collect:
+
+The first step in building a pipeline is connecting to all the required sources of data and processing the movement of data as needed 
+to a centralized location for subsequent processing. Without data factory, it requires to build custom data movement components or 
+write services to move to integrate these data sources.
+
+Transform and Enrich
+
+The collected data that is presented in the centralized data store is transformed or processed by using compute services such as 
+HDInsight Hadoop, Spark, Data Lake Analytics, and Machine Learning that is produced as feed to production environments.
+
+Publish:
+
+After the raw data was refined it is loaded into Azure Data Warehouse, Azure SQL Database, Azure CosmosDB, or whichever analytics 
+engine your business users can point to from their business intelligence tools.
+
+Monitor:
+
+After the successful build and deployment of your data integration pipeline, you can monitor the scheduled activities and pipelines 
+for success and failure rates. ADF has built-in support for monitoring pipeline Azure Monitor, API, PowerShell, Log Analytics, and 
+health panels on the Azure portal.
+
+

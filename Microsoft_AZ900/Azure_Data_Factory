@@ -305,5 +305,13 @@ Deployment:
 Shows the deployment status and other options that allow to edit pipeline and monitor.
 Watch this video in open network (not using tcs LAN) from 9th minute to have a better understanding about how to perform copy activity from on-premise to Azure.
 
+Transform Data in ADF
+Data transformation is executed as a transformation activity that executes in a computing environment such as an Azure HDInsight cluster or an Azure Batch.
 
+Data factory supports various transformation activities that can be added to pipelines either individually or chained with another activity. Which are:
+
+HDInsight (Hadoop) compute environment is used for Hive, Pig, MapReduce, Hadoop Streaming, Spark data transformation activities.
+Azure VM compute environment is used for Machine learning batch execution and update resource data transformation activities.
+Azure SQL, Azure SQL data warehouse compute environment is used for Stored procedure data transformation activity.
+Azure Data Lake Analytics compute environment is used for U-SQL data transformation activity.
 

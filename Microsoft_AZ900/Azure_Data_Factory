@@ -322,5 +322,48 @@ Create an Azure Data Lake Analytics account before creating a pipeline with a Da
 The Azure Data Lake Analytics linked service requires a service principal authentication to connect to the Azure Data Lake Analytics service.
 To use service principal authentication, register an application entity in Azure Active Directory (Azure AD) and grant it the access to both the Data Lake Analytics and the Data Lake Store it uses.
 
+Custom Query and Parameters
+You can parameterize a linked service and pass dynamic values at run time. Linked service parameterization is supported in the Data Factory UI in the Azure portal for the following data stores. For all other data stores, you can parameterize the linked service by selecting the Code icon on the Connections tab and using the JSON editor.
+
+Azure SQL Database
+Azure SQL Data Warehouse
+SQL Server
+Oracle
+Cosmos DB
+Amazon Redshift
+MySQL
+Azure Database for MySQL
+
+Custom Activity
+If you need to transform data in a way that is not supported by Data Factory, you can create a custom activity with your own data processing logic and use the activity in the pipeline. You can configure the custom .NET activity to run using either an Azure Batch service or an Azure HDInsight cluster.
+You can create a Custom activity with your data movement or transformation logic and use the activity in a pipeline.
+The parameters required to define for a custom activity in JSON format are: name, activities, typeproperties.
+Refer to this link (https://docs.microsoft.com/en-us/azure/batch/batch-technical-overview) for azure batch basics as the custom activity runs your customized code logic on an Azure Batch pool of virtual machines.
+
+Custom Activity Example
+The following JSON snippet defines a pipeline with a simple Custom Activity. The activity definition has a reference to the Azure Batch linked service.
+
+{
+  "name": "MyCustomActivityPipeline",
+  "properties": {
+    "description": "Custom activity sample",
+    "activities": [{
+      "type": "Custom",
+      "name": "MyCustomActivity",
+      "linkedServiceName": {
+        "referenceName": "AzureBatchLinkedService",
+        "type": "LinkedServiceReference"
+      },
+      "typeProperties": {
+        "command": "helloworld.exe",
+        "folderPath": "customactv2/helloworld",
+        "resourceLinkedService": {
+          "referenceName": "StorageLinkedService",
+          "type": "LinkedServiceReference"
+        }
+      }
+    }]
+  }
+}
 
 

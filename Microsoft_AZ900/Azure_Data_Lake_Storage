@@ -1,2 +1,80 @@
 
-Azure Data 
+Azure Data Lake Storage
+
+Azure data lake store is a highly scalable, distributed, parallel file system that is designed to work with various analytic frameworks, 
+and has the capability of storing varied data from several sources.
+
+Azure Data Lake Store
+Microsoft describes Azure Data Lake Store (ADLS) as a hyperscale repository for big data analytics workloads that stores data in its native format. ADLS is a Hadoop File System compatible with Hadoop Distributed File System (HDFS) that works with the Hadoop ecosystem.
+
+ADLS:
+
+Provides unlimited data storage in different forms.
+Is built for running large scale analytic workloads optimally.
+Allows storing of relational and non-relational data, and the data schema need not be defined before data is loaded.
+Keeps three copies of a particular data to enable high availability of data provision.
+
+Azure Data Lake - Architecture Components
+
+The ADLS architecture constitutes three components:
+
+Analytics Service
+HDInsight
+Diversified Storage
+
+Analytics Service- to build various data analytic job services, and execute them parallelly.
+HDInsight- for managing clusters after ingesting large volumes of data clusters, by extending various open sources such as Hadoop, Spark, Pig, Hive, and so on.
+Diversified Storage- to store diversified data such as structured, unstructured, and semi-structured data from diverse data sources.
+
+Azure Data Lake Storage Working
+
+Raw Data --> Data Factory --> Data Lake --> Data Bricks --> SQL Data Warehouse, Power BI, Analysis and services
+                ingest          Store       Data Enrich         Model and Service
+
+Data Lake Storage Gen 1
+
+Data Lake Storage Gen 1 is an Apache Hadoop file system compatible with HDFS that works with the Hadoop ecosystem. Existing HDInsight 
+applications or services that use the WebHDFS API can easily integrate with Data Lake Storage Gen 1.
+
+Key Features of Data Lake Store Gen 1
+Built for Hadoop: Data stored in ADLS Gen 1 can be easily analyzed by using Hadoop analytic frameworks such as Pig, Hive, and MapReduce. Azure HDInsight clusters can be provisioned and configured to directly access the data stored in ADLS Gen 1.
+Unlimited storage: ADLS Gen 1 does not impose any limit on file sizes, or the amount of data to be stored in a data lake. Files can range from kilobyte to petabytes in size, making it a preferred choice to store any amount of data.
+Performance-tuned for big data analytics: A data lake spreads parts of a file over multiple individual storage servers. Therefore, when performing data analytics, it improves read throughput when reading files in parallel.
+Enterprise-ready, Highly-available, and Secure: Data assets are stored durably by making extra copies to guard against any unexpected failures. Enterprises can use ADLS Gen 1 in their solutions as an important part of their existing data platform.
+All Data: ADLS Gen 1 can store any type of data in its native format without requiring prior transformations, and it does not perform any special handling of data based on the type of data.
+
+Azure Data Lake Store Gen 2
+ADLS Gen 2 is built on top of Azure blob storage, dedicated to big data analytics, which is the result of converging both the storage service (blob storage and ADLS Gen 1) capabilities.
+
+ADLS Gen 2 is specifically designed for enterprise big data analytics that enables managing massive amounts of data. A fundamental component of ADLS Gen 2 is that it uses hierarchical namespace addition to blob storage, and organizes objects/files into a hierarchy of directories for efficient data access.
+
+ADLS Gen 2 addresses all the drawbacks in areas such as performance, management, security, and cost effectiveness which were compromised in the past in cloud-based analytics.
+
+Key Features of ADLS Gen 2
+Hadoop-compatible access: The new Azure Blob File System (ABFS) driver is enabled within all Apache Hadoop environments, including Azure Databricks, Azure HDInsight, and SQL Data Warehouse, to access data stored in ADLS Gen2.
+
+A superset of POSIX permissions: The security model for ADLS Gen2 supports ACL and POSIX permissions, along with extra granularity specific to ADLS Gen2.
+
+Cost effective: ADLS Gen2 offers low-cost storage capacity and transactions as data transitions through its entire life cycle.
+
+Comparing Data Lake Store and Blob Storage
+        Data Lake Store	                                                                                                                 Blob Storage
+Purpose	: Optimized and dedicated storage for big data analytics workloads                                                              |    General purpose object store for a variety of storage scenarios.
+Use cases:	Supports streaming analytics and machine learning data, such as log files, IoT data, massive datasets, and click streams.   |	Supports any type of text or binary data, such as application backend, backup data, media storage for streaming and general purpose data.
+File system :	ADLS accounts contain folders, which in turn contain data stored as files.                                              |   Storage accounts have containers, which in turn has data in the form of blobs.
+Data Operations - Authentication : Based on Azure Active Directory Identities.	                                                        |   Based on shared secrets - Account Access Keys and Shared Access Signature Keys.
+Size limits	: No limits on account sizes, file sizes or number of files.	                                                            |   Has certain limits regarding no of accounts, and storage capacity. Refer to link(https://docs.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account)
+
+Streamed Data Management
+The image in the previous card illustrates how streamed data is managed by using ADLS in three different layers:
+
+Data generation
+
+Storage
+
+Data processing
+
+Data is generated from various sources such as cloud, local machines, or logs.
+Data is stored in a data lake store which uses different analytic jobs such as Hadoop, Spark, or Pig to analyze the data.
+After data analysis, the data is processed for use.
+

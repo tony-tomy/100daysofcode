@@ -1,0 +1,369 @@
+
+Azure Data Factory
+
+Azure Data Factory is a managed cloud integration service that is built for these complex hybrid extract-load-transform (ETL), 
+extract-transform-load (ELT), and data integration projects.
+
+It is a cloud-based data integration service that supports to create data-driven workflows (pipelines) in the cloud for data transformation, data orchestration, and automating data movement.
+Azure Data Factory (ADF) allows to create and schedule pipelines that ingest data from different data stores.
+It can process the transformation of data by using compute services such as Azure HDInsight (Hadoop), Azure Data Lake Analytics, and Azure Machine Learning.
+
+Key Components in ADF
+There are a set of top-level concepts to be familiar with them before diving into the Azure Data Factory.
+
+Pipeline:
+It is the logical grouping of activities that perform a task, where each can operate individually or independently in parallel. 
+A data factory can contain one or more pipelines. The major benefit of these pipelines is, it allows us to manage a set of operations instead of managing each operation individually.
+
+Activity:
+An activity is represented as a processing step or task in a pipeline such as you can have a copy activity for copying data between data stores. It performs three kinds of activities such as data transformation, data movement, and control activities.
+
+Datasets:
+Datasets represent data structures with a data store that points to data that needs to use in your activities as inputs and outputs.
+
+Linked Services:
+Linked services are used to represent connection objects for sources, destinations and compute resources that contains the connection strings (connection information needed for data factory to connect with external resources).
+
+These four components comprise the ADF that works together to compose pipelines with steps to move and transform data.
+
+Note: An Azure subscription can have more than one data factory instances.
+
+Triggers and Pipeline Runs
+
+Triggers:
+Triggers represent the processing unit that determines when a pipeline execution needs to be kicked off. These are of different types for different events.
+
+Pipeline Runs:
+It is an instance of the pipeline execution that is instantiated by passing arguments to the parameters, which are defined in pipelines. The arguments can be passed manually or within the trigger definition.
+
+ADF Pricing
+The pricing is broken down into four ways that you are paying for this service.
+
+Azure activity runs vs Self-hosted activity runs:
+There are different pricing models for these. For the Azure activity runs, it is about copying activity. So you are moving data from 
+an Azure Blob to an Azure SQL database or Hive activity running the high script on an Azure HDInsight cluster. With self-hosted 
+activity runs, you can copy activity moving from an on-premises SQL Server to an Azure Blob Storage, a stored procedure to an Azure Blob Storage, or a stored procedure activity running a stored procedure on an on-premises SQL Server.
+
+Volume of data moved:
+It is measured in data movement units (DMUs). You should be aware of it, as this will change from default to auto, by using all the 
+DMUs it can handle. This is paid on an hourly basis. Let’s say you specify and use two DMUs. It takes an hour to move that data. 
+The other option is that you could use eight DMUs and it takes 15 minutes. This price is going to end up the same. You’re using 4X the DMUs, but it’s happening in a quarter of the time.
+
+SSIS integration run times:
+Here, you’re using A-series and D-series compute levels. When you go through these, you will understand that it depends on the compute 
+requirements to invoke the process (how much CPU, how much RAM, how much attempt storage you need).
+
+The inactive pipeline:
+You’re paying a small account for pipelines (about 40 cents currently). A pipeline is considered inactive if it’s not associated with a 
+trigger and hasn’t been run for over a week. Yes, it’s a minimal charge, but they do add up. When you start to wonder where some of those charges come from, it’s good to keep this in mind.
+
+Supported Regions
+The regions currently supporting for provisioning the data factory are West Europe, East US, and East US 2.
+
+However, the data factory can access data stores and compute resources from other regions to move data between data stores or process 
+data using compute services, the service that powers data movement in data factory is available globally in many areas.
+
+On-Premises Data Sources, Data Gateway
+As you know, Azure lets you connect with the on-premises data sources such as SQL server, and SQL server analysis services. for queries or processing by provisioning the data gateway.
+
+The data gateway provides secure data transfer between on-premises data sources and your Azure services in the cloud. It requires the following steps:
+
+Download and run setup in an on-premise computer.
+Registering your gateway by specifying a name and recovery key.
+Creating a gateway resource in Azure in a subscription.
+Connecting data sources to the gateway resource.
+Note: You can register your gateway resource in any region, but it recommended to be in the same region of your data factory.
+
+Azure Data Factory can be managed such as creating ADF, creating pipelines, monitoring pipelines through various ways such as:
+
+Azure Portal
+Azure PowerShell
+Azure Resource Manager Templates
+Using REST API
+Using .NET SDK
+
+Datasets
+Datasets identify data such as files, folders, tables, documents within different data stores. For example, an Azure SQL dataset 
+specifies the schema and table in the SQL database from which the activity should read the data.
+
+Before creating a dataset, you have to create a linked service to link your data store to the data factory.
+
+Both linked service and datasets are defined in JSON format in ADF.
+
+Linked Service Structure
+Linked Service structure is defined in a JSON format as below for an AzureStorage linked service.
+
+{
+    "name": "AzureStorageLinkedService",
+    "properties": {
+        "type": "AzureStorage",
+        "typeProperties": {
+            "connectionString": {
+                "type": "SecureString",
+                "value": "DefaultEndpointsProtocol=https;AccountName=<accountname>;AccountKey=<accountkey>"
+            }
+        },
+        "connectVia": {
+            "referenceName": "<name of Integration Runtime>",
+            "type": "IntegrationRuntimeReference"
+        }
+    }
+}
+
+Dataset Structure
+Dataset structure is defined in JSON format for an AzureBlob dataset as shown below.
+
+{
+    "name": "AzureBlobInput",
+    "properties": {
+        "type": "AzureBlob",
+        "linkedServiceName": {
+                "referenceName": "MyAzureStorageLinkedService",
+                "type": "LinkedServiceReference",
+        },
+
+        "typeProperties": {
+            "fileName": "input.log",
+            "folderPath": "adfgetstarted/inputdata",
+            "format": {
+                "type": "TextFormat",
+                "columnDelimiter": ","
+            }
+        }
+    }
+}
+
+Workflow of Pipelines
+
+Connect and Collect:
+
+The first step in building a pipeline is connecting to all the required sources of data and processing the movement of data as needed 
+to a centralized location for subsequent processing. Without data factory, it requires to build custom data movement components or 
+write services to move to integrate these data sources.
+
+Transform and Enrich
+
+The collected data that is presented in the centralized data store is transformed or processed by using compute services such as 
+HDInsight Hadoop, Spark, Data Lake Analytics, and Machine Learning that is produced as feed to production environments.
+
+Publish:
+
+After the raw data was refined it is loaded into Azure Data Warehouse, Azure SQL Database, Azure CosmosDB, or whichever analytics 
+engine your business users can point to from their business intelligence tools.
+
+Monitor:
+
+After the successful build and deployment of your data integration pipeline, you can monitor the scheduled activities and pipelines 
+for success and failure rates. ADF has built-in support for monitoring pipeline Azure Monitor, API, PowerShell, Log Analytics, and 
+health panels on the Azure portal.
+
+Scheduling Pipelines
+A pipeline is active only between its start time and end time that does not execute before, or after the start and end times, respectively. If it is paused, it does not get executed irrespective of its start and end time. For a pipeline to run, it should not be paused.
+
+You can define the pipeline start and end times in the pipeline definition in JSON format as below.
+
+"start": "2017-04-01T08:00:00Z",
+"end": "2017-04-01T11:00:00Z"
+"isPaused": false
+
+You must specify schedulers for the activities that are executing in the pipeline to run the pipeline.
+
+Example of an activity that is scheduled to run hourly in the JSON format.
+
+"scheduler": {
+    "frequency": "Hour",
+    "interval": 1
+},
+
+Specify Schedule to Dataset
+Similar to scheduling activity in a pipeline, you can specify a schedule to the dataset, such as, you can specify a schedule that takes input datasets and produce output data in a frequency (hourly, daily, weekly, monthly).
+
+For example, the below JSON format file defines the input and output data available in an hourly frequency:
+
+{
+    "name": "AzureSqlInput",
+    "properties": {
+        "published": false,
+        "type": "AzureSqlTable",
+        "linkedServiceName": "AzureSqlLinkedService",
+        "typeProperties": {
+            "tableName": "MyTable"
+        },
+        "availability": {
+            "frequency": "Hour",
+            "interval": 1
+        },
+        "external": true,
+        "policy": {}
+    }
+}
+Note: You must specify schedule frequency and intervals in the availability section.
+
+Visual Authoring
+The Azure Data Factory user interface experience (UX) lets you visually author and deploy resources for your data factory without having to write any code.
+
+You can drag activities to a pipeline canvas, perform test runs, debug iteratively, and deploy and monitor your pipeline runs. There are two approaches for using the UX to perform visual authoring:
+
+Author directly with the Data Factory service.
+Author with Visual Studio Team Services (VSTS) Git integration for collaboration, source control, or versioning.
+Visual authoring with the Data Factory service differs from visual authoring with VSTS in two ways:
+
+The Data Factory service doesn't include a repository for storing the JSON entities for your changes.
+The Data Factory service isn't optimized for collaboration or version control.
+
+Integration Runtime in ADF
+The Integration Runtime (IR) is the compute infrastructure used by Azure Data Factory to provide data integration capabilities across different network environments such as data movement, activity dispatch, and SSIS package execution.
+
+While moving data from data stores in public and private networks, it provides support for built-in connectors, format conversion, column mapping, and scalable data transfer.
+The IR (Integration runtime) provides the bridge between the activity and linked Services.
+
+Types of Integration Runtime
+There are three different types of IR which you have to choose the type that best serve the data integration capabilities you are looking for:
+
+Azure
+Self-hosted
+Azure-SSIS
+Azure IR type is recommended to choose for data movement and activity dispatch activities over a public network whereas the self-hosted IR type is recommended over both public and private networks for the same activities.
+
+The Azure SSIS IR type is recommended to choose for SSIS package execution over both public and private networks.
+
+Azure Integration Runtime
+An Azure integration runtime is capable of:
+
+Running copy activity and data movement activities between cloud data stores.
+Activity dispatching the following data transform activities in public network: HDInsight Hadoop, Machine Learning Batch Execution and update resource activities, Data Lake Analytics U-SQL activity and other custom activities.
+Azure IR supports connecting data stores over a public network with public accessible endpoints.
+
+Self-Hosted Integration Runtime
+Self-hosted IR is to perform data integration securely in private network. You can install a self-hosted IR on-premises environment behind your corporate firewall, or inside a virtual private network.
+
+It is capable of:
+
+Running copy activity and data movement activity between data stores.
+Activity dispatching the following transform activities against compute resources in On-Premise or Azure Virtual Network: HDInsight Hadoop, Machine Learning Batch Execution and update resource activities, Data Lake Analytics U-SQL activity, and other custom activities.
+
+Lift and Shift SSIS
+It is easy to move your SQL Server Integration Services (SSIS) workloads, projects, and packages to the Azure cloud, as it deploys, runs and manages SSIS projects and packages in the SSIS Catalog on Azure SQL Database or with familiar tools such as SQL Server Management Studio (SSMS).
+
+Moving your on-premises SSIS workload to Azure will reduce your operational costs and provides maximum scalability.
+
+Azure SSIS Integration Runtime
+To lift and shift existing SSIS workload, you can create an Azure-SSIS IR. which is dedicated to run or execute SSIS packages. It can be provisioned in either public network or private network.
+
+Integration Runtime Location:
+The IR Location defines the location of its back-end compute, and essentially the location where the data movement, activity dispatching, and SSIS package execution are performed. The IR location can be different from the location of the data factory it belongs to.
+
+Azure Data Factory Working
+
+The above GIF represents the working of ADF, it requires to install three IRs in the whole scenario of data movement and data transformation from on-premise to Azure.
+
+Installs self-hosted IR type in the on-premise that provides integration capabilities overs private network.
+Installs Azure IR type at the transformation part.
+Installs Azure IR type at the Azure data store that provides integration capabilities over the public network.
+
+Scenarios for Copy Data Using ADF
+There are three types of copy data scenarios performed across different environments between data stores such as:
+
+On-premise to Azure
+Azure cloud data store instance to another Azure cloud data store instance
+SaaS Application to Azure
+There are two ways to create a pipeline for copy activity:
+
+From ADF editor and monitor tile, choosing editor option to manually create key components (dataset, linked services) and perform copy activity.
+Using copy data tool in ADF.
+
+Scenario 1: On-Premises to Azure
+Let's assume a scenario copying data from on-premise SQL server to Azure Data Lake Store using Copy data tool in ADF. Follow the below steps to perform this kind of activity:
+
+Choose Copy data option from the ADF
+
+It has six steps to be evaluated in a sequence such as Properties, Source, Destination, Settings, Summary, and Deployment.
+
+Properties:
+Provide the task name, task description, and task schedule.
+
+Source:
+Choose the SQL server data store and provide details of it such as connection name, Server name, Database name, Authentication type, username, and password.
+It requires to run Integration runtime to provide capabilities for data movement. For this, you have to choose create integration runtime and launch express setup on this computer. This will install self-hosted IR on your computer.
+Choose the existing tables from your SQL server that needs to be copied. It also allows copying a table by filtering a column.
+
+Destination:
+Choose the data store data lake store and provide the details of it such as connection name, network environment, azure subscription, data lake store account name, authentication type, tenant.
+Choose the output file or folder (where to copy data).
+Choose file format settings.
+
+Settings:
+Choose actions that need to be performed such as:
+Abort copy on the first incompatible row.
+Skip all incompatible rows.
+Skip and log all incompatible rows.
+
+Summary:
+Shows you the properties and source settings, click next for deployment.
+
+Deployment:
+Shows the deployment status and other options that allow to edit pipeline and monitor.
+Watch this video in open network (not using tcs LAN) from 9th minute to have a better understanding about how to perform copy activity from on-premise to Azure.
+
+Transform Data in ADF
+Data transformation is executed as a transformation activity that executes in a computing environment such as an Azure HDInsight cluster or an Azure Batch.
+
+Data factory supports various transformation activities that can be added to pipelines either individually or chained with another activity. Which are:
+
+HDInsight (Hadoop) compute environment is used for Hive, Pig, MapReduce, Hadoop Streaming, Spark data transformation activities.
+Azure VM compute environment is used for Machine learning batch execution and update resource data transformation activities.
+Azure SQL, Azure SQL data warehouse compute environment is used for Stored procedure data transformation activity.
+Azure Data Lake Analytics compute environment is used for U-SQL data transformation activity.
+
+U-SQL Transformations
+Data Lake Analytics U-SQL Activity that runs a U-SQL script on an Azure Data Lake Analytics compute linked service.
+
+Create an Azure Data Lake Analytics account before creating a pipeline with a Data Lake Analytics U-SQL Activity.
+The Azure Data Lake Analytics linked service requires a service principal authentication to connect to the Azure Data Lake Analytics service.
+To use service principal authentication, register an application entity in Azure Active Directory (Azure AD) and grant it the access to both the Data Lake Analytics and the Data Lake Store it uses.
+
+Custom Query and Parameters
+You can parameterize a linked service and pass dynamic values at run time. Linked service parameterization is supported in the Data Factory UI in the Azure portal for the following data stores. For all other data stores, you can parameterize the linked service by selecting the Code icon on the Connections tab and using the JSON editor.
+
+Azure SQL Database
+Azure SQL Data Warehouse
+SQL Server
+Oracle
+Cosmos DB
+Amazon Redshift
+MySQL
+Azure Database for MySQL
+
+Custom Activity
+If you need to transform data in a way that is not supported by Data Factory, you can create a custom activity with your own data processing logic and use the activity in the pipeline. You can configure the custom .NET activity to run using either an Azure Batch service or an Azure HDInsight cluster.
+You can create a Custom activity with your data movement or transformation logic and use the activity in a pipeline.
+The parameters required to define for a custom activity in JSON format are: name, activities, typeproperties.
+Refer to this link (https://docs.microsoft.com/en-us/azure/batch/batch-technical-overview) for azure batch basics as the custom activity runs your customized code logic on an Azure Batch pool of virtual machines.
+
+Custom Activity Example
+The following JSON snippet defines a pipeline with a simple Custom Activity. The activity definition has a reference to the Azure Batch linked service.
+
+{
+  "name": "MyCustomActivityPipeline",
+  "properties": {
+    "description": "Custom activity sample",
+    "activities": [{
+      "type": "Custom",
+      "name": "MyCustomActivity",
+      "linkedServiceName": {
+        "referenceName": "AzureBatchLinkedService",
+        "type": "LinkedServiceReference"
+      },
+      "typeProperties": {
+        "command": "helloworld.exe",
+        "folderPath": "customactv2/helloworld",
+        "resourceLinkedService": {
+          "referenceName": "StorageLinkedService",
+          "type": "LinkedServiceReference"
+        }
+      }
+    }]
+  }
+}
+
+

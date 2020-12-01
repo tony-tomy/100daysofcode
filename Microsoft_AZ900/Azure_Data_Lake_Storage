@@ -78,3 +78,154 @@ Data is generated from various sources such as cloud, local machines, or logs.
 Data is stored in a data lake store which uses different analytic jobs such as Hadoop, Spark, or Pig to analyze the data.
 After data analysis, the data is processed for use.
 
+Data Lake Store Pricing
+The cost of ADLS Gen 1 depends on how much you store, and, the size and volume of transactions and outbound data transfers.
+
+Azure allows storing data prices in two ways; pay as you go, and monthly commitment packages
+
+ADLS Gen 2 is the most productive storage, and its pricing depends on the file structure, and redundancy you choose
+
+Azure Data Lake Store Gen 1 by using PowerShell
+A data lake storage instance can be created by using Azure PowerShell.
+
+The PowerShell command to create data lake store account is:
+
+New-AzureRmDataLakeStoreAccount -ResourceGroupName $resourcegroupname -Name $dlsname -Location "East US" -DisableEncyption
+To access the PowerShell,
+
+Select >_ from the top menu in the Azure portal home page.
+
+Creating ADLS Gen 1 by using CLI
+Azure CLI is one of the options with which you can manage data lake store.
+
+The following command is a sample CLI command to create a data lake storage Gen 1 account:
+
+az dls fs create --account $account_name --path /mynewfolder --folder
+The above CLI command creates a data lake store Gen 1 account, and a folder named mynewfolder at the root of the data lake storage Gen 1 account.
+
+Note: The --folder parameter ensures that the command creates a folder, if not, it creates an empty file named mynewfolder, at the root as default.
+
+Data Lake Store Gen 2 Creation
+To create a data lake Storage V2 account:
+
+Login to the Azure portal, and navigate to the storage account resource.
+Add storage account and provide the resource group name, storage account name, location, and performance (standard or premium).
+Select the account type as Storage V2, which is a Gen 2 type of account.
+Select the replication based on your requirement, such as LRS, GRS, or RA-GRS, and proceed to next for advanced options.
+Enable the hierarchical namespace to organize the objects or files for efficient data access.
+Proceed to next, validate, and create the storage account.
+
+Getting Data into Data Lake Store
+You can get your data into your data lake store account in two ways,
+
+Through direct upload method or Adlcopy
+Set up a pipeline by using data factory, and process data from various sources.
+
+Copying Data into ADLS
+After successful creation of the data lake storage account (Gen 1 or Gen 2), navigate to the resource page.
+
+To ingest data into the storage account through offline copy (directly uploading data from portal),
+
+Navigate to the storage account instance page.
+Select Data explorer. The storage account files explorer page appears.
+Choose the upload option from the menu, and from the source, select the files you want to be stored in your account.
+Upload the files by selecting Add the select files.
+
+Data Upload by using Azure CLI
+The CLI command to upload data into the data lake storage account is:
+
+az dls fs upload --account $account_name --source-path "/path" --destination-path "/path"
+Provide the storage account name, source path, and destination path in the above CLI command.
+
+Example:
+
+az dls fs upload --account mydatalakestoragegen1 --source-path "C:\SampleData\AmbulanceData\vehicle1_09142014.csv" --destination-path "/mynewfolder/vehicle1_09142014.csv"
+
+AdlCopy Tool
+ADLS Gen 1 provides a command line tool AdlCopy to copy data from the following sources:
+
+From azure storage blobs to data lake storage Gen 1 account.
+
+Note: You cannot use AdlCopy to copy data from ADLS Gen 1 to blob.
+
+Between two data lake storage Gen 1 accounts.
+
+You should have AdlCopy tool installed in your machine. To install, use link.
+
+AdlCopy syntax:
+
+AdlCopy /Source <Blob or Data Lake Storage Gen1 source> /Dest <Data Lake Storage Gen1 destination> /SourceKey <Key for Blob account> /Account <Data Lake Analytics account> /Units <Number of Analytics units> /Pattern
+
+Moving Data by using AdlCopy
+Let's assume that data is being copied between two data lake stores named Adls1 and Adls2, where the source is Adls1 and destination is Adls2.
+
+The following example command will perform the copy activity:
+
+AdlCopy /Source adl://adls1.azuredatalakestore.net/testfolder/sampledata.csv /dest adl://adls2.azuredatalakestore.net/testfolder
+Specify the source, destination instances URL, and the data file that needs to be copied.
+
+Note: To get the instances URL, navigate to the instance dashboard.
+
+Azure Data Lake Analytics
+Azure data lake analytics is an analytics job service that writes queries, extracts valuable insights from any scale of data, and simplifies big data.
+
+It can handle jobs of any scale in a cost-effective manner, where you pay for a job only when it is running.
+
+Data Lake Analytics works with ADLS for high performance, throughput, and parallelization. It works with Azure Storage blobs, Azure SQL Database, and Azure Warehouse.
+
+Manage Data Sources in Data Lake Analytics
+Data Lake Analytics supports two data sources:
+
+Data lake store
+Azure storage
+Data explorer is used to browse the above data sources, and to perform basic file management operations.
+
+To add any of the above data sources,
+
+Login to the Azure portal, and navigate to the Data Lake Analytics page.
+Click data sources, and then click add data sources.
+To add a Data Lake Store account, you need the account name and access to the account, to query it.
+
+To add Azure Blob storage, you need the storage account and the account key.
+
+Setting Up Firewall Rule
+You can enable access to trusted clients only by specifying an IP address or defining a range of IP addresses, by setting up the firewall rules to cut off access to your data lake analytics at network level.
+
+To setup a firewall rule,
+
+Login to the Azure portal and navigate to your data lake analytics account.
+On the left menu choose firewall.
+Provide the values for the fields by specifying the IP addresses.
+Click OK.
+
+U-SQL Overview
+Data lake analytics service runs jobs that query the data to generate an output for analysis, where these jobs consist of scripts written in a language called U-SQL.
+
+U-SQL is a query language that extends the familiar, simple, declarative nature of SQL; combined with the expressive power of C#, and uses the same distributed runtime that powers Microsoft's internal exabyte-scale data lake.
+
+Built-in Extractors in U-SQL
+Extractors are used to extract data from common types of data sources. U-SQL includes the following built-in extractors:
+
+Extractors.Text - an extractor for generic text file data sources.
+Extractors.Csv - a special version of the Extractors.Text extractor specifically for comma-delimited data.
+Extractors.Tsv - a special version of the Extractors.Text extractor specifically for tab-delimited data.
+
+Extractor Parameters
+The built-in extractors support several parameters you can use to control how data is read. The following are some of the commonly used parameters:
+
+delimiter- It is a char type parameter that specifies the column separator character whose default column separator value is comma (','). It is only used in Extractors.Text().
+
+rowDelimiter- It is a string type parameter whose max length is 1, which specifies the row separator in a file whose default values are "\r\n" (carriage return, line feed).
+
+skipFirstNRows- It is an Int type parameter whose default value is 0, which specifies the number of rows to skip in a file.
+
+silent- It is a boolean type parameter whose default value is false, which specifies that the extractor ignore and skip rows that have a different number of columns than the requested number.
+
+Built-in Outputters in U-SQL
+U-SQL provides a built-in outputter class called Outputters. It provides the following built-in outputters to transform a rowset into a file or set of files*:
+
+Outputters.Text()- Provides outputting a rowset into a variety of delimited text formats.
+Outputters.Csv()- Provides outputting a rowset into a comma-separated value (CSV) file of different encodings.
+Outputters.Tsv()- Provides outputting a rowset into a tab-separated value (TSV) file of different encodings.
+
+Sample code vides are present in 

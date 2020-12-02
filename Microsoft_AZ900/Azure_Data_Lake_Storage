@@ -228,4 +228,136 @@ Outputters.Text()- Provides outputting a rowset into a variety of delimited text
 Outputters.Csv()- Provides outputting a rowset into a comma-separated value (CSV) file of different encodings.
 Outputters.Tsv()- Provides outputting a rowset into a tab-separated value (TSV) file of different encodings.
 
-Sample code vides are present in 
+Sample code vides are present in " Azure Data Lakes Analaytics ".
+
+U-SQL Catalog Overview
+Azure data lake analytics allows you to create a catalog of U-SQL objects that are stored in databases within the data lake store.
+
+The following are some of the objects you can create in any database:
+
+Table: represents a data set of data that you want to create, such as creating a table with certain data.
+Views: encapsulates queries that abstract tables in your database, such as writing a view that consists of select statements which retrieve data from the mentioned tables.
+Table valued function: writes custom logic to retrieve the desired data set for queries.
+Procedures: encapsulates the code that performs certain tasks regularly, such as writing a code to insert data into tables or other regular operations which are executed repeatedly.
+
+External Tables
+Along with managed tables, U-SQL catalogs can also include external tables which reference tables in azure instances such as SQL data warehouse, SQL database or SQL Server in Azure virtual machines.
+
+This is useful when you have to use U-SQL to process data that is stored in an existing database in Azure.
+
+To create an external table, use the CREATE DATA SOURCE statement to create a reference to an external database, and then use the CREATE EXTERNAL TABLE statement to create a reference to a table in that data source.
+
+Security Mechanism for Data Lake Store
+Security mechanisms that you can implement to secure a data lake store include:
+
+Authentication
+Azure provides multi-factor authentication capability that ensures an additional layer of security for sign ins and transactions, and allows to set up authentication with the use of sign in codes that are received through an SMS.
+
+It also facilitates authentication from any clients by using standard open protocols such as OAuth or OpenID
+
+Authorization
+Authorization is implemented by Role-based Authorization Control (RBAC ) which is a built-in feature for Microsoft Azure which facilitates account management.
+
+It implements POSIX ACL to access data from the data lake storage.
+
+You can apply granular levels of authorization for data lake resources by assigning user roles and security groups by using Access Control or IAM.
+
+Database roles and permissions
+You can implement database roles, permissions, and granular row level security to ensure that databases are secure, by adding roles and permissions to the users.
+
+Network Isolation
+ADLS Gen1 enables accessing your data store at the network level where you can allow access by establishing firewalls and defining an IP address range for trusted clients. With an IP address range, only clients that have an IP address within the defined range can connect to Data Lake Storage Gen1.
+
+Data Protection
+Data Lake Storage Gen1 protects data throughout its life cycle. For data in transit, the industry-standard Transport Layer Security (TLS 1.2) protocol is used to secure data over the network.
+
+Securing Data Lake Store
+ADLS Gen 1 implements an access control model as default, that derives permissions from the RBAC file system stored in the data lake store.
+
+The permissions that can be used on files and folders are Read, Write and Execute:
+                        File	                                                Folder
+Read	:Can read the contents of a file.                                	Requires Read and Execute permissions to list the contents of the folder.
+Write	:Can write or append to a file.                                  	Requires Write and Execute permissions to create child items in a folder.
+Execute	:Does not mean anything in the context of Data Lake Storage Gen 1.	Required to traverse the child items of a folder.
+
+Data Ingestion
+While ingesting data from the source to the data lake store Gen 1, it is important to consider factors (bottlenecks) such as source hardware, and network connectivity.
+
+Performance Criteria
+Database size, concurrency, and response time are important metrics, depending on which the data lake store should be fine tuned.
+
+Configure data ingestion tools for maximum parallelization:
+
+Once the source hardware and network connectivity bottlenecks are addressed, you can configure ingestion tools such as:
+
+Structuring your dataset- When data is stored in ADLS Gen 1, the file size, folder structure, and number of files have an impact on performance. For better performance, it is recommended to organize data into larger files, than have many small files.
+
+Organizing time series data in folders- For Azure data lake analytics workloads, partition-pruning of time-series data enables some queries to read only a subset of the data. This improves performance.
+
+Log Analytics
+Log analytics in Azure play a prominent role in creating service alerts, and controlling the cost of Azure data lake implementations.
+
+Log analytics collect telemetry and other data which enables its automated alerting capability.
+Implementing log analytics in Azure does not require any configuration, since it is already integrated with other Azure services.
+To enable log analytics, create a workspace and collect all the metrics and data that are being emitted from various activities.
+While implementing log analytics, ensure that the agents are installed on virtual machines.
+
+Log Analytics Query Language
+Log analytics query language is a simple and interactive query provided by Microsoft to facilitate log searches.
+
+It is used to identify valuable insights from the data by querying, combining, aggregating, joining, and performing other tasks on your data in log analytics.
+
+Log analytics query language enable you to specify conditions, implement joins, and facilitate smart analytics.
+
+Example: Building a single collaborative log analytic visualization that provides various analytical outcomes in a single dashboard, to help administrators monitor and define strategy.
+
+Implementing Log Analytics
+After signing up in the Azure portal, create log analytics workspaces, and use it to analyze the logs.
+
+To create the log analytics workspace,
+
+In the Azure portal, search for log analytics by clicking All Services.
+
+Select Log Analytics Workspaces, and click Add.
+
+Enter values in the name, subscription, resource group, location and pricing tier fields.
+
+Click OK.
+
+You can run log searches to analyze data, or to configure collection of monitoring telemetry data.
+
+Summary
+The concepts covered in this course were:
+
+Data lake store and its capabilities.
+Data lake store (gen 1 and gen 2) provisioning, and ingesting data into the store.
+Data lake analytics and managing it.
+Data analysis by using U-SQL, and retrieving the desired data sets.
+Securing and monitoring data in a store.
+
+Hands-on 1 : U-SQL Job
+Execute a simple U-SQL job to get a hands-on experience of analyzing data:
+
+Create an ADLS Gen 1 account.
+Create an Azure data lake analytics instance with the above storage account.
+Upload the data files that need to be analyzed, into the storage account.
+Navigate to the data lake analytics instance page.
+Add a new job and write an U-SQL program that extracts data for analyzing, and export it to an output file.
+Submit the job and navigate to your data lake storage account.
+Verify if the output file you generated can analyze the data or not.
+Note: Azure incurs additional costs to create ADLS accounts and analytics instances. Proceed to the hands-on based on your interest.
+
+Hands-on 2
+Try creating objects for your database:
+
+Create an ADLS Gen 1 account.
+Create an Azure data lake analytics instance with the above storage account.
+Upload the data files that need to be analyzed, into the storage account.
+Navigate to the data lake analytics instance page.
+Add a new job and create views for your database, which returns the desired dataset.
+Export the data set into an output file by writing a query.
+Submit the job and navigate to your data lake storage account.
+Verify if the output file you generated can analyze the data or not.
+Note: Try to create table value functions and procedure objects in a similar manner, which results in processing the desired datasets.
+
+

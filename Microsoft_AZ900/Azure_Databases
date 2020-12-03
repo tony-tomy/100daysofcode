@@ -1,0 +1,228 @@
+Azure Databases
+
+Overview of Data Services in Azure
+Nowadays most of the applications rely on the relational databases for data storage.
+
+Azure offers two types of solutions for relational data services.
+
+Azure SQL database (PaaS): It provides compatibility with most SQL Server features. This service removes the need for you to manage the underlying operating system and database-server platform. It is also considered as the database as a service (DBaaS).
+
+Database (IaaS): This enables you to deploy Azure IaaS virtual machines on top of which you can run an instance of the relational database management system, such as MySQL, SQL Server, Oracle 11c and list goes on...
+
+Azure Services that Offers Support for Relational data
+Azure provides many services for managing relational data such as:
+
+Azure SQL data warehouse, a completely managed relational data as a service.
+
+Azure Data Factory Service, offers extraction, transformation, and loading functionality of data.
+
+Azure Data Analytics, delivers analysis services based on any combination of unstructured, semi-structured, and structured data.
+
+Azure SQL Database (PaaS) Vs SQL Server (IaaS)
+Azure SQL Database(PaaS):
+Minimized overhead and cost when compared with an on-premises virtual machine.
+Provisioning time is very less than SQL server (IaaS)
+No full support for the virtual network in Azure SQL database (PaaS)
+Contains fewer features than SQL server in a virtual machine.
+SQL Server (IaaS):
+Low overhead and cost, as it doesn't require infrastructure support.
+Provisioned with full virtual network support for SQL server in a virtual machine.
+Note: If you're running a virtual machine only for SQL database, it is recommended to migrate your database to Azure SQL database due to its lower cost and faster provisioning.
+
+Differences between SQL Server and Microsoft Azure SQL Database
+Azure SQL database and SQL server differ in various aspects such as:
+
+1.Size Limitations: SQL server has no upper limit for database size it can extend up to 500,000 TB, whereas Azure SQL database has maximum database size limit up to 4 TB which comes in premium service tier.
+
+2.Connection Limitations: SQL server is more flexible than Azure SQL database in establishing and maintaining connections. Some such scenarios are:
+
+SQL database doesn't support windows authentication.
+SQL database requires @<server> as appended to the login username in connection strings.
+SQL server supports static and dynamic port allocation.
+
+3.Features Support: SQL database differs in supporting many of the SQL server features. Some of them are listed below.
+Agent Service (cannot use the SQL Server Agent service to schedule and run jobs on SQL Database.)
+
+Audit (Records of server and database events are not featured in SQL database auditing.)
+
+Backup and Restore (SQL Database supports an automated backup schedule that creates transactionally consistent backups in the form of BACPAC files created in Azure storage.)
+
+File Streaming (SQL database uses azure blob storage for unstructured data, whereas FILESTREAM and FileTable are not supported in SQL database as SQL server does.)
+
+Azure SQL Database Architecture
+
+You 'll be having an Azure subscription as the top layer in which you have a resource group. Within the resource group, you'll be having the server instances and databases. On top of the SQL database server, it contains the master database and isolated users database.
+
+Migrate from On-Premises to Azure
+Migrating your application data from on-premises SQL Server to Azure SQL database is provisioned through some data import and export tools.
+
+DAC package (Data-tier Application) is one of the data import and export wizards. It's a package where you can directly upload into Azure SQL server
+
+It contains your data and the entire schema of your database and also generates the schema, Transact-SQL scripts.
+
+So you can generate a script for your entire database, and then execute that script against Azure SQL, and it will create the entire schema up for your database.
+
+PowerShell Installation
+PowerShell installation for Ubuntu machines:
+
+Execute the below commands consecutively
+
+# Get the Microsoft repository Keys
+wget -q https://packages.microsoft.com/config/ubuntu/14.04/packages-microsoft-prod.deb
+
+# Enroll to the Microsoft repository GPG keys
+sudo dpkg -i packages-microsoft-prod.deb
+
+# Update the list of products
+sudo apt-get update
+
+# Install PowerShell
+sudo apt-get install -y powershell
+
+# Start PowerShell
+pwsh
+
+Azure CLI 2.0 Installation
+Azure CLI 2.0 installation in ubuntu machines:
+
+# Modify the sources list
+AZ_REPO=$(lsb_release -cs)
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
+sudo tee /etc/apt/sources.list.d/azure-cli.list
+
+# Get the Microsoft signing key
+curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+
+# Install Azure CLI
+sudo apt-get update
+sudo apt-get install apt-transport-https azure-cli
+
+# Run Login command with the username and password
+az login -u $username -p $password
+
+Provisioning Azure SQL Database
+Provisioning Azure SQL database requires two main steps:
+
+You have to provision the database explicitly
+You have to first provision a server (name should be a unique one) on which the database runs.
+
+PowerShell commands
+The PowerShell commands to deploy the Azure SQL database are:
+
+To build a SQL server:
+
+$sqlServer = New-AzureRmSqlServer -ServerName $sqlServerName -SqlAdministratorCredentials $creds -Location $sqlServerLocation -ResourceGroupName $resourceGroupName -ServerVersion $sqlServerVersion
+To Create an empty database in the server:
+
+$CurrentDatabase = New-AzureRmSqlDatabase -ResourceGroupName $resourceGroupName -ServerName $sqlServerName -DatabaseName $databaseName -Edition $databaseEdition -RequestServiceObjectiveName $databaseServiceLevel
+
+Azure CLI commands
+Azure CLI commands to deploy the Azure SQL database are:
+
+To build the server:
+
+az sql server create --name $servername --resource-group $resourcegroupName --location $Location --admin-user $username --admin-password $password
+To Create an empty database in the server:
+
+az sql db create --resource-group $resourceGroupName --server $serverName --name $databaseName --service-objective $databaseServiceLevel
+
+Lab 01 : Azure Databases: Azure SQL Database deployment
+
+01. Creation of Server 
+servername=azsampleserverinv
+Location="eastus"
+username="Mad_max"
+password="M@xSpass@199C0mplex"
+az sql server create --name $servername --resource-group $resource --location $Location --admin-user $username --admin-password $password
+
+List all the servers 
+az sql server list -o table -g $resource
+
+02. Using Azure CLI, configure firewall rules for the above created server, which should be open to all network addresses:
+
+az sql server firewall-rule create -g $resource -s $servername -n myrule --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+
+03. Deploy an Azure SQL database instance with the blank database
+
+az sql db create -g $resource -s $servername -n mydb --edition Basic                            not possible--max-size 100
+
+04. Connect the database that has SQL server installed, with the connection string, and manage the database.
+
+az sql db show-connection-string --client sqlcmd --name $name (give your database name in place of $name)
+az sql db show-connection-string --client sqlcmd --name mydb
+output : "sqlcmd -S tcp:<servername>.database.windows.net,1433 -d mydb -U <username> -P <password> -N -l 30"
+
+Migrate from On-Premises to Azure
+
+Overview of Tools for Azure SQL Database
+There are several tools available for managing Azure specific aspects and Database specific aspects.
+
+Tools for managing Azure specific aspects are:
+
+Azure Portal
+Azure PowerShell
+Azure CLI
+Azure Resource Managers Templates
+Tools for managing Database specific aspects are:
+
+SSMS (SQL Server Management Studio)
+SQLCMD
+Visual Studio
+
+The SQL server object Explorer in Visual Studio allows you to connect to your Azure subscription and its all database instances.
+
+It enables the functionality of working directly in Visual Studio from your Azure portal and makes it feel like a local database.
+
+Command Line Tools for Azure SQL Database
+The Azure SQL database can be accessed through command line tools such as PowerShell and SQLCMD.
+
+Windows PowerShell contains the entire library of PowerShell cmdlets in the UI itself, which are used for administering Azure SQL database.
+
+PowerShell is specifically used for administering and automating the database. This cannot help in querying the data.
+
+Querying the data from the command line is provisioned with SQL-CMD, which is a standard SQL command line administration tool (command-line sequel query editor).
+
+This allows to query data, manipulating data and execute Transact-SQL commands.
+
+Azure SQL Database Security
+Azure enables a different level of security measures for their customers at both Server Level and Database Level.
+
+Server Level means Azure SQL server level, not the subscription level, the security features it includes are:
+
+Access to the SQL database is restricted to certain user roles.
+
+Allows to set up Server firewall rules so that the users with certain IP addresses are permitted to access the database and allowed to manage the database.
+
+Azure SQL databases uses logins at the server level to authenticate user requests, it doesn't support windows integrated authentication.
+
+The master database roles have two roles: loginmanager role (has permissions to create and manage logins), dbmanager role (has permissions to create and manage databases).
+
+At database level some of the security features are:
+
+Extends access to client IP addresses by allowing to add additional firewall rules for individual databases.
+
+GRANT, REVOKE, DENY statements can be executed to assign permissions to database objects for users and roles in the database.
+
+Several database roles permissions are implemented at different levels,
+
+T-SQL Statements to Manage Logins and Users
+T-SQL is an extension to SQL which was populated by Microsoft.
+
+Transact-SQL commands to manage a login is:
+
+CREATE LOGIN $mylogin
+WITH PASSWORD = 'PassWord123'; To create login with password
+ALTER LOGIN $mylogin : To change the password to your login 
+DROP LOGIN $mylogin; To delete the login
+Users get access to the databases through successful Logins.
+
+Transact-SQL commands to manage the users is:
+
+CREATE USER $myuser
+FROM LOGIN $mylogin; To create the user from the login
+DROP USER $myuser; To delete the user
+
+Managing Logins and Users
+
+
+

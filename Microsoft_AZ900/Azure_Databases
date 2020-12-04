@@ -224,5 +224,48 @@ DROP USER $myuser; To delete the user
 
 Managing Logins and Users
 
+Export an Azure SQL Database
+If you need to export your database to another platform or archiving it, you can export the database schema and data in a BACPAC file.
+
+A BACPAC file is a ZIP file with .bacpac extension which contains the data from the SQL Server database.
+
+It can be stored in either Azure blob storage or in the on-premises location.
+
+Later the file will be imported back into Azure SQL database or into on-premises SQL server installation.
+
+Considerations for Exporting your Database
+Some specific considerations while exporting your database are:
+
+Ensure that no write activity is going on while exporting.
+If you are exporting the BACPAC file to Azure blob storage the upper limit of the file size is 200GB and the larger files are recommended to store locally.
+Archiving to Azure premium storage by BACPAC file is not supported.
+if the export operation from Azure SQL database exceeds 20hours, it refers to be canceled.
+
+Importing a Database
+Importing a Database from on-premises SQL Server to Azure SQL database is done by wrapping up everything in a BACPAC file.
+You need to create a Microsoft Azure storage account which is required to access your data in the cloud through BACPAC files.
+Create a .bacpac file containing all your data from your on-premises SQL server and upload it to the blob container in the Azure storage account. Then you can import the uploaded .bacpac file into SQL database.
+
+Self-Service Restore
+Azure SQL database backs up your databases automatically in three types such as:
+
+Full Backup: SQL server technology backs up the whole database including your transaction logs and the whole data can be recovered after the full backup restore.
+
+Differential Backup: A differential backup backs up the most recent data which is remained after the full backup. It offers to take regular data backups, which eliminates the risk of data loss.
+
+Transaction Log Backup: It helps to back up the logs at frequent intervals which reduces the work loss exposure and to truncate the transaction log.
+
+Backup Properties
+Backup Storage: SQL database offers up to 200% of your provisioned database size as your backup storage with zero additional cost.
+
+Backup Schedule: After the creation of the database the first full backup will be initiated immediately. After that, all further backups are invoked automatically and managed in the background.
+
+Backup Retention: The retention period for SQL database backup is based on the database service-tier. For Basic service tier, the daily restore point is retained for 7 days, if it is the Standard / premium service tier you can restore to a specific point in time within 35 days.
+
+Geo-Replication is one of the Azure SQL features which allows making readable replicas to your database in same or different data centers*.
+
+Geo-Replication option is available for all databases and service tiers in all region. If it is enabled, the application initiates to a secondary database.
+
+Note: Up to four secondary databases are supported in the same or different data centers, which are used for read-only access queries.
 
 

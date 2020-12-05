@@ -268,4 +268,69 @@ Geo-Replication option is available for all databases and service tiers in all r
 
 Note: Up to four secondary databases are supported in the same or different data centers, which are used for read-only access queries.
 
+Monitoring Databases
+
+Auditing
+The SQL database auditing helps in tracking the database events and maintains the audit log, which will use the Azure storage account to store it in.
+
+Auditing maintains the regulatory compliance, helps in understanding the database activities and traces out the anomalies or security violations.
+
+You can define the auditing policies for the individual databases and servers.
+
+You can use SQL database auditing to:
+
+Retain an audit trail on specific events and database actions, categories also can be defined to be audited.
+
+preconfigure reports to get started quickly with activity and event reporting.
+
+Analyze reports and find suspicious events and unusual activities.
+
+Threat Detection
+Azure SQL database threat detection is an extension layer of security for the databases, which helps in detecting and responding to the potential threats by generating security alerts on anomalous activities.
+
+Azure security center gets alerts integrated with the threat detection, which includes the details of suspicious activities.
+
+Setting up threat detection:
+
+Launch the Azure portal (https://portal.azure.com)
+Navigate to the configure page of Azure SQL database to which you need to protect.
+Select Advanced threat protection and enable it.
+Choose the threat detection types and check-in the options.
+Provide the emails to receive security alerts against anomalous database activities under threat detection settings in send alerts to box.
+
+Alert Rules
+Alerts based on monitoring metrics or events can be received to customers and the alert gets active to send the notification when the value of an alert rule cuts an assigned threshold.
+
+Steps for Setting up alert rules for your Azure SQL database*.
+
+Launch the Azure portal (https://portal.azure.com)
+Navigate to configure page of Azure SQL database to which you want to configure alerts.
+Navigate to Alerts (classic) under Monitoring section and select Add metric alert.
+Provide the alert name, description and choose the alert metric.
+Configure the alert metric by adding rules with a condition, the threshold and period, save the settings.
+
+Database Metrics
+Metric is the specific parameter on which the alerts are invoked.
+
+The metrics available specifically for a SQL database are: Blocked by firewall, Failed connections, Successful connections, CPU percentage, deadlocks and the list goes on. You can see these metrics while auditing or adding alerts.
+
+The SQL database alert values and thresholds are based on the type of a metric.
+
+Dynamic Management Views
+Microsoft SQL database introduced dynamic management views to diagnose performance problems, which might be caused by blocked or long-running queries, poor query plans.
+
+SQL database enables three types of dynamic management views:
+
+Database-related dynamic management views
+Execution-related dynamic management views
+Transaction-related dynamic management views
+Here are some common scenarios, how the dynamic management views are used to detect performance problems:
+
+Query performance can be monitored by retrieving the average CPU time utilized as the long-running queries consume more system resources.
+
+Query plans can be monitored by retrieving the cumulative CPU time as the inefficient query plans increase CPU consumption.
+
+
+
+
 

@@ -1,0 +1,13 @@
+
+Azure Cosmos DB
+
+Zooming into the Cosmos
+Azure Cosmos DB is globally distributed, multi-model database from Microsoft.
+
+It is a schema-less NoSQL database which supports SQL based queries (with few limitations).
+
+Provides storage across multiple Azure's geographic regions with elastic and independent throughput scaling.
+
+Offers throughput, latency, availability, and consistency guarantees through comprehensive Service Level Agreements(SLAs).
+
+

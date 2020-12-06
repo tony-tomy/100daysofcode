@@ -330,7 +330,116 @@ Query performance can be monitored by retrieving the average CPU time utilized a
 
 Query plans can be monitored by retrieving the cumulative CPU time as the inefficient query plans increase CPU consumption.
 
+Overview of Azure SQL Data Warehouse
+Azure SQL Data Warehouse is an Azure platform as a service (PaaS) offer, which is a cloud warehousing service.
+
+Like the Azure SQL Database, you don't have to worry about managing the operating system. You are benefited to focus on processing and querying your database.
+
+Azure SQL Warehouse implements Massive parallel processing (MPP) to quickly run complex queries across petabytes of data, where multiple nodes will be working together to process data for queries, as it is a distributed system.
+
+Azure SQL data Warehouse is dependent on distributed storage and compute, as it is splitted into different machines.
+
+It also consolidates different data into a single location and shape, model, transforms, and aggregate data, using simple SQL constructs.
+
+Azure SQL Data Warehouse Vs Traditional Warehouse
+Some reasons to choose cloud SQL Warehouse over traditional warehouse are:
+
+In the cloud, you don’t need large initial capital expenses like on-premises, where it is difficult to manage all the approvals and justify the expense of buying large warehousing machines and licensing.
+
+In the cloud SQL warehouse, you don’t need a lot of recruitment to maintain your hardware solution, the virtualization, or the operating system.
+
+Scaling up/down the storage on demand is very difficult to an on-premises warehouse, where in the cloud these operations are handled quickly and transparently.
+
+A typical classic SQL server implements the symmetric multiprocessing (SMP) system, where it consolidates everything in a single large machine and executes queries.
+
+Azure SQL data warehouse utilizes the massively parallel processing (MPP) as it contains the data from the database and generates the results for a query you require, which was distributed across machines.
+
+Data Warehouse Units (DWU)
+Like DTU for the Azure SQL database, there is DWU for Azure SQL data warehouse, which is the measure of the computing power of database.
+
+The customer is not required to select the specific CPU or RAM or storage, where it is necessary to choose the amount of data warehouse units (DWU), which should be provisioned.
+
+Example: For a 100 DWUs provisioned database, it will take 30min to get the 6tables loaded, whereas for a 500 DWUs provisioned database it takes only 6min to get loaded the same.
+
+Query Orchestration System
+
+Control Node:
+The Control Node receives all the connections, orchestrates the queries and it sends the multiple queries to multiple nodes and gets back with the results as it always collaborates with the multiple Compute Nodes which are part of the MPP system.
+
+Compute Nodes:
+The Compute Nodes perform the following
+
+Reading data off the distribution, perform all the processing and scaling with the DWUs.
+The control node is independent of the number of DWUs present, but the number of Compute Nodes increase with the increase of your DWUs.
+
+Provisioning Azure SQL data Warehouse
+Provisioning Azure SQL Data Warehouse is similar to the provision of the Azure SQL Database.
+
+Create or Select the Server first and set up an admin login, password.
+
+Database name should be unique to a server.
+
+choose the source of the data, which can be a blank database, a sample data warehouse from Microsoft, or a backup from an existing warehouse.
+
+Choose the DWUs according to your business needs, the default warehouse provisioned is 400DWUs.
+
+Provisioning Azure SQL data Warehouse
+Provisioning Azure SQL Data Warehouse is similar to the provision of the Azure SQL Database.
+
+Create or Select the Server first and set up an admin login, password.
+
+Database name should be unique to a server.
+
+choose the source of the data, which can be a blank database, a sample data warehouse from Microsoft, or a backup from an existing warehouse.
+
+Choose the DWUs according to your business needs, the default warehouse provisioned is 400DWUs.
+
+Scaling Up The Database And Try Out Some CRUD Functionalities Using T-SQL 
 
 
+Lab 02 :  Azure Databases: Scale up the SQL Database
 
+01. Creation of Server 
+servername=azdpampleserver
+Location="eastus"
+serverusername="Mad_max"
+serverpassword="M@xSpass@199C0mplex"
+az sql server create --name $servername --resource-group $resource --location $Location --admin-user $serverusername --admin-password $serverpassword
 
+List all the servers 
+az sql server list -o table -g $resource
+
+02. Deploy an Azure SQL database instance with the blank database
+
+az sql db create -g $resource -s $servername -n mydb --edition Basic -c 5
+
+03. Processing T-SQL Queries
+Login to portal : portal , using the credentials generated in the 1st step.
+
+Add the following tables, and insert the values using T-SQL queries, in the same database using the query editor option in the configuration page of the database.
+
+Table 1: Employee Columns: Empname (varchar20) PRIMARY KEY, Empid (int), Age (int), Salary (int), address (varchar20)
+
+Table 2: Company Columns: Companyname (varchar20) PRIMARY KEY, Company_address (varchar20), no_of_employees (int), project (char)
+
+Insert five values in both tables using T-SQL commands, and display both the databases.
+
+ans :
+
+CREATE TABLE Employee (Empname varchar(20) PRIMARY KEY, Empid int, Age int, Salary int, address varchar(20));
+
+CREATE TABLE Company (Companyname varchar(20) PRIMARY KEY, Company_address varchar(20),  no_of_employees int, project char);
+
+INSERT INTO dbo.Employee  
+VALUES ('Amal', 1234, 23, 100000, 'Amal 1234'), ('Amal1', 1235, 23, 100001, 'Amal1 1234')
+    , ('Amal2', 1236, 36, 100002, 'Amal2 1234'), ('Amal3', 1237, 23, 100022, 'Amal3 1234'),
+    ('Amal4', 1238, 23, 101111, 'Amal5 1234');
+
+INSERT INTO dbo.Company  
+VALUES ('Saras', 'Sara 1234', 120, 'E' ), ('Saras1', 'Sara1 1234', 120, 'E')
+    , ('Saras2', 'Sara2 1234', 120, 'E'), ('Saras3', 'Sara3 1234', 120, 'E'),
+    ('Sara4s', 'Sara4 1234', 120, 'E');
+
+04) Scale up the same SQL database from Basic to S0 service objective, using Azure CLI.
+
+az sql db update -g $resource -s $servername -n mydb --edition Standard --capacity 10 --max-size 250GB

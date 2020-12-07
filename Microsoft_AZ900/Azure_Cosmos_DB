@@ -1,0 +1,72 @@
+
+Azure Cosmos DB
+
+Zooming into the Cosmos
+Azure Cosmos DB is globally distributed, multi-model database from Microsoft.
+
+It is a schema-less NoSQL database which supports SQL based queries (with few limitations).
+
+Provides storage across multiple Azure's geographic regions with elastic and independent throughput scaling.
+
+Offers throughput, latency, availability, and consistency guarantees through comprehensive Service Level Agreements(SLAs).
+
+Key Features
+Cosmos DB provides:
+Global distribution APIs
+Horizontal scaling
+Latency guarantees
+High availability
+Multiple Data models and their APIs
+SLAs
+
+Cosmos DB can provide near-real response times while handling massive amounts of data reads, and writes at a global scale for web, mobile, gaming, and IoT applications.
+
+Global Distribution
+Global Distribution or Turnkey global distribution facilitates data distribution near to the customers, over multiple Azure regions, while ensuring latency at its lowest.
+Requests are always sent to the nearest data center, using multi-homing APIs, without any configuration changes.
+APIs handle every task once write-regions and read-regions are set up.
+
+Multi-homing API capability makes application redeploying redundant, in case of addition/removal of regions from your Azure Cosmos DB database.
+
+Multi-Model Support
+Atom-record-sequence (ARS) based data model underlie the Cosmos DB, providing native support for multiple data models like document, key-value, graph, table, and column-family.
+
+Currently, the APIs for the following data models are supported with SDKs in multiple languages:
+
+SQL API
+MongoDB API
+Cassandra API
+Gremlin API
+Table API
+
+Future plans are laid out for additional data models and APIs 
+
+Elastic and Independent Scaling
+Throughput scaling can be configured at a per-second granularity.
+Modification of throughput is simple and flexible.
+Transparent and automatic Storage size scaling over Application Lifetime.
+Features are supported, by all available data centers, around the world.
+
+Schema-less Design
+Rapid iteration of Application schema is possible without concern of database schema and/or index management.
+Fully schema-agnostic - Do not require any schema or indexes, automatically indexes all the ingested data to serve blazing fast queries.
+
+Availability
+Guaranteed 99.99% availability SLA for all single region database accounts.
+Guaranteed 99.999% read availability for multi-region database accounts.
+Deployment to multiple Azure regions enables Higher availability and better performance.
+Dynamic region priority setting and Failure Simulation in one or more regions with zero-data-loss guarantees(beyond just the database) can help test the End-to-End availability of the application.
+
+Application Flexibility
+Guaranteed end-to-end latency of reads under 10 ms and indexed writes under 15 ms for a typical 1KB item, within the same Azure region, with a median latency under 5 ms.
+Latency guaranteed at the 99th percentile for almost real-time response in applications.
+Provided with Five well-defined, practical, and intuitive consistency models.
+The spectrum varies from strong SQL-like consistency to relaxed NoSQL-like eventual consistency which can be chosen and payed as per requirements.
+
+Cost Management
+As Per Microsoft Claims:
+5 to 10 times cost effective than a non-managed solution or an on-prem NoSQL solution.
+3 times cheaper than AWS DynamoDB or Google Spanner.
+Industry-leading, financially backed, comprehensive service level agreements (SLAs) for availability, latency, throughput, and consistency for mission-critical data and money back guarantees to the customers.
+
+

@@ -69,4 +69,144 @@ As Per Microsoft Claims:
 3 times cheaper than AWS DynamoDB or Google Spanner.
 Industry-leading, financially backed, comprehensive service level agreements (SLAs) for availability, latency, throughput, and consistency for mission-critical data and money back guarantees to the customers.
 
+Resources
+In Azure Cosmos DB, databases are containers for various collections used by each API.
+
+Collections are containers where individual entities are stores.
+
+Container names are API dependent:
+
+DocumentDB and MongoDB: Collection
+Gremlin: Graph
+Tables: Table
+Cosmos DB instance supports many types of resources apart from Databases and Containers.
+
+Types of Resources
+System resources : Have a fixed schema - Database accounts, Databases, Collections, Users, Permissions, Stored procedures, Triggers, and UDFs.
+
+User-defined Resources : Documents and attachments with no restrictions on the schema.
+
+In Cosmos DB, all the resources are represented and managed as standard-compliant JSON.
+
+Resource Properties
+_rid : Hierarchical, Unique,and system generated resource identifier.
+_etag : Concurrency control is made optimistic with it.
+_ts : Resource timestamp for last update.
+_self : Resource URI - Unique addressable
+id : Unique name defined by User(partition key value is same).System generated if undefined.
+
+Underscore (_) prefix in JSON representation represents system generated properties.
+
+Encapsulation
+id is a user-defined string (up to 256 charters) of a resource. System generated (for documents) and unique within the scope of a specific parent resource.
+_rid is system generated hierarchical resource identifier(RID) for each resource. Entire resource hierarchy along with internal representation is encoded in it, which enforces referential integrity in a distributed manner.
+RID is unique within a database account with an internal use for efficient routing without a requirement for cross partition lookups.
+_rid and _self values represents a resource in canonical and alternate forms.
+Both the id and the _rid properties are supported by REST APIs resource addressing and request routing.
+
+Representation and Addressing Resources
+Cosmos DB works with JSON documents of common standard compliance.
+
+Database or its contents can be addressed in two formats:
+
+/dbs/{dbName}/colls/{collName}/docs/{docId}
+/dbs/{dbName}/users/{userId}/permissions/{permissionId}
+Here /dbs is mandatory which is prefixed with the API endpoint of the database account. Extensions as in above format are added to get the specific resource
+
+Now with a basic understanding of different resource properties, let's take a deeper dive into the resources and their management.
+
+Account Management
+Azure portal is commonly used to manage Database account and multiple accounts can be given over an Azure subscription through admin access.
+
+Additionally, REST APIs and client SDKs can also be used to manage accounts.
+
+Database account must be configured on properties of Consistency Policy (default consistency level for all the collections for user-defined resources) and Authorization Keys(read-only keys that provide administrative access to the resources).
+
+Databases
+According to Microsoft,
+
+A Cosmos DB database is a logical container of one or more collections and users.
+Multiple Databases can be created based on subscription.
+Unlimited document storage is provided by partitioning within collections.
+Databases are elastic by default, with SSD(GB to PetaBytes) backed document storage and provisioned throughput.
+Collection addition/removal supported to meet application’s requirements.
+It is also a container in user perspective, which itself is a namespace for permissions, access and authorization.
+Their resource model is similar to other Cosmos DB Resources, CRUD and enumeration is easily possible using REST APIs or client SDKs.
+Guaranteed strong consistency for reading or querying the metadata of a database resource.
+If a Database is deleted, users and collections within database becomes inaccessible.
+
+Collections
+By Microsoft Definition,
+
+A Cosmos DB collection is a container for your JSON documents.
+
+Collections are SSD-backed, elastic, spanning over multiple physical partitions, and are unlimited in terms of storage and throughput.
+Supports automatic indexing.
+Configuring the indexing policy of each collection allows you to make performance and storage trade-offs associated with indexing.
+Queries over collections is facilitated by Cosmos DB SQL syntax reference.
+Syntax supports relational, spatial and hierarchical operators and JavaScript UDFs for further extension.
+
+Multi-document Transactions
+Azure Cosmos DB implicitly wraps the JavaScript-based stored procedures and triggers within an ambient ACID transaction. An exception in JavaScript execution aborts the transaction.
+
+It allows:
+
+JSON object Automatic indexing, recovery and concurrency control in database engine.
+Assignment, variable scoping, natural control flow expression, and exception handling primitive integration over database transactions directly in JavaScript .
+UDFs, triggers and Stored procedures can be registered after creating a collection( to specific collection) using REST APIs or SDKs.
+
+UDFs
+Application logic can be written to run directly within a transaction inside of the database engine.
+Javascript logic can be modeled as a stored procedure, trigger, or a UDF.
+Stored procedures or a triggers can perform queries or CRUD operations in a collection.
+UDFs can only be used for queries but not for data manipulation.
+Resource governance is Strict reservation-based for multi-tenancy. Only a fixed quantum of operating system resources is provided for stored procedure, trigger, or a UDF.
+External JavaScript libraries are prohibited and script blacklisting is enforced resource budgets allocated are exceeded.
+UDFs, triggers and Stored procedures with a collection are pre-compiled and stored as byte code and can be managed by REST APIs.
+
+Documents
+You can insert, replace, delete, read, enumerate, and query arbitrary JSON documents in a collection(maximum size - 2 MB).
+Codification of relationships (between documents ) through distinguishing properties or Special Annotations are not required. This is possible through the power of Cosmos DB SQL syntax w.r.t relational and hierarchical query operators.
+Supported by REST APIs and client SDKs.
+Database consistency policy defines the read consistency level of documents and can be overridden on a per-request basis.
+
+Media
+Binary blobs/media can be stored with Azure Cosmos DB (2 GB / account) or to a remote media store.
+An attachment in Cosmos DB is a special (JSON) document that references the media/blob stored elsewhere and stores its metadata.
+REST APIs and client SDKs support attachment management.
+Read consistency for attachment querying is same as the indexing mode of the collection ( Account’s consistency policy in case of "consistent").
+
+Users
+A Cosmos DB user is a logical namespace for grouping a set of permissions.
+Helps implement multi-tenancy.
+Permissions for a user correspond to the access control over various collections, documents, attachments, etc.
+Users can be mapped to a database, collection or multiple users get dedicated/set of collections.
+User management is possible through REST APIs or SDK.
+Strong consistency is provided for reading or querying the metadata of a user resource.
+
+Permissions
+In access control perspective, database accounts, databases, users, and permission are considered administrative resources, requiring administrative permissions and the master key.
+On the other hand, Collections, documents, attachments, stored procedures, triggers, and UDFs are scoped under a given database and considered application resources, requiring resource key.
+Master key is required to create a permission resource under a user which in turn generates a resource key.
+REST APIs and Client SDKs support permission Management.
+Strong consistency is provided for reading or querying the metadata of a permission.
+
+Global Distribution
+Cosmos DB currently supports writes to a single region but reads from multiple regions.
+Replication and addition/removal of database locations is possible through Global Distribution policies.
+Policy changes can be configured for failover testing either automatically or manually in an interactive way through the portal.
+Azure Portal facilitates this by, 'replicate data globally' option in Azure Cosmos DB account bindings. It provides a Map with available data centres to interactively add/remove database instances.
+
+Consistency
+Azure Cosmos DB provides 5 levels of consistency. Performance and Data confidence are parameters for consistency strategy.
+
+Here is the description for consistency levels:
+
+Strong : Write operation is performed on all the replicas.
+Bounded Staleness : Write operation is confirmed on configured no.of replications and reflected in other replications within the configured time.
+Session : Reads and Writes are consistent within a user session.
+Consistent prefix : Ensure there are no out-of-order reads and writes.
+Eventual : No guarantee for ordering in reads.
+
+
 

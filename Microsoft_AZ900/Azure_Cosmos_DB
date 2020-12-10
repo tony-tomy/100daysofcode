@@ -208,5 +208,198 @@ Session : Reads and Writes are consistent within a user session.
 Consistent prefix : Ensure there are no out-of-order reads and writes.
 Eventual : No guarantee for ordering in reads.
 
+Throughput
+The throughput of Azure Cosmos DB is elastic and scalable and throughput billing depends on the request units.
+A Request Unit(RU) is a logical abstraction over all of the physical resources it takes to perform an operation in the database.
+It includes things like CPU, Memory, IO, etc., that are required to perform the common CRUD operations.
+For example, a read operation on a single record requires 1 RU and a create operation requires up to 5 RUs(since it includes indexing, replication and other checks).
+Based on the no.of reads/writes required per sec the RUs can be approximated and the throughput can be configured. The throughput can also be configured to be high at peak times of application usage.
+
+Partitioning
+Partition Strategy and partition key are the main elements of partitioning Cosmos DB.
+Each collection has its own partition key defining the distribution of data in physical partitions underneath.
+There can be any number of values in a partition key and any number of partitions under the hood.
+The partition keys are spread over ranges and are managed by the database engine.
+Metrics of partition usage can be found and analyzed, to prevent over utilization and throttling.
+
+Indexing
+Cosmos DB supports auto-indexing. All the properties and entities ingested into the database of any model are completely indexed while maintaining read and write efficiency.
+Cosmos DB supports hash indexes, range indexes and geospatial indexes.
+Index policy from account settings further tunes indexing for performance .
+Lazy indexing when selected builds the index as a background task using leftover request units on your container.
+Further tuning is posssible through, Index paths - a set of included/excluded paths which must be indexed and precision of the index, which is the number of bytes that will be preserved for that index term.
+
+Security
+Cosmos DB provides network security, encryption and authorization.
+
+Network Security:
+
+IP Firewalls
+Whitelisting secure/trusted URLs.
+Encryption:
+
+TLS 1.2 or SSL encryption on requests.
+AES Encryption on Physical Storage.
+Authorization:
+
+Role-based Authorization model similar to all other Azure models.
+Key based data authorization.
+Customisable Authorization Tokens.
+
+Change Feed: Change Feed can be read using SDK or Azure Functions and used for updating caches, search indexes, data tiering, migrations, analytics, etc..
+
+Time to Live: Expiration time for documents such as logs, machine-generated data, etc., can be configured over TTL per collection and can be overridden on per document basis in order to purge redundant data on Cosmos DB.
+
+Unique Keys: Data Integrity can be achieved by developers by declaring one of the properties in the collection as a unique key. For example, for a social application, data like Email ID can be declared as a primary key in-order to avoid duplication.
+
+Availability: Manual and automatic failovers can be configured to test the availability of the database.
+
+Backup and Restore: Automatic Backups are taken over every 4 hours and the latest 2 copies are retained. If any collection is deleted, the backup is retained for 30 days. Online backups do not consume any resource units and complete restore can be done to another account and be validated by the user over data corruption.
+
+Pre-Payment: Commitment to Azure Cosmos DB by pre-payment for required resources will save the costs up to 65%. The commitment can be done for either 1 or 3 years as of now.
+
+Azure CLI 2.0
+Cosmos DB can be configured with AZure CLI 2.0 Few of the commands are listed here regarding management of Cosmos DB.
+
+Account Management commands include commands for CRUD operations on accounts as well as commands which facilitate the customisation/configuration of Azure account features. Let's have look at the provided Azure commands.
+
+Note: Elements under: `` are mandatory, [] are optional, {} are available options.
+
+Checking the availability of a unique Account name:
+az cosmosdb check-name-exists --name CosmosDbName
+
+Creating Azure Account:
+az cosmosdb create --`name`
+                   --`resource-group`
+                   [--capabilities]
+                   [--default-consistency-level {BoundedStaleness, ConsistentPrefix, Eventual, Session, Strong}]
+                   [--enable-automatic-failover {false, true}]
+                   [--enable-virtual-network {false, true}]
+                   [--ip-range-filter]
+                   [--kind {GlobalDocumentDB, MongoDB, Parse}]
+                   [--locations]
+                   [--max-interval]
+                   [--max-staleness-prefix]
+                   [--tags]
+                   [--virtual-network-rules]
+
+To Delete a Database Account:
+az cosmosdb delete --`name`
+                   --`resource-group`
+
+To retrieve details of database account:
+az cosmosdb show --`name`
+                   --`resource-group`
+
+To update a Database Account(Similar to create sans kind):
+az cosmosdb update --`name`
+                   --`resource-group`
+                   [--capabilities]
+                   [--default-consistency-level {BoundedStaleness, ConsistentPrefix, Eventual, Session, Strong}]
+                   [--enable-automatic-failover {false, true}]
+                   [--enable-virtual-network {false, true}]
+                   [--ip-range-filter]
+                   [--locations]
+                   [--max-interval]
+                   [--max-staleness-prefix]
+                   [--tags]
+                   [--virtual-network-rules]
+
+To Change Failover priority:
+az cosmosdb failover-priority-change --`failover-policies` --`name` --`resource-group`
+
+To list access keys/read-only access keys:
+az cosmosdb list-keys/list-read-only-keys --`name` --`resource-group`
+
+To regenerate access keys:
+az cosmosdb regenerate-key --`key-kind`{primary, primaryReadonly, secondary, secondaryReadonly}
+                           --`name`
+                           --`resource-group`
+
+List the accounts under the user/resource group:
+az cosmosdb list [--resource-group]
+
+To list connection strings for Database Account:
+az cosmosdb list-connection-strings --`name`
+                                    --`resource-group`
+
+Database Management
+CRUD operations can be performed on Databases using the Azure CLI. All the commands have the similar syntax with minor changes
+
+To Create/Update/Delete/Show/Check existence of a Database:
+az cosmosdb database {word} --`db-name`
+                            [--key]
+                            [--name]
+                            [--resource-group-name]
+                            [--url-connection]
+word can be create, update, delete, show or exists
+
+To list all Databases under a Account:
+az cosmosdb database list [--key]
+                          [--name]
+                          [--resource-group-name]
+                          [--url-connection]
+
+Collection Management
+Collection Management commands also follow a similar pattern as the Database commands with minor changes between themselves.
+
+To Create/Update a Collection:
+az cosmosdb collection create/update --`collection-name`
+                              --`db-name`
+                              [--default-ttl]
+                              [--indexing-policy]
+                              [--key]
+                              [--name]
+                              [--partition-key-path]
+                              [--resource-group-name]
+                              [--throughput]
+                              [--url-connection]
+[--partition-key-path] is not available under update
+
+To show/delete/check the existence of a collection:
+az cosmosdb collection {word} --`collection-name`
+                              --`db-name`
+                              [--key]
+                              [--name]
+                              [--resource-group-name]
+                              [--url-connection]
+word can be show, delete or exists.
+
+Introducing SQL API
+Azure Cosmos DB currently supports 5 APIs for different use cases and each with their own set of features.
+In this topic, you will get to learn about the most commonly used SQL API.
+Azure Cosmos DB evolved from Azure Document DB and the SQL API is the current offering renamed over Document DB API.
+The SQL API allows interaction with your NoSQL database using JavaScript and SQL.
+
+Features
+SQL API in Cosmos DB offers:
+Elastically scalable throughput and storage.
+Multi-region replication.
+Ad hoc queries with familiar SQL syntax.
+JavaScript execution within the database.
+Tunable consistency levels.
+Automatic Indexing.
+Change Feed Support.
+Fully managed database and machine resources by Microsoft.
+REST API framework and Open sourced SDKs.
+
+Querying
+Similar to SQL query language and is based on document identifiers, properties, complex objects or existence of specific properties.
+Queries can be done without the need to know or enforce a specific schema on each document.
+Stored procedures, triggers and user-defined functions (UDFs) within database can be written in JavaScript.
+JavaScript facilitates logic execution in transactional manner within database engine.
+Full support for SDKs and REST APIs.
+
+Data Modelling
+SQL API stores data in NoSQL form (JSON Documents).
+Modelling thumb rule is to remember the database is a distributed and not a single machine SQL database.
+Avoid Joins and foreign keys.
+Data Model must be able to leverage JSON capability of storing arrays and objects.
+
+Document Management
+Portal: The Data Explorer is a tool embedded within the Azure Cosmos DB blade in the Azure Portal that allows you to view, modify and add documents to your SQL API collections.
+SDK: SDKs are available across many languages like Python, Java,.Net and Node.Js.
+REST API: JSON documents are managed through a well-defined hierarchy of database resources and are addressable using a unique URI.
+Data Migration Tool: The open-source data migration tool allows you to import data into a SQL API collection from various sources including MongoDB, SQL Server, Table Storage, Amazon DynamoDB, HBase and other DocumentDB API collections.
 
 

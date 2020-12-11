@@ -402,4 +402,14 @@ SDK: SDKs are available across many languages like Python, Java,.Net and Node.Js
 REST API: JSON documents are managed through a well-defined hierarchy of database resources and are addressable using a unique URI.
 Data Migration Tool: The open-source data migration tool allows you to import data into a SQL API collection from various sources including MongoDB, SQL Server, Table Storage, Amazon DynamoDB, HBase and other DocumentDB API collections.
 
+Programmability Features
+Javascript functions can be written and stored as collection level resources to run logic in the database. They can be:
 
+Stored Procedures: Runs a javascript function and returns the result.
+Pre/Post Triggers: Actions that can occur prior to/after performing an operation on a document and can be specified when to run over the CRUD operations.
+User-defined Functions (UDF): Extends the SQL query language available within the SQL API by implementing custom functions.
+
+Advanced Features
+SQL/DocumentDB API supports advanced features such as Change Feed and Geo-spatial Data.
+
+Geo-spatial Data can be queried and processed using the GeoJSON format and supports Point data of coordinates or Polygon data for boundaries.

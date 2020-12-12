@@ -413,3 +413,131 @@ Advanced Features
 SQL/DocumentDB API supports advanced features such as Change Feed and Geo-spatial Data.
 
 Geo-spatial Data can be queried and processed using the GeoJSON format and supports Point data of coordinates or Polygon data for boundaries.
+
+MongoDB API
+The Mongo DB wire protocol ensures to use Cosmos DB databases as the data store for apps written for MongoDB with existing drivers, expertise, tools and code.
+Connection can be made to either MongoDB databases or Cosmos DB database and swapping of connections is supported.
+Supported versions of MongoDB Protocol facilitates application development using MongoDB and but production deployment Azure Cosmos DB service.
+
+Features
+Apart from features like Automatic Indexing, replication and elastic scalability Cosmos DB's tunable consistency works in tandem with MongoDB's consistency levels.
+
+Cosmos DB	Mongo DB
+Eventual	Eventual
+Consistent Prefix	Eventual with consistent order
+Session	Eventual with consistent order
+Bounded Staleness	Strong
+Strong	Strong
+
+MongoDB syntax support
+Basic CRUD Operations are directly supported with Mongo shell utility.
+Mongo shell is an interactive command prompt enabling direct manipulation of databases, documents and collections of current MongoDB instance.
+MongoDB API is defaultly compatible with MongoDB Server v 3.2.
+Features or query operators changs in MongoDB v 3.4 are currently in preview.
+
+Query Support
+MongoDB API supports comprehensive list of query language constructs.
+These include Database commands, Aggregate commands, operators and also several other additional operators.
+
+Note: MongoDB API do not support $eval and $where operators and cursor.sort() method.
+
+Other Supported Features
+Unique indexes : Azure Cosmos DB supports auto-indexing which is 'unique'. Custom indexes are also supported by using the createIndex command, including the 'unique’ constraint.
+Time-to-live (TTL) : Supports a relative time-to-live (TTL) based on the timestamp of the document. TTL can be enabled through the Azure portal.
+User and role management : Does not yet support users and roles. Azure portal (Connection String page) must be used to obtain read-write and read-only passwords/keys and Role based access control (RBAC).
+Replication : Azure Cosmos DB supports only automatic(no manual), native replication.
+Write Concern : Write concern specified by client code is ignored. All writes are all automatically Quorum by default.
+Sharding : Supports only automatic(no manual), server-side sharding.
+
+GraphDB and Gremlin
+Gremlin API of Cosmos DB enables us to store and operate on graph data.
+Gremlin API supports Graph data modelling and travesal.
+GraphDB is used particularly in the case when multiple relationships between entities of data are equally important as the entities themselves.
+Multiple models, like document and graph, can be used within the same containers/databases.
+A Document container when used to store graph data along with documents, improves productivity with SQL queries over JSON and Gremlin queries for graphs over the same data.
+
+Features
+Basic features of Azure Cosmos DB like Elastic throughput, replication, availability, tunable consistency and automatic indexing are all covered with Gremlin API.
+Along with these, other features exclusive to Gremlin API include:
+Fast queries and traversals: Complete support for Gremlin Query language with performance leverages through auto-indexing for faster traversals through heterogenous vertices.
+Compatibility with Apache TinkerPop: Natively supports the open-source Apache TinkerPop standard and can be integrated with other TinkerPop-enabled graph systems such as Neo4j or Titan.
+
+Modelling Data
+Data Modelling is similar to that of any Graph DB.
+The entities/objects are known as vertices and the relationships between them are known as edges.
+The attributes of vertices and edges are known as properties.
+Labels can be used on edges and vertices to describe their type/group them.
+Note: For more data on GraphDB data modelling, Please go through Neo4j course. Neo4j is compatible with Apache TinkerPop and its query language CQL is similar to Gremlin
+
+The Gremlin Query Language
+Gremlin Query Language is standardised Graph Traversal Language over several Graph Databases.
+Azure Cosmos DB uses the GraphSON format when returning results from Gremlin operations.
+GraphSON is the Gremlin standard format for representing vertices, edges, and properties (single and multi-valued properties) using JSON.
+
+Cassandra API
+Cassandra is a column based NoSQL database and is queried using Cassandra Query Language(CQL)
+Applications that are written for Apache Cassandra can use the Cassandra API provided by Azure Cosmos DB to leverage the basic Cosmos DB features such as Global Distribution, Elastic Throughput, etc..
+Cassandra API is currently in preview and can be used similarly as the MongoDB API.
+
+Features and Usage
+Cassandra API approach is similar to the MongoDB API approach.
+It has the basic features of Cosmos DB regarding global distribution, consistency, etc..
+CQLv4 compatible applications with Apache licensed drivers can communicate with the Azure Cosmos DB Cassandra API.
+Code base may require trivial code changes to be used with Wire protocol level compatibility, via tools and SDKs.
+Interaction is possible through using the Cassandra Query Language based tools (like CQLSH) and Cassandra client drivers.
+Cassandra API usage is similar to that of using Cassandra on Linux/Server.
+The use cases are similar to that of a Cassandra DB which include Messaging, Social Media, Email applications etc..
+
+Querying with CQL
+Cassandra API completely supports Cassandra Query Language(CQL).
+CQL can be used after connecting to the Cosmos DB over the CQL Shell.
+CQL shell can also be used in the Azure Portal.
+Cassandra API also supports all the tools available for Cassandra Database.
+However, few limitations are imposed regarding queries regarding joins which may be fixed once the API comes out of its current preview mode.
+
+Additional Features
+Unlike Mongo DB, Cassandra in its licensed distribution is built over performance rather than Developer friendliness.
+Setting up Clusters, consistency levels and managing indexing and partitioning takes quite an amount of efforts.
+By switching over to Cosmos DB with Cassandra API, the configuration and setting up of database consistency and replication are taken care of by the Cosmos DB configuration making it easy for developers to configure and deploy apps.
+
+Table API
+Azure Cosmos DB provides the Table API for applications that are written for Azure Table storage.
+Applications can migrate from Azure Table storage to Azure Cosmos DB by using the Table API with no code changes.
+Client SDKs are available for .NET, Java, Python, and Node.js.
+
+Features
+Table API provides all the premium features of Azure Cosmos DB such as Global Distribution, Consistency, Throughput, etc..
+The features specific to the Table API are Secondary indexing, custom indexes and Query Optimisation.
+Automatic and Complete Indexing on all properties without index management enables fast querying over the Table Storage.
+
+Modelling Table Data
+Entities within the Tables API is represented as a collection of key-value pairs.
+An Entity has a partition key, row key and its properties are as denoted key/value pairs.
+Partition Key: Similar to a shard key and represents how the data in a table is partitioned or spread across shards.
+Row Key: Unique identifier for an entity within a single partition. Two entities can have the same row key as long as they are in different partitions.
+A composite of both the row key and partition key is used to uniquely identify and reference an entity.
+
+CRUD Operations
+Transactional functionality in Storage Tables is similar to that of the traditional Create, Read, Update, Delete (CRUD) in other data sources.
+
+This model enables dedicated client libraries or REST API endpoints with HTTP methods to access and modify entities.
+
+Base URL for CRUD Operations is:
+
+https://[account].table.core.windows.net/[table]
+
+GET method with the URL format:
+
+https://[account].table.core.windows.net/<a href="[partition key], [row key]" title="" target="_blank">table</a>
+
+can fetch data of the referred entity
+Similarly PUT, POST, DELETE and MERGE methods can also be used.
+
+Querying
+OData syntax along with HTTP GET method is used for querying Table Storage.
+OData protocol is a standard to query any data using an HTTP endpoint.
+Typically in REST API services, the GET endpoint can only return either a specific item or all items.
+But, OData offers a query syntax allowing you to search for a single item or set of items from a collection using GET requests.
+Query parameters permit the user to filter, paginate, or project the result of your requests.
+
+

@@ -540,4 +540,74 @@ Typically in REST API services, the GET endpoint can only return either a specif
 But, OData offers a query syntax allowing you to search for a single item or set of items from a collection using GET requests.
 Query parameters permit the user to filter, paginate, or project the result of your requests.
 
+Lab 01 : Getting Started With Cosmos DB
+
+steps
+Create a Database with SQL API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+Change consistency level to Eventual.
+Create and grant permissions to users.
+
+Lab 02 : Mongo DB
+
+steps
+Create a Database with MongoDB API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Perform CRUD Operations on any file.
+Query using Mongo Shell.
+Use the available MongoDB tools to interact with the database.
+
+Lab 03 : Gremlin API
+
+steps
+Create a database with Gremlin API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Use Gremlin Query Language to create two vertices, 'Customer' and 'Product'.
+Create a relationship between them as bought.
+Create multiple vertices, and try traversal with Gremlin Query Language to visualize data as graphs.
+
+Lab 04 : Cassandra API
+
+steps
+Create a database with Cassandra API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Create a keyspace.
+Add tables using CQL Shell.
+Query using CQL.
+Explore and work with Cassandra tools.
+
+Lab 05 : SQL API
+
+steps
+Create a Database with SQL API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Create a document and update it.
+Read the data using SQL API queries.
+Delete the document.
+
+Lab 06 : Azure Cosmos DB - Table API
+
+steps
+Create a database with Table API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Add a data table.
+Query the data and update it.
+Write OData queries to perform queries over collection.
+
 

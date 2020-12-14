@@ -69,4 +69,577 @@ As Per Microsoft Claims:
 3 times cheaper than AWS DynamoDB or Google Spanner.
 Industry-leading, financially backed, comprehensive service level agreements (SLAs) for availability, latency, throughput, and consistency for mission-critical data and money back guarantees to the customers.
 
+Resources
+In Azure Cosmos DB, databases are containers for various collections used by each API.
+
+Collections are containers where individual entities are stores.
+
+Container names are API dependent:
+
+DocumentDB and MongoDB: Collection
+Gremlin: Graph
+Tables: Table
+Cosmos DB instance supports many types of resources apart from Databases and Containers.
+
+Types of Resources
+System resources : Have a fixed schema - Database accounts, Databases, Collections, Users, Permissions, Stored procedures, Triggers, and UDFs.
+
+User-defined Resources : Documents and attachments with no restrictions on the schema.
+
+In Cosmos DB, all the resources are represented and managed as standard-compliant JSON.
+
+Resource Properties
+_rid : Hierarchical, Unique,and system generated resource identifier.
+_etag : Concurrency control is made optimistic with it.
+_ts : Resource timestamp for last update.
+_self : Resource URI - Unique addressable
+id : Unique name defined by User(partition key value is same).System generated if undefined.
+
+Underscore (_) prefix in JSON representation represents system generated properties.
+
+Encapsulation
+id is a user-defined string (up to 256 charters) of a resource. System generated (for documents) and unique within the scope of a specific parent resource.
+_rid is system generated hierarchical resource identifier(RID) for each resource. Entire resource hierarchy along with internal representation is encoded in it, which enforces referential integrity in a distributed manner.
+RID is unique within a database account with an internal use for efficient routing without a requirement for cross partition lookups.
+_rid and _self values represents a resource in canonical and alternate forms.
+Both the id and the _rid properties are supported by REST APIs resource addressing and request routing.
+
+Representation and Addressing Resources
+Cosmos DB works with JSON documents of common standard compliance.
+
+Database or its contents can be addressed in two formats:
+
+/dbs/{dbName}/colls/{collName}/docs/{docId}
+/dbs/{dbName}/users/{userId}/permissions/{permissionId}
+Here /dbs is mandatory which is prefixed with the API endpoint of the database account. Extensions as in above format are added to get the specific resource
+
+Now with a basic understanding of different resource properties, let's take a deeper dive into the resources and their management.
+
+Account Management
+Azure portal is commonly used to manage Database account and multiple accounts can be given over an Azure subscription through admin access.
+
+Additionally, REST APIs and client SDKs can also be used to manage accounts.
+
+Database account must be configured on properties of Consistency Policy (default consistency level for all the collections for user-defined resources) and Authorization Keys(read-only keys that provide administrative access to the resources).
+
+Databases
+According to Microsoft,
+
+A Cosmos DB database is a logical container of one or more collections and users.
+Multiple Databases can be created based on subscription.
+Unlimited document storage is provided by partitioning within collections.
+Databases are elastic by default, with SSD(GB to PetaBytes) backed document storage and provisioned throughput.
+Collection addition/removal supported to meet application’s requirements.
+It is also a container in user perspective, which itself is a namespace for permissions, access and authorization.
+Their resource model is similar to other Cosmos DB Resources, CRUD and enumeration is easily possible using REST APIs or client SDKs.
+Guaranteed strong consistency for reading or querying the metadata of a database resource.
+If a Database is deleted, users and collections within database becomes inaccessible.
+
+Collections
+By Microsoft Definition,
+
+A Cosmos DB collection is a container for your JSON documents.
+
+Collections are SSD-backed, elastic, spanning over multiple physical partitions, and are unlimited in terms of storage and throughput.
+Supports automatic indexing.
+Configuring the indexing policy of each collection allows you to make performance and storage trade-offs associated with indexing.
+Queries over collections is facilitated by Cosmos DB SQL syntax reference.
+Syntax supports relational, spatial and hierarchical operators and JavaScript UDFs for further extension.
+
+Multi-document Transactions
+Azure Cosmos DB implicitly wraps the JavaScript-based stored procedures and triggers within an ambient ACID transaction. An exception in JavaScript execution aborts the transaction.
+
+It allows:
+
+JSON object Automatic indexing, recovery and concurrency control in database engine.
+Assignment, variable scoping, natural control flow expression, and exception handling primitive integration over database transactions directly in JavaScript .
+UDFs, triggers and Stored procedures can be registered after creating a collection( to specific collection) using REST APIs or SDKs.
+
+UDFs
+Application logic can be written to run directly within a transaction inside of the database engine.
+Javascript logic can be modeled as a stored procedure, trigger, or a UDF.
+Stored procedures or a triggers can perform queries or CRUD operations in a collection.
+UDFs can only be used for queries but not for data manipulation.
+Resource governance is Strict reservation-based for multi-tenancy. Only a fixed quantum of operating system resources is provided for stored procedure, trigger, or a UDF.
+External JavaScript libraries are prohibited and script blacklisting is enforced resource budgets allocated are exceeded.
+UDFs, triggers and Stored procedures with a collection are pre-compiled and stored as byte code and can be managed by REST APIs.
+
+Documents
+You can insert, replace, delete, read, enumerate, and query arbitrary JSON documents in a collection(maximum size - 2 MB).
+Codification of relationships (between documents ) through distinguishing properties or Special Annotations are not required. This is possible through the power of Cosmos DB SQL syntax w.r.t relational and hierarchical query operators.
+Supported by REST APIs and client SDKs.
+Database consistency policy defines the read consistency level of documents and can be overridden on a per-request basis.
+
+Media
+Binary blobs/media can be stored with Azure Cosmos DB (2 GB / account) or to a remote media store.
+An attachment in Cosmos DB is a special (JSON) document that references the media/blob stored elsewhere and stores its metadata.
+REST APIs and client SDKs support attachment management.
+Read consistency for attachment querying is same as the indexing mode of the collection ( Account’s consistency policy in case of "consistent").
+
+Users
+A Cosmos DB user is a logical namespace for grouping a set of permissions.
+Helps implement multi-tenancy.
+Permissions for a user correspond to the access control over various collections, documents, attachments, etc.
+Users can be mapped to a database, collection or multiple users get dedicated/set of collections.
+User management is possible through REST APIs or SDK.
+Strong consistency is provided for reading or querying the metadata of a user resource.
+
+Permissions
+In access control perspective, database accounts, databases, users, and permission are considered administrative resources, requiring administrative permissions and the master key.
+On the other hand, Collections, documents, attachments, stored procedures, triggers, and UDFs are scoped under a given database and considered application resources, requiring resource key.
+Master key is required to create a permission resource under a user which in turn generates a resource key.
+REST APIs and Client SDKs support permission Management.
+Strong consistency is provided for reading or querying the metadata of a permission.
+
+Global Distribution
+Cosmos DB currently supports writes to a single region but reads from multiple regions.
+Replication and addition/removal of database locations is possible through Global Distribution policies.
+Policy changes can be configured for failover testing either automatically or manually in an interactive way through the portal.
+Azure Portal facilitates this by, 'replicate data globally' option in Azure Cosmos DB account bindings. It provides a Map with available data centres to interactively add/remove database instances.
+
+Consistency
+Azure Cosmos DB provides 5 levels of consistency. Performance and Data confidence are parameters for consistency strategy.
+
+Here is the description for consistency levels:
+
+Strong : Write operation is performed on all the replicas.
+Bounded Staleness : Write operation is confirmed on configured no.of replications and reflected in other replications within the configured time.
+Session : Reads and Writes are consistent within a user session.
+Consistent prefix : Ensure there are no out-of-order reads and writes.
+Eventual : No guarantee for ordering in reads.
+
+Throughput
+The throughput of Azure Cosmos DB is elastic and scalable and throughput billing depends on the request units.
+A Request Unit(RU) is a logical abstraction over all of the physical resources it takes to perform an operation in the database.
+It includes things like CPU, Memory, IO, etc., that are required to perform the common CRUD operations.
+For example, a read operation on a single record requires 1 RU and a create operation requires up to 5 RUs(since it includes indexing, replication and other checks).
+Based on the no.of reads/writes required per sec the RUs can be approximated and the throughput can be configured. The throughput can also be configured to be high at peak times of application usage.
+
+Partitioning
+Partition Strategy and partition key are the main elements of partitioning Cosmos DB.
+Each collection has its own partition key defining the distribution of data in physical partitions underneath.
+There can be any number of values in a partition key and any number of partitions under the hood.
+The partition keys are spread over ranges and are managed by the database engine.
+Metrics of partition usage can be found and analyzed, to prevent over utilization and throttling.
+
+Indexing
+Cosmos DB supports auto-indexing. All the properties and entities ingested into the database of any model are completely indexed while maintaining read and write efficiency.
+Cosmos DB supports hash indexes, range indexes and geospatial indexes.
+Index policy from account settings further tunes indexing for performance .
+Lazy indexing when selected builds the index as a background task using leftover request units on your container.
+Further tuning is posssible through, Index paths - a set of included/excluded paths which must be indexed and precision of the index, which is the number of bytes that will be preserved for that index term.
+
+Security
+Cosmos DB provides network security, encryption and authorization.
+
+Network Security:
+
+IP Firewalls
+Whitelisting secure/trusted URLs.
+Encryption:
+
+TLS 1.2 or SSL encryption on requests.
+AES Encryption on Physical Storage.
+Authorization:
+
+Role-based Authorization model similar to all other Azure models.
+Key based data authorization.
+Customisable Authorization Tokens.
+
+Change Feed: Change Feed can be read using SDK or Azure Functions and used for updating caches, search indexes, data tiering, migrations, analytics, etc..
+
+Time to Live: Expiration time for documents such as logs, machine-generated data, etc., can be configured over TTL per collection and can be overridden on per document basis in order to purge redundant data on Cosmos DB.
+
+Unique Keys: Data Integrity can be achieved by developers by declaring one of the properties in the collection as a unique key. For example, for a social application, data like Email ID can be declared as a primary key in-order to avoid duplication.
+
+Availability: Manual and automatic failovers can be configured to test the availability of the database.
+
+Backup and Restore: Automatic Backups are taken over every 4 hours and the latest 2 copies are retained. If any collection is deleted, the backup is retained for 30 days. Online backups do not consume any resource units and complete restore can be done to another account and be validated by the user over data corruption.
+
+Pre-Payment: Commitment to Azure Cosmos DB by pre-payment for required resources will save the costs up to 65%. The commitment can be done for either 1 or 3 years as of now.
+
+Azure CLI 2.0
+Cosmos DB can be configured with AZure CLI 2.0 Few of the commands are listed here regarding management of Cosmos DB.
+
+Account Management commands include commands for CRUD operations on accounts as well as commands which facilitate the customisation/configuration of Azure account features. Let's have look at the provided Azure commands.
+
+Note: Elements under: `` are mandatory, [] are optional, {} are available options.
+
+Checking the availability of a unique Account name:
+az cosmosdb check-name-exists --name CosmosDbName
+
+Creating Azure Account:
+az cosmosdb create --`name`
+                   --`resource-group`
+                   [--capabilities]
+                   [--default-consistency-level {BoundedStaleness, ConsistentPrefix, Eventual, Session, Strong}]
+                   [--enable-automatic-failover {false, true}]
+                   [--enable-virtual-network {false, true}]
+                   [--ip-range-filter]
+                   [--kind {GlobalDocumentDB, MongoDB, Parse}]
+                   [--locations]
+                   [--max-interval]
+                   [--max-staleness-prefix]
+                   [--tags]
+                   [--virtual-network-rules]
+
+To Delete a Database Account:
+az cosmosdb delete --`name`
+                   --`resource-group`
+
+To retrieve details of database account:
+az cosmosdb show --`name`
+                   --`resource-group`
+
+To update a Database Account(Similar to create sans kind):
+az cosmosdb update --`name`
+                   --`resource-group`
+                   [--capabilities]
+                   [--default-consistency-level {BoundedStaleness, ConsistentPrefix, Eventual, Session, Strong}]
+                   [--enable-automatic-failover {false, true}]
+                   [--enable-virtual-network {false, true}]
+                   [--ip-range-filter]
+                   [--locations]
+                   [--max-interval]
+                   [--max-staleness-prefix]
+                   [--tags]
+                   [--virtual-network-rules]
+
+To Change Failover priority:
+az cosmosdb failover-priority-change --`failover-policies` --`name` --`resource-group`
+
+To list access keys/read-only access keys:
+az cosmosdb list-keys/list-read-only-keys --`name` --`resource-group`
+
+To regenerate access keys:
+az cosmosdb regenerate-key --`key-kind`{primary, primaryReadonly, secondary, secondaryReadonly}
+                           --`name`
+                           --`resource-group`
+
+List the accounts under the user/resource group:
+az cosmosdb list [--resource-group]
+
+To list connection strings for Database Account:
+az cosmosdb list-connection-strings --`name`
+                                    --`resource-group`
+
+Database Management
+CRUD operations can be performed on Databases using the Azure CLI. All the commands have the similar syntax with minor changes
+
+To Create/Update/Delete/Show/Check existence of a Database:
+az cosmosdb database {word} --`db-name`
+                            [--key]
+                            [--name]
+                            [--resource-group-name]
+                            [--url-connection]
+word can be create, update, delete, show or exists
+
+To list all Databases under a Account:
+az cosmosdb database list [--key]
+                          [--name]
+                          [--resource-group-name]
+                          [--url-connection]
+
+Collection Management
+Collection Management commands also follow a similar pattern as the Database commands with minor changes between themselves.
+
+To Create/Update a Collection:
+az cosmosdb collection create/update --`collection-name`
+                              --`db-name`
+                              [--default-ttl]
+                              [--indexing-policy]
+                              [--key]
+                              [--name]
+                              [--partition-key-path]
+                              [--resource-group-name]
+                              [--throughput]
+                              [--url-connection]
+[--partition-key-path] is not available under update
+
+To show/delete/check the existence of a collection:
+az cosmosdb collection {word} --`collection-name`
+                              --`db-name`
+                              [--key]
+                              [--name]
+                              [--resource-group-name]
+                              [--url-connection]
+word can be show, delete or exists.
+
+Introducing SQL API
+Azure Cosmos DB currently supports 5 APIs for different use cases and each with their own set of features.
+In this topic, you will get to learn about the most commonly used SQL API.
+Azure Cosmos DB evolved from Azure Document DB and the SQL API is the current offering renamed over Document DB API.
+The SQL API allows interaction with your NoSQL database using JavaScript and SQL.
+
+Features
+SQL API in Cosmos DB offers:
+Elastically scalable throughput and storage.
+Multi-region replication.
+Ad hoc queries with familiar SQL syntax.
+JavaScript execution within the database.
+Tunable consistency levels.
+Automatic Indexing.
+Change Feed Support.
+Fully managed database and machine resources by Microsoft.
+REST API framework and Open sourced SDKs.
+
+Querying
+Similar to SQL query language and is based on document identifiers, properties, complex objects or existence of specific properties.
+Queries can be done without the need to know or enforce a specific schema on each document.
+Stored procedures, triggers and user-defined functions (UDFs) within database can be written in JavaScript.
+JavaScript facilitates logic execution in transactional manner within database engine.
+Full support for SDKs and REST APIs.
+
+Data Modelling
+SQL API stores data in NoSQL form (JSON Documents).
+Modelling thumb rule is to remember the database is a distributed and not a single machine SQL database.
+Avoid Joins and foreign keys.
+Data Model must be able to leverage JSON capability of storing arrays and objects.
+
+Document Management
+Portal: The Data Explorer is a tool embedded within the Azure Cosmos DB blade in the Azure Portal that allows you to view, modify and add documents to your SQL API collections.
+SDK: SDKs are available across many languages like Python, Java,.Net and Node.Js.
+REST API: JSON documents are managed through a well-defined hierarchy of database resources and are addressable using a unique URI.
+Data Migration Tool: The open-source data migration tool allows you to import data into a SQL API collection from various sources including MongoDB, SQL Server, Table Storage, Amazon DynamoDB, HBase and other DocumentDB API collections.
+
+Programmability Features
+Javascript functions can be written and stored as collection level resources to run logic in the database. They can be:
+
+Stored Procedures: Runs a javascript function and returns the result.
+Pre/Post Triggers: Actions that can occur prior to/after performing an operation on a document and can be specified when to run over the CRUD operations.
+User-defined Functions (UDF): Extends the SQL query language available within the SQL API by implementing custom functions.
+
+Advanced Features
+SQL/DocumentDB API supports advanced features such as Change Feed and Geo-spatial Data.
+
+Geo-spatial Data can be queried and processed using the GeoJSON format and supports Point data of coordinates or Polygon data for boundaries.
+
+MongoDB API
+The Mongo DB wire protocol ensures to use Cosmos DB databases as the data store for apps written for MongoDB with existing drivers, expertise, tools and code.
+Connection can be made to either MongoDB databases or Cosmos DB database and swapping of connections is supported.
+Supported versions of MongoDB Protocol facilitates application development using MongoDB and but production deployment Azure Cosmos DB service.
+
+Features
+Apart from features like Automatic Indexing, replication and elastic scalability Cosmos DB's tunable consistency works in tandem with MongoDB's consistency levels.
+
+Cosmos DB	Mongo DB
+Eventual	Eventual
+Consistent Prefix	Eventual with consistent order
+Session	Eventual with consistent order
+Bounded Staleness	Strong
+Strong	Strong
+
+MongoDB syntax support
+Basic CRUD Operations are directly supported with Mongo shell utility.
+Mongo shell is an interactive command prompt enabling direct manipulation of databases, documents and collections of current MongoDB instance.
+MongoDB API is defaultly compatible with MongoDB Server v 3.2.
+Features or query operators changs in MongoDB v 3.4 are currently in preview.
+
+Query Support
+MongoDB API supports comprehensive list of query language constructs.
+These include Database commands, Aggregate commands, operators and also several other additional operators.
+
+Note: MongoDB API do not support $eval and $where operators and cursor.sort() method.
+
+Other Supported Features
+Unique indexes : Azure Cosmos DB supports auto-indexing which is 'unique'. Custom indexes are also supported by using the createIndex command, including the 'unique’ constraint.
+Time-to-live (TTL) : Supports a relative time-to-live (TTL) based on the timestamp of the document. TTL can be enabled through the Azure portal.
+User and role management : Does not yet support users and roles. Azure portal (Connection String page) must be used to obtain read-write and read-only passwords/keys and Role based access control (RBAC).
+Replication : Azure Cosmos DB supports only automatic(no manual), native replication.
+Write Concern : Write concern specified by client code is ignored. All writes are all automatically Quorum by default.
+Sharding : Supports only automatic(no manual), server-side sharding.
+
+GraphDB and Gremlin
+Gremlin API of Cosmos DB enables us to store and operate on graph data.
+Gremlin API supports Graph data modelling and travesal.
+GraphDB is used particularly in the case when multiple relationships between entities of data are equally important as the entities themselves.
+Multiple models, like document and graph, can be used within the same containers/databases.
+A Document container when used to store graph data along with documents, improves productivity with SQL queries over JSON and Gremlin queries for graphs over the same data.
+
+Features
+Basic features of Azure Cosmos DB like Elastic throughput, replication, availability, tunable consistency and automatic indexing are all covered with Gremlin API.
+Along with these, other features exclusive to Gremlin API include:
+Fast queries and traversals: Complete support for Gremlin Query language with performance leverages through auto-indexing for faster traversals through heterogenous vertices.
+Compatibility with Apache TinkerPop: Natively supports the open-source Apache TinkerPop standard and can be integrated with other TinkerPop-enabled graph systems such as Neo4j or Titan.
+
+Modelling Data
+Data Modelling is similar to that of any Graph DB.
+The entities/objects are known as vertices and the relationships between them are known as edges.
+The attributes of vertices and edges are known as properties.
+Labels can be used on edges and vertices to describe their type/group them.
+Note: For more data on GraphDB data modelling, Please go through Neo4j course. Neo4j is compatible with Apache TinkerPop and its query language CQL is similar to Gremlin
+
+The Gremlin Query Language
+Gremlin Query Language is standardised Graph Traversal Language over several Graph Databases.
+Azure Cosmos DB uses the GraphSON format when returning results from Gremlin operations.
+GraphSON is the Gremlin standard format for representing vertices, edges, and properties (single and multi-valued properties) using JSON.
+
+Cassandra API
+Cassandra is a column based NoSQL database and is queried using Cassandra Query Language(CQL)
+Applications that are written for Apache Cassandra can use the Cassandra API provided by Azure Cosmos DB to leverage the basic Cosmos DB features such as Global Distribution, Elastic Throughput, etc..
+Cassandra API is currently in preview and can be used similarly as the MongoDB API.
+
+Features and Usage
+Cassandra API approach is similar to the MongoDB API approach.
+It has the basic features of Cosmos DB regarding global distribution, consistency, etc..
+CQLv4 compatible applications with Apache licensed drivers can communicate with the Azure Cosmos DB Cassandra API.
+Code base may require trivial code changes to be used with Wire protocol level compatibility, via tools and SDKs.
+Interaction is possible through using the Cassandra Query Language based tools (like CQLSH) and Cassandra client drivers.
+Cassandra API usage is similar to that of using Cassandra on Linux/Server.
+The use cases are similar to that of a Cassandra DB which include Messaging, Social Media, Email applications etc..
+
+Querying with CQL
+Cassandra API completely supports Cassandra Query Language(CQL).
+CQL can be used after connecting to the Cosmos DB over the CQL Shell.
+CQL shell can also be used in the Azure Portal.
+Cassandra API also supports all the tools available for Cassandra Database.
+However, few limitations are imposed regarding queries regarding joins which may be fixed once the API comes out of its current preview mode.
+
+Additional Features
+Unlike Mongo DB, Cassandra in its licensed distribution is built over performance rather than Developer friendliness.
+Setting up Clusters, consistency levels and managing indexing and partitioning takes quite an amount of efforts.
+By switching over to Cosmos DB with Cassandra API, the configuration and setting up of database consistency and replication are taken care of by the Cosmos DB configuration making it easy for developers to configure and deploy apps.
+
+Table API
+Azure Cosmos DB provides the Table API for applications that are written for Azure Table storage.
+Applications can migrate from Azure Table storage to Azure Cosmos DB by using the Table API with no code changes.
+Client SDKs are available for .NET, Java, Python, and Node.js.
+
+Features
+Table API provides all the premium features of Azure Cosmos DB such as Global Distribution, Consistency, Throughput, etc..
+The features specific to the Table API are Secondary indexing, custom indexes and Query Optimisation.
+Automatic and Complete Indexing on all properties without index management enables fast querying over the Table Storage.
+
+Modelling Table Data
+Entities within the Tables API is represented as a collection of key-value pairs.
+An Entity has a partition key, row key and its properties are as denoted key/value pairs.
+Partition Key: Similar to a shard key and represents how the data in a table is partitioned or spread across shards.
+Row Key: Unique identifier for an entity within a single partition. Two entities can have the same row key as long as they are in different partitions.
+A composite of both the row key and partition key is used to uniquely identify and reference an entity.
+
+CRUD Operations
+Transactional functionality in Storage Tables is similar to that of the traditional Create, Read, Update, Delete (CRUD) in other data sources.
+
+This model enables dedicated client libraries or REST API endpoints with HTTP methods to access and modify entities.
+
+Base URL for CRUD Operations is:
+
+https://[account].table.core.windows.net/[table]
+
+GET method with the URL format:
+
+https://[account].table.core.windows.net/<a href="[partition key], [row key]" title="" target="_blank">table</a>
+
+can fetch data of the referred entity
+Similarly PUT, POST, DELETE and MERGE methods can also be used.
+
+Querying
+OData syntax along with HTTP GET method is used for querying Table Storage.
+OData protocol is a standard to query any data using an HTTP endpoint.
+Typically in REST API services, the GET endpoint can only return either a specific item or all items.
+But, OData offers a query syntax allowing you to search for a single item or set of items from a collection using GET requests.
+Query parameters permit the user to filter, paginate, or project the result of your requests.
+
+Lab 01 : Getting Started With Cosmos DB
+
+steps
+Create a Database with SQL API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+Change consistency level to Eventual.
+Create and grant permissions to users.
+
+Lab 02 : Mongo DB
+
+steps
+Create a Database with MongoDB API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Perform CRUD Operations on any file.
+Query using Mongo Shell.
+Use the available MongoDB tools to interact with the database.
+
+Lab 03 : Gremlin API
+
+steps
+Create a database with Gremlin API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Use Gremlin Query Language to create two vertices, 'Customer' and 'Product'.
+Create a relationship between them as bought.
+Create multiple vertices, and try traversal with Gremlin Query Language to visualize data as graphs.
+
+Lab 04 : Cassandra API
+
+steps
+Create a database with Cassandra API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Create a keyspace.
+Add tables using CQL Shell.
+Query using CQL.
+Explore and work with Cassandra tools.
+
+Lab 05 : SQL API
+
+steps
+Create a Database with SQL API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Create a document and update it.
+Read the data using SQL API queries.
+Delete the document.
+
+Lab 06 : Azure Cosmos DB - Table API
+
+steps
+Create a database with Table API.
+Select/Set the minimum possible parameter values for RU, availability, and storage to ensure lowest possible amount charged.
+Create a Collection.
+(Optional) Using the Data Explorer option in the portal,
+
+Add a data table.
+Query the data and update it.
+Write OData queries to perform queries over collection.
+
+Azure Search
+Azure Search is a managed search engine offered by Azure similar to Lucene & Solr that allows you to index data from various data sources and then provide a search engine over the indexed data.
+
+Faceted search
+Pagination
+Geospatial search
+Suggestions and Spell-check
+Ranking
+Hit Highlighting
+Azure Search has it's own built-in query syntax and is compatible with Lucene query syntax when searching documents. It supports custom linguistic analyzers and supports over 50+ languages.
+
+Azure Search is integrated into Cosmos DB and provides a natural language processing stack on top of Azure Cosmos DB.
+
+Apache Spark
+Apache Spark (open-source parallel processing framework) boosts the performance of big-data analytic applications by supporting in-memory processing.
+Apache Spark with CosmosDB helps in IoT scenarios requiring real-time response.
+It can also be used to get improve the machine learning models in real-time improving predictions.
+The connection between Cosmos DB and Apache Spark for improved speed in predictions and real-time data analysis can be made possible using Apache Spark Connector.
+
+Azure Functions
+Azure Functions is a serverless compute service where you don't have to explicitly provision or manage infrastructure while enabling you to run code on-demand.
+
+It executes a script or piece of code in response to an external event or trigger.
+
+They are used in:
+
+Data Processing
+Integrating systems
+IoT
+Building simple APIs
+Building microservices
+
 

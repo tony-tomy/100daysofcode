@@ -1,0 +1,11 @@
+
+Azure IDM Introduction
+Welcome to the course Azure Identity Management. This course will introduce following concepts along with relevant Hands-On exercises.
+
+Azure Active Directory (AAD)
+Managing users and groups in (AAD)
+Azure Active Directory connect (AAD connect)
+Synchronizing an On-premise Active Directory with AAD in a hybrid scenario
+Azure AD Premium features
+Implementing Multi-Factor Authentication (MFA)
+Integrating Applications with AAD

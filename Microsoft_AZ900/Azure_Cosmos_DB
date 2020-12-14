@@ -610,4 +610,36 @@ Add a data table.
 Query the data and update it.
 Write OData queries to perform queries over collection.
 
+Azure Search
+Azure Search is a managed search engine offered by Azure similar to Lucene & Solr that allows you to index data from various data sources and then provide a search engine over the indexed data.
+
+Faceted search
+Pagination
+Geospatial search
+Suggestions and Spell-check
+Ranking
+Hit Highlighting
+Azure Search has it's own built-in query syntax and is compatible with Lucene query syntax when searching documents. It supports custom linguistic analyzers and supports over 50+ languages.
+
+Azure Search is integrated into Cosmos DB and provides a natural language processing stack on top of Azure Cosmos DB.
+
+Apache Spark
+Apache Spark (open-source parallel processing framework) boosts the performance of big-data analytic applications by supporting in-memory processing.
+Apache Spark with CosmosDB helps in IoT scenarios requiring real-time response.
+It can also be used to get improve the machine learning models in real-time improving predictions.
+The connection between Cosmos DB and Apache Spark for improved speed in predictions and real-time data analysis can be made possible using Apache Spark Connector.
+
+Azure Functions
+Azure Functions is a serverless compute service where you don't have to explicitly provision or manage infrastructure while enabling you to run code on-demand.
+
+It executes a script or piece of code in response to an external event or trigger.
+
+They are used in:
+
+Data Processing
+Integrating systems
+IoT
+Building simple APIs
+Building microservices
+
 

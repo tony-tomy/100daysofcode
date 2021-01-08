@@ -1,0 +1,115 @@
+
+Azure Virtual Machine
+
+Virtual Machine Disk
+
+Azure VM uses Standard (HDD) or Premium (SSD) storage to create disks,
+
+Size of the VM determines the number of disks
+Disks are used to store an OS, applications, and data.
+VMs also can have one or more data disks.
+Premium storage requires DS or GS-series of VMs.
+Disks are stored as .Vhd files in the storage accounts.
+All disks are stored as VHDs, and the maximum capacity is 4095 GB.
+
+Deployment Scenarios
+Typical deployment scenarios of VMs are listed below,
+
+Create Test and Dev Environments
+Extending your data center to the cloud
+Hosting certain applications in the cloud that can leverage benefits of the cloud. Example - Seasonal Applications.
+Installing Recovery Site using IaaS-based DRS approach that provides significant costs savings.
+High-performance computing to solve complex problems involving millions of variables or calculations such as an earthquake.
+Big data analysis that involves processing and mining massive datasets.
+
+Planning Considerations
+While planning for the virtual machine deployment, you have to consider the following,
+
+Suitable and Unsuitable Workloads
+Supported and Unsupported Server Roles
+Supported and Unsupported Server Features
+
+1. Suitable Workloads
+Azure VMs can be used for the following Workloads.
+
+Highly available service workloads. E.g., Online Stores.
+Unpredictable Spikes - E.g., News Channels.
+Periodic workloads - E.g., Retail sales spurt during Holiday Season.
+Steady workloads - E.g., Extend or offload existing infrastructure to the cloud.
+
+Unsuitable Workloads
+When Planning Azure VMs, it is also important to understand that not every application or service is a suitable fit for the cloud.
+
+Examples
+
+Low volume or limited growth workloads - such services or applications can be run on commodity hardware on-premise and will be less expensive than in the cloud.
+Regulated environment workloads - Certain data is regulated by an organization or the local government. Such restricted and confidential data must be kept on-premises.
+
+2. Unsupported Server Roles
+Most of the Windows Roles can be enabled on Azure VMs, but few Roles are not supported in Azure VM.
+
+Dynamic Host Configuration Protocol Server
+Hyper-V (Hyper-V role is supported in Azure Ev3 and Dv3 series VMs only)
+Rights Management Services
+Windows Deployment Services
+
+3. Unsupported Server Features
+The following significant features are not supported.
+
+BitLocker Drive Encryption (on the operating system hard disk, may be used on data disks)
+Internet Storage Name Server
+Multipath I/O
+Network Load Balancing
+Peer Name Resolution Protocol
+RRAS
+DirectAccess
+SNMP Services
+Storage Manager for SANs
+Windows Internet Name Service
+Wireless LAN Service
+
+Azure Cost Optimization Tools
+Now you know the consideration, the next major planning factors with any cloud-based service are:
+
+Availability of resources
+Cost optimization.
+To help with estimating the potential costs and to achieve the cost optimization following tools are used:
+
+Pricing Calculator tool enables you to estimate the cost of different workloads and services in Microsoft Azure.
+
+TCO Calculator estimates the cost savings that can be realized by migrating the application workloads to Microsoft Azure.
+
+Pricing Calculator can be used to estimate the costs for Azure VMs.
+
+VM size and Configuration decides the Cost of the VM
+
+VM sizing is based on,
+
+Compute: Capacity required
+Storage: Size, location, and configuration
+Disk: Size, persistence and caching
+VM configuration deals with,
+
+Operating System: Windows Server 2012 R2, Windows Server 2016
+IP Address allocation: Static or Dynamic IP addresses
+Availability: Uptime requirements, geo-distribution, service level agreements, and accessibility.
+Scale set: Type of scaling and threshold
+
+Now we will create VMs using a Custom image. Images can be created for Generation 1 VMs that are in the VHD file format.
+
+Steps to create VM using Custom Image:
+
+On-Premise
+
+Prepare the VM. Make sure the VM has all the roles and features installed.
+Run sysprep to prepare the machine.
+Prepare the VM VHD.
+Azure On-Premise
+
+Create the Storage Container.
+Upload the VHD.
+Create a VM using the uploaded VHD.
+
+VM Creation
+
+

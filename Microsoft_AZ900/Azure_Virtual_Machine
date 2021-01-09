@@ -112,4 +112,121 @@ Create a VM using the uploaded VHD.
 
 VM Creation
 
+Getting Started with VM Creation
+Now that you understand how to plan for VMs, next we will learn various ways of Provisioning VMs.
+
+Tool for deploying VMs:
+
+Azure Portal
+Classic portal: V1 VMs only
+New portal: Both V1 and V2 VMs
+Azure PowerShell
+Azure CLI
+ARM Template
+Versions of VM (V1 and V2) are different from Generations of VM such as G1 and G2.
+
+Azure supports G1 VMs only
+
+OS Image Sources
+Azure Marketplace
+
+Contains recent versions for Windows and Linux distributions
+VM Depot
+
+Community managed Repository of Linux and FreeBSD VM images
+Custom Images
+
+Enterprise OS images with Applications that must be captured from VM in the Organization and uploaded in Azure to create further VMs
+
+ARM Templates
+Resource Manager templates are JSON files that define the resources to be deployed for an Azure solution.
+
+JSON editor or Visual Studio Code can be used to create templates.
+
+Prerequisites to create a template:
+
+Visual Studio Code.
+Azure subscription.
+
+Features and Benefits of ARM Templates
+ARM Templates allow you to deploy identical environments to test staging and production, ensuring high reliability.
+
+Templates can be stored in the Azure Subscription and reused.
+An entire Resource group can be exported as a Template.
+ARM Templates can create resources in parallel.
+ARM Templates can define dependencies among resources.
+ARM Templates can create custom policies to control actions or operations that can be performed on resources.
+Importantly, ARM templates help to reduce human error when deploying complex environments.
+
+ARM template is another way to create one or more Azure VMs quickly.
+
+Steps:
+
+Create the Template: You can create your own template or you can get it from Azure Quickstarts Templates.
+Create the Parameter File: To specify values for the resource parameters that were defined in the template or parameters files.
+Create the Resource Group: All resources, like virtual machines, must be part of a resource group.
+Deploy the Template: Once the template and resource files are ready, use the New-AzureRmResourceGroupDeployment command to implement the resource.
+The template file can be created with a simple text editor and the file type is JSON.
+
+Azure Cloud Shell
+
+Another popular way of managing VMs is using PowerShell or CLI interface. For this, you would need Azure Cloud Shell.
+
+Azure Cloud Shell is an interactive, browser-accessible shell for managing Azure resources.
+
+Features of Azure Cloud Shell:
+
+It is a free shell that can be run directly on the Azure portal.
+It has common Azure tools preinstalled and configured to use with your account.
+Click the Cloud Shell button on the menu in the upper-right of the Azure portal, and you will able to launch both PowerShell and CLI interface.
+
+It gives you the flexibility of choosing the shell experience that best suits the way you work.
+
+Knowing Cloud Shell
+It runs on a temporary machine provided on a per-session, per-user basis.
+It times out after 20 minutes without interactive activity.
+It can only be accessed with a file share attached.
+It uses the same file share for both Bash and PowerShell.
+It is assigned to a one machine per user account basis.
+Permissions are set as a regular Linux user (Bash).
+
+Authentication and Pricing
+Automatic authentication
+
+Cloud Shell securely and automatically authenticates on each session for instant access to your resources through the Azure CLI 2.0.
+Pricing
+
+The machine hosting Cloud Shell is free, with a prerequisite of a mounted Azure file share.
+Regular storage costs apply.
+Use Cloud shell to create and manage the VMs.
+
+Steps to Create VM using PS
+Create Azure Connection
+
+Create resource group
+
+Create networking resources such as subnet, Vnet, NIC, Public IP Address.
+
+Define a credential object
+
+Create a VM configuration
+
+Create virtual machine
+
+PowerShell commands for above steps are uploaded in the Azure storage can be accessed from:
+
+Azure Portal - Storage - frescostepguide - file - Azure VM - VM_Creation_PS.pdf
+
+VM Creation using PS
+Using listed PS commands in the following cards you will be able to create a VM with configuration as below,
+
+ResourceGroup - myResourceGroup
+Location - EastUS
+Subnet - mySubnet
+AddressPrefix- 192.168.1.0/24
+vnet - MYvNET
+AddressPrefix - 192.168.0.0/16
+VMSize - Standard_DS2
+ComputerName - myVM
+OS - Windows Server 2016 datacenter
 

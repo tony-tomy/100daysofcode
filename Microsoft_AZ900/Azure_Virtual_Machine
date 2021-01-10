@@ -230,3 +230,167 @@ VMSize - Standard_DS2
 ComputerName - myVM
 OS - Windows Server 2016 datacenter
 
+Linux on Azure
+Microsoft Endorsed some versions of Linux in the Azure Marketplace in which,
+
+The Linux Integration Services (LIS) drivers for Hyper-V and Azure are kernel modules that are contributed directly from MS to the upstream Linux kernel.
+
+The Azure Linux Agent is already pre-installed and the source code can be found on GitHub.
+
+For Non-Endorsed Versions of Linux
+
+You can bring your own Linux image by Creating and uploading a virtual hard disk that contains the Linux OS.
+
+Endorsed distributions
+Azure SLAs applies only to the Endorsed versions
+
+CentOS 6.3+
+CoreOS 494.4.0+
+Debian 7.9+, 8.2+
+Oracle Linux 6.4+, 7.0+
+RHEL 6.7+, 7.1+
+SLES 11, SLES 12+, SLES for SAP11.3+
+Open SUSE 13.2+
+Ubuntu 12.04, 14.04, 16.04
+
+Accessing of Linux VMs
+Once the Linux VMs are created, it is required to access the VM.
+
+Here are the few ways to access the VMs,
+
+Azure Cloud Shell (CLI)
+Bash Shell from Windows 10
+Putty software
+
+
+Managing of Linux using Windows
+A common problem encountered is how to easily manage Linux virtual machines from Windows environments.
+
+Windows 10 now makes it possible to run Linux Bash natively.
+
+Bash on Windows allows you to:
+
+Run common command-line utilities such as grep, sed, and awk.
+Use the Linux-compatible filesystem & heirarchy and access fixed Windows storage mounted under "/mnt/..."
+Install additional Linux tools using apt
+Invoke Windows applications from within Bash
+Invoke Linux applications from within Windows
+Run Bash shell scripts and Linux command-line apps, including:
+Tools: vim, emacs, tmux
+Languages: Javascript/node.js, Ruby, Python, C/C++, C# & F#, Rust, Go
+Services: sshd, MySQL, Apache, lighttpd
+
+
+Installing Bash on Windows 10:
+
+Turn on Developer mode via Settings > Update and Security > For Developers.
+Enable Bash in Windows by adding the Windows feature "Windows Subsystem for Linux (beta)".
+Restart the Windows 10 workstation.
+It can be enabled using PowerShell as:
+
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+Accessing Bash on Windows 10:
+
+Launch the command line and run the command Bash, to enter the Linux subsystem. (or)
+From the Start Menu select Bash on Ubuntu on Windows.
+
+Quiz 01:
+
+1.  You are using the Set-AzureRMVMSourceImage command with the -Version parameter. You wish to ensure that you get the most current image. Which value should you use with the -Version parameter?
+Ans : Latest
+
+2.  "Standard_G1 – Standard_G5 and Standard_GS1 – Standard_GS5 would be considerd for"
+Ans : High Memory and Dense Local Storage
+
+3.  What is the highest number of virtual machines a cloud service can hold?
+Ans : 50
+
+4.  What differentiates Azure Resource Manager PowerShell cmdlets from Service Manager PowerShell cmdlets?
+ans : All ARM poweshell cmdlet include the string 'RM' 
+
+5.  The smallest prescribed virtual machine for a production environment is _______________.
+Ans : A1
+
+Managing Azure Virtual Machines
+Once the VM is created, the following components must be configured to provide consistency and high availability.
+
+IP Addresses
+Availability Set
+Auto Scaling
+
+IP address is assigned to Azure resources to communicate with other Azure resources, on-premises network, and the Internet. It can be allocated in two ways,
+
+Static Allocation
+Dynamic Allocation
+Types of IP Addresses
+
+Public IP addresses - Used for communication with the Internet, including Azure public-facing services.
+E.g.: VMs, Internet-facing LB, VPN GW, and Application GW.
+
+Private IP addresses - Used for communication within an Azure virtual network (VNet), and on-premises network when a VPN is configured.
+E.g.: VMs, Internal LB, and Application GW.
+
+Dynamic allocation is the default method for both Private and Public IP Addresses.
+
+Public IP Allocation
+Dynamic allocation method:
+
+The public IP address is allocated when you start/create the associated resource (like a VM or load balancer).
+The IP address is released when you stop/delete the resource.
+In this method IP address can change.
+
+Static allocation method:
+
+The IP address must be configured in "NIC" properties for the associated resource.
+It is released only when you delete the resource or change its allocation method to dynamic.
+In this method IP address will not change.
+
+Private IP Addresses
+Private IP Addresses
+
+In both (dynamic or static) ways, the IP address is allocated from the address range of the subnet to which the resource is attached.
+
+In Dynamic allocation method the IP address is automatically allocated from the resource's subnet (using DHCP). This IP address can change when the resource is stopped and started.
+
+In Static allocation method, the IP address must be assigned from the allocated subnet and remains the unchanged till the VM is deleted.
+
+Availability of Virtual Machines
+By now, you should know that:
+
+Availability set (AV set) is the Logical Grouping of two or more Azure VMs and their domains.
+AV set protects from planned (updates) and unplanned (hardware) failures.
+Here we will be focusing on Principles, SLAs and Creation of AV set.
+
+Principles of creating Availability sets:
+
+For redundancy, configure multiple VMs in an Availability Set.
+Configure each application tier into separate Availability Sets.
+Combine a Load Balancer with Availability Sets.
+
+SLAs for Availability Sets
+Azure offers the following SLAs if you use Availability set,
+
+For all VMs that have two or more instances deployed in the same Availability Set, Microsoft guarantees - VM Connectivity to at least one instance almost 99.95% of the time.
+
+For any Single Instance VM using premium storage for all disks, Microsoft guarantees - VM Connectivity of at least 99.9%.
+
+Azure Scale Set
+As you know, Scale set makes it easier to build large-scale services targeting high compute, big data, and containerized workloads.
+
+Scale sets are used to deploy and manage a set of identical VMs at the time of requirement.
+
+Azure Resource Explorer
+
+It is particularly useful for viewing Azure scale sets - Individual VMs and their properties.
+
+Azure Resource Explorer is a great tool to view and modify resources that are created in the subscription.
+The tool is web-based and uses the Azure portal login credentials.
+The source for the Resource Explorer tool is available on GitHub.
+
+Guidance for Scale Set
+Both Linux and Windows VM Scale Sets can be configured from the Azure Portal.
+These scale sets are automatically created with load balancer NAT rules to enable SSH or RDP connections.
+Managed disks can have between 0 and 1000 VMs based on platform images OR 0 to 100 VMs based on custom images.
+The maximum, minimum and default number of VMs setting must be based on resource consumption and actions are triggered automatically.
+When the number of VMs is increased or decreased in a scale set, VMs are balanced across update and fault domains to ensure, maximum availability.
+

@@ -394,3 +394,131 @@ Managed disks can have between 0 and 1000 VMs based on platform images OR 0 to 1
 The maximum, minimum and default number of VMs setting must be based on resource consumption and actions are triggered automatically.
 When the number of VMs is increased or decreased in a scale set, VMs are balanced across update and fault domains to ensure, maximum availability.
 
+Disk Types
+There are three types of Disks:
+
+1. Operating System Disks
+
+Every VM has one attached OS disk.
+It is registered as a SATA drive and labeled as the C: drive by default.
+
+2. Temporary Disk
+
+Every VM has a temporary disk that is automatically created.
+On Windows VM, this disk is labeled as the D: drive by default.
+It is used for storing pagefile.sys.
+It is a non-persistent storage.
+As it is temporary storage, don’t store data on the temporary disk.
+
+3. Data Disks
+
+Every VM can have data disks to store application data or other required data.
+Data disks are registered as SCSI drives and are labeled with a letter that we can choose.
+Data disks are stored in a BLOB in an Azure storage account.
+The size of the VM determines how the size of the temporary disk and the maximum number of disks can be attached.
+
+Managing VM Disk
+Management of VM disk includes the following task,
+
+Attaching Operating System or Data disk
+Removing the Data disk
+Modify the Disk settings, such as,
+Change the Caching behavior
+Increase the size
+Storage Space feature of Azure VM must be leveraged to create the disk of more than 1TB.
+
+Managing Virtual Machines
+Various options are used to manage Azure VMs, some are available for all platforms, and others just for Windows or Linux VM.
+
+Remote Desktop Protocol: Only for Windows
+Secure Shell: Only for Linux
+VM Agents and Extensions: for both Windows and Linux
+
+On-Premises vs Azure Virtual Machines
+In Microsoft Data-centers, Azure Virtual Machines (VMs) are hosted on Windows Server 2012 R2 Hyper-V servers. But these VMs are different from On-Premises VMs in the following aspects:
+
+Console access for Azure VMs can be given by enabling monitoring option.
+Azure supports both Generation 1 and 2 VMs.
+Azure VMs do not support VHDX format.
+Azure VMs do not support OS upgrade.
+Azure VMs depend on the VM size and support more than 1 NICs.
+
+Remote Desktop Protocol
+Remote Desktop Protocol (RDP) enables Windows administrators to establish a graphical user interface session with an Azure virtual machine.
+The portals provide a .rdp file that can be downloaded and saved for initiating an RDP connection to the specified VM.
+Closely associated with the RDP utility is the Remote Desktop Connection Manager.
+This utility provides an interface for grouping and managing multiple VMs through RDP connections.
+
+Secure Shell
+Secure Shell (SSH) is used to connect the Azure Linux VM from Windows Client.
+
+The SSH endpoint is created by default when creating a Linux VM.
+When creating a Linux VM, Secure Shell (SSH) must be enabled.
+A connection must be established from a Windows client by using the Secure Shell (SSH) protocol with a terminal. emulator, such as PuTTY to access Linux VM
+From a Linux client, an administrator may use an SSH client such as OpenSSH.
+
+Azure VM Agent
+The Microsoft Azure Virtual Machine Agent (AM Agent) is a secured, lightweight process that manages VM interaction with the Azure Fabric Controller.
+
+The VM Agent has a primary role in enabling and executing Azure VM extensions.
+
+The Azure VM Agent is installed by default on any Windows VM deployed from an Azure Gallery image.
+
+The Azure VM agent can be downloaded and installed manually.
+
+Azure VM Extensions
+Azure VM extensions are small applications that provide post-deployment configuration and automation tasks on Azure VMs.
+
+Azure VM extensions can be
+
+run by using the Azure CLI, PS, ARM templates, and the Azure portal.
+bundled with a new VM deployment or run against an existing system.
+An Administrator can install multiple extensions on a VM. They are offered by Microsoft and third-party vendors.
+
+Third Party VM Agent Extensions
+The supported third-party VM agent extensions are:
+
+DSC - Azure PowerShell DSC (Desired State Configuration)
+MSEnterpriseApplication - System Center Role Authoring Extension
+BGInfo - Background Info extension
+VMAccessagent - VM Extension to enable Remote Desktop and password reset
+Chefclient - Chef software agent
+PuppetEnterpriseAgent - PuppetLabs agent
+Symantec Endpoint Protection - Antivirus Supported by Symantec
+Trend Micro Deep Security Agent - Trend Micro antivirus
+
+Use Cases of VM Extensions
+There are many different Azure VM extensions available, each with a specific use case.
+
+Some example use cases are:
+
+Configure VM monitoring by using the Microsoft Monitoring Agent VM extension.
+Configure monitoring of your Azure infrastructure with the Datadog extension.
+Apply PowerShell Desired State configurations to a VM by using the DSC extension for Windows.
+Configure an Azure VM by using Chef for Automating Azure VM deployment.
+
+Discover VM Extensions
+To see a complete list, run the following command with the ARM PowerShell module.
+
+Get-AzureRmVmImagePublisher -Location WestUS | Get-AzureRmVMExtensionImageType | Get-AzureRmVMExtensionImage | Select Type, Version
+
+Desired State Configuration (DSC)
+Deploying and maintaining the desired state of your servers and application resources can be tedious and error-prone. Azure supports several configuration management systems.
+
+Desired State Configuration (DSC)
+
+DSC is a VM agent extension and works on both Windows and Linux.
+DSC supports ARM templates, Azure PowerShell, and XPLAT-CLI.
+Desired State Configuration (DSC) with Azure Automation helps consistently deploy, reliably monitor, and automatically update the desired state of all IT resources, at scale from the cloud.
+
+Automation Tools
+Chef and Puppet
+
+Chef and Puppet are other configuration management tools used to automate the entire lifecycle of our Azure infrastructure, from initial provisioning through application deployment.
+Both are popular Linux tools and VM agent extensions.
+Ansible
+
+Ansible is an open source, clientless automation tool.
+It automates software and OS features provisioning, configuration management, and application deployment.
+Ansible includes a suite of modules for interacting with Azure Resource Manager, making possible to create and orchestrate infrastructure in Azure.
+

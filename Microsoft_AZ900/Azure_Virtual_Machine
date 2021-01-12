@@ -522,3 +522,111 @@ Ansible is an open source, clientless automation tool.
 It automates software and OS features provisioning, configuration management, and application deployment.
 Ansible includes a suite of modules for interacting with Azure Resource Manager, making possible to create and orchestrate infrastructure in Azure.
 
+Monitoring Overview
+If you're deploying applications in datacenter, you obviously want to make an investment in an enterprise-level monitoring system, such as Microsoft EMS or Operations Manager or any large-scale distributed application monitoring systems.
+
+However, Azure provides that Monitoring capability directly from the portal with no additional or third-party software installation.
+
+Monitoring and Diagnostics
+The administrator enables and configures VM diagnostics from the Monitoring area of the new portal VM blade.
+
+Diagnostic logging can be enabled for
+
+Basic metrics
+Network and web metrics
+.NET metrics
+Windows event system logs
+Windows event security logs
+Windows event application logs
+Diagnostic infrastructure logs
+
+Alerts
+We can receive an Alert based on monitoring metrics or events.
+When the value of an alert rule crosses an assigned threshold, the alert rule becomes active and sends a notification.
+Notification email can be sent to the service administrator and co-administrators or to another administrator based on the configuration.
+Example:
+
+Alert rule can be created which will trigger a mail to an Administrator when the CPU percentage of guest OS value is greater than 75% in a five minute period.
+
+Hands on Labs 
+
+Lab 01: Azure Virtual Machines - Linux VM
+
+Refer : https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli?toc=/azure/virtual-machines/linux/toc.json
+
+Deploy VM
+Deploy an ubuntu 18.04 server VM image in the existing resource group using Azure CLI in Basic tier. Execute the following command to get all the ubuntu 18.04 LTS server images:
+
+az vm image list --all -p Canonical -f UbuntuServer -s 18.04-DAILY-LTS -l EastUS
+
+Deploy any of the VM's using their images with the following configuration: 
+VM name: Your choice Location: EastUS Size: B1ls Admin username: your firstname Use the --generate-ssh-key parameter to generate ssh key.
+
+az vm list-sizes --location "westus"
+
+az vm create -n MyVm -g user-hhunxwusxdes \
+    --image ubuntults  --size standard_B1ls \
+    --admin-password P@ssw8rd271212  --admin-username adminazure \
+    --generate-ssh-keys  --location "WestUS"
+
+az vm create \
+  --resource-group user-lrrotcpnpccu \
+  --name myVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --location "WestUS" \
+  --generate-ssh-keys
+
+Execute the following command to make the resource group default: az configure --defaults group=$resource 
+Execute the following command to view the VM: az vm list -g $resource
+
+Open port 80 for web traffic
+By default, only SSH connections are opened when you create a Linux VM in Azure. Use az vm open-port to open TCP port 80 for use with the NGINX web server:
+
+az vm open-port --port 80 --resource-group user-lrrotcpnpccu --name myVM
+
+Connect to your VM
+After deploying the VM, connect to it with the ssh command:
+
+az vm show -d -g user-lrrotcpnpccu -n myVM --query publicIps -o tsv
+
+Connect to virtual machine
+SSH to your VM as normal. Replace publicIpAddress with the public IP address of your VM as noted in the previous output from your VM:
+
+ssh azureuser@publicIpAddress
+
+Lab 02 : Manage IP Address Configuration and Configure Scale Sets to VM
+
+Deploy a Ubuntu 16.04 VM with the below configuration in Basic tier using CLI
+VM name of your wish
+Username: your firstname
+password: your custom password
+Size : Basic_A0
+Location: East US
+
+az vm create \
+  --resource-group user-qtuatbvyzsxd \
+  --name myVM \
+  --image UbuntuLTS \
+  --admin-username tony \
+  --admin-password P@ssw8rd271212 \
+  --location "WestUS" \
+  --size Basic_A0 
+
+Manage IP address Configuration
+check the public IP (publicIpAllocationMethod) address and change it to Static by executing the azure CLI commands.
+
+az network public-ip update -g user-qtuatbvyzsxd -n myVM --allocation-method Static
+
+
+Final Quiz
+
+Q)  Which of the following helps you to easily identify which SKU is most likely to satisfy your performance needs
+A)  ACU - Azure Compute Unit (ACU) provides a way of comparing compute (CPU) performance across Azure SKUs
+
+Q)  Which of the following defines a group of virtual machines that share a common set of hardware, switches, and more than a single point of failure?
+A)  fault domains
+
+Q)  Which of the following defines a group of virtual machines that share a common set of hardware, switches, and more than a single point of failure?
+A)  Fs-series
+

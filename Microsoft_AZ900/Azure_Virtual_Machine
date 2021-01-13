@@ -605,19 +605,57 @@ Size : Basic_A0
 Location: East US
 
 az vm create \
-  --resource-group user-qtuatbvyzsxd \
+  --resource-group myResourceGroup \
   --name myVM \
   --image UbuntuLTS \
-  --admin-username tony \
-  --admin-password P@ssw8rd271212 \
+  --admin-username azureuser \
+  --generate-ssh-keys \
+  --public-ip-address myPublicIpAddress \
+  --public-ip-address-allocation static
+
+Configure scale sets for the VM
+
+ az vmss create \
+  --resource-group user-qzldnfsfadom \
+  --name myScaleSet \
+  --image UbuntuLTS \
+  --location westUS \
+  --upgrade-policy-mode automatic \
+  --admin-username azureuser \
+  --generate-ssh-keys
+
+Try out Enabling Autoscaling by using az monitor cli command by providing the Resource NAME, Resource ID
+
+Lab 03 : Azure virtual machines - Configure Availability sets
+
+Create the availability set with a custom name containing 2 Fault domains and 2 Update domains using azure cli commands
+
+az vm availability-set create -n MyAvSet -g MyResourceGroup --platform-fault-domain-count 2 --platform-update-domain-count 2
+
+Execute the following command to make the resource group as default: 
+
+az configure --defaults group=$resource
+
+Execute the following command to view the availability set for the VM: 
+
+az vm availability-set list
+
+Deploy two ubuntu VMs with the below configuration
+
+Place the both VMs in the availability set created in previous step.
+
+Install the Ubuntu VM using the Azure CLI in the existing resource. Use the image with the following configuration in Basic tier:
+
+az vm create \
+  --resource-group user-brvabppeqwyx \
+  --name myVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --availability-set MyAvSet \
   --location "WestUS" \
-  --size Basic_A0 
-
-Manage IP address Configuration
-check the public IP (publicIpAllocationMethod) address and change it to Static by executing the azure CLI commands.
-
-az network public-ip update -g user-qtuatbvyzsxd -n myVM --allocation-method Static
-
+  --generate-ssh-keys \
+  --public-ip-address myPublicIpAddress \
+  --public-ip-address-allocation static
 
 Final Quiz
 

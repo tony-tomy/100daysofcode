@@ -10,3 +10,73 @@ Azure AD Premium features
 Implementing Multi-Factor Authentication (MFA)
 Integrating Applications with AAD
 
+What is Azure Active Directory?
+
+Azure Active Directory (Azure AD) is Microsoft’s Identity Management(IDM) service and multi-tenant cloud based directory.
+The Azure AD provides a single sign-on (SSO) access to thousands of cloud SaaS Applications like Office365, Salesforce.com, DropBox, and Concur.
+If you are a Office365, Azure or Dynamics CRM Online customer, you might not realize that you are already using Azure AD.
+Every Office365, Azure and Dynamics CRM tenant is actually already an Azure AD tenant.
+
+Azure AD includes a full suite of IDM capabilities such as,
+
+Access & Authentication
+
+Multi-factor authentication
+Device registration
+Role based access control
+Management
+
+Self-service password management
+Self-service group management
+Privileged account management
+Monitoring & Auditing
+
+Application usage monitoring
+Rich auditing
+Security monitoring and alerting
+These capabilities can help secure cloud-based applications, streamline IT processes, cut costs and also help assure corporate compliance goals are pan.
+
+Benefits of Azure AD
+Single Sign-On - Quickly adopt cloud services, with an easy single-sign-on experience powered by Azure AD’s fully automated SaaS app access management and provisioning services capabilities.
+Anywhere and Any Device Access - Empower employees with world-class cloud apps, service and self-service capabilities accessible from device.
+Secure Management - Easily and securely manage employee and vendor access to your corporate social media accounts.
+Secure Access - Improve application security with Azure AD multifactor authentication and conditional access.
+Application Monitoring - Monitor usage and protect your business from advanced threats with security reporting and monitoring.
+Secure mobile (remote) access to on-premises applications.
+These benefits enable secure and consistent, self-service application access management, empowering business owners to move quickly while cutting IT costs and overhead.
+
+Azure AD and Windows Server Active Directory (AD) are used for Authentication. But Azure AD differs in many aspects, such as;
+
+It doesn't have,
+
+Active Directory forest and Trust relations
+Organizational Units
+Group Policies
+It uses Open AD connect, O-Auth, WS-federation and SAML protocols for Authentication and Authorization.
+
+Azure AD Editions
+Azure AD is available in free and paid editions such as,
+
+Free
+Basic
+Premium 1
+Premium 2
+The Free edition is included with an Azure subscription, while paid editions are available through a
+
+Microsoft Enterprise Agreement
+Open Volume License Program
+Cloud Solution Providers program
+For Azure AD pricing and Azure AD edition comparison visit Azure AD features & Pricing
+
+Managing Azure AD
+In order to access the Application as Azure Administrator you will need User name and Password. These user credentials must be created in the Azure AD domain.
+
+So, first let us learn,
+
+Azure AD Domains
+Managing Users and Groups
+Integrating and Managing SaaS Apps
+Role Based Access Control
+
+
+

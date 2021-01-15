@@ -78,5 +78,84 @@ Managing Users and Groups
 Integrating and Managing SaaS Apps
 Role Based Access Control
 
+Azure AD Domain Names
+A domain name is an important part of the identifier for many directory resources such as,
+
+User name or email address
+Address for a group
+App ID URI for an application.
+Every domain name in Azure AD is either a basic\initial domain name, or a custom domain name.
+
+Azure AD basic Domain is in the form of <abc>.onmicrosoft.com and is created by default when you subscribe in Azure AD. Also, it gets established when a directory is created by the admin.
+
+Custom Domain name is a domain name that is owned and used by an organization, such as tcs.com, for uses such as hosting website.
+
+Registering Custom Domains
+For Production environments, it is required to have at least one verified custom domain such as contoso.com. And in order to achieve a verified custom domain, it is recommended to register a custom domain in Public Domain Registrar.
+
+Why Custom Domain registration?
+
+Organizations can own their custom domain name.
+Access cloud application using a custom domain name such as app1.contoso.com.
+Users can have their userid similar to on-premises ids such as user1@contoso.com .
+It can be extended to leverage the SSO facility.
+
+Adding Custom Domain is simple:
+
+Add the custom domain name to your directory.
+Add a DNS entry for the domain name at the Public domain name registrar.
+Verify the custom domain name in Azure AD.
+
+Managing Users and Groups
+Managing Users includes:
+
+Add Users
+Manage User's password
+Change User's work info
+Assign users to roles
+Manage user profile
+Delete a user
+Managing Groups includes:
+
+Creating Group
+Adding Users to the group
+Assigning group owner
+Remember, while creating a user, you are creating a Cloud Identity for that user and user account is created in the cloud, and not in the On-Premises AD.
+
+Azure Application Gallery provides more than 2500+ applications which can be accessed by the normal AAD user.
+
+Custom application can also be integrated with Azure AD to leverage the following benefits;
+
+App authentication and authorization
+User authentication & authorization
+SSO using federation or password
+User provisioning & synchronization
+Role-based access control
+O-Auth authorization services
+Application publishing private network to the internet
+
+Role Based Access Control(RBAC) is used to assign user \ groups \ service principles to delegate administrative tasks.
+
+RBAC can not control application access permission it is used only for administration.
+
+RBAC Roles can be managed by using,
+
+Azure Portals
+Azure PowerShell(PS)
+Azure CLI
+
+RBAC roles can be applied at following levels:
+
+Subscription
+Resource Groups
+Resources
+Permissions are inherited from parent scope
+
+Features
+
+Access can be granted by using built-in roles
+Custom roles can be created by using Azure PS, CLI and REST API
+Role assignment changes are captured in RBAC Audit logs
+
 
 

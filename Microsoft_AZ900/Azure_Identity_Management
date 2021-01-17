@@ -157,5 +157,27 @@ Access can be granted by using built-in roles
 Custom roles can be created by using Azure PS, CLI and REST API
 Role assignment changes are captured in RBAC Audit logs
 
+Quiz 01
 
+Q)  Which services are offered in Active Directory Domain Services but not in Microsoft Azure Active Directory
+A)  Group Policies
 
+Q)  When creating a new user in Microsoft Azure, how is the initial password determined?
+A)  A password is randomly generated
+
+Q)  Which Microsoft Azure Active Directory (AD) PowerShell command must you run before you can manage a Microsoft Azure AD tenant from PowerShell?
+A)  Connect-MsolService correct
+
+Q)  Which feature is provided only with Microsoft Azure Active Directory Premium P2?
+A)  Identity Protection
+
+Q)  Your company is planning on using Windows Azure and is investigating whether a Basic subscription will suffice. Which of the features below is not available in the Basic subscription?
+A)  Self Service GP Management
+
+Q)  You need to assign a user to a role in Microsoft Azure Active Directory. Which Microsoft Azure PowerShell command should you run?
+A)  add-adgroupmember
+
+Q)  You need to implement multi-factor authentication (MFA). What is the minimum version of Microsoft Azure Active Directory (AD) that you must deploy?
+A)  All the option (not free in fresco)
+
+Q)  

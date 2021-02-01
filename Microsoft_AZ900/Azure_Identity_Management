@@ -180,4 +180,532 @@ A)  add-adgroupmember
 Q)  You need to implement multi-factor authentication (MFA). What is the minimum version of Microsoft Azure Active Directory (AD) that you must deploy?
 A)  All the option (not free in fresco)
 
-Q)  
+Introducing AAD Hybrid
+So far, you have learned implementation of Azure AD as an Identity Manager. However, many Organizations have their own user database and Identity management (IDM) system.
+
+Azure AD can be integrated with existing IDM services of an ORG.
+
+Synchronization Tools can facilitate SSO to access LOB (On-Premises) application and SaaS applications.
+
+However, in order to integrate, it is very important to understand the existing environment, so that you will be able to understand the deciding factors needed for Integration.
+
+Designing Hybrid Identity Solution
+While designing a hybrid identity solution it is required to
+
+Determine the requirements for the business organization that needs the solution.
+Analyze on-premises identity infrastructure
+Evaluate the existing Azure Subscription
+Evaluate identity integration requirements
+Authentication
+Determine directory synchronization requirements
+Evaluate the applications that use the directory services
+
+1. Identify business needs
+Business requirements are varied for different Organization, and you will need to find them.
+
+To identify the business needs make sure to answer the following questions:
+
+Is the company looking to cut IT operational cost?
+Is the company looking to secure cloud assets (SaaS apps, infrastructure)?
+Is the company looking to modernize their IT?
+Are the users more mobile and demanding IT to create exceptions into the DMZ to allow a different type of traffic to access different resources?
+Does the company have legacy apps that needed to be published to these modern users but are not easy to rewrite?
+Is the company looking to secure users’ identities?
+
+2. Analyze on-premises identity infrastructure
+This evaluation is important for defining the technical requirements to integrate the current identity solution to the cloud identity management system.
+
+To analyze on-premises identity infrastructure, make sure to answer the following questions:
+
+What authentication and authorization solution\Protocols does the company use on-premises?
+Does the company currently have any on-premises synchronization services?
+Does the company use any third-party Identity Providers (IdP)?
+
+3. Azure Subscription Assessment
+Performing an assessment to understand the current integration with SaaS, IaaS or PaaS models in the environment is very important.
+
+To understand the current integration make sure to answer the following questions:
+
+Does the company have any integration with a cloud service provider?
+If yes, which services are being used?
+Is this integration currently in production or is it a pilot?
+
+4. Evaluate integration requirements
+This evaluation is important to define the technical requirements for user authentication and user-experience.
+
+To evaluate identity integration requirements, make sure to answer the following questions:
+
+Will the organization be using federation, standard authentication or both?
+Is MFA used?
+Security/auditing concerns
+Does the organization have a custom domain?
+Is that domain public and easily verifiable via DNS?
+If it is not, then do they have a public domain that can be used to register an alternate UPN in AD?
+Are the user identifiers consistent for cloud representation?
+Does the organization have apps that require integration with cloud services?
+
+User accounts, credentials are created, stored and managed only in the Azure AD.
+
+Azure AD provides the Cloud Identity for the users.
+
+Users can access the Apps hosted on Azure or SaaS apps using the Cloud Identity.
+
+There is no synchronization with On-premises directory services.
+
+This is mostly used when there is no existing On-Premises ADDS.
+
+- Synchronized Authentication with Pwd Hash
+
+User accounts are synchronized from On-premises Windows Active Directory Domain Services (ADDS) to Azure AD.
+
+Passwords are synced as password hashes.
+Azure AD connect is used for synchronization.
+Users use a synchronized ID which is an On-Premises credential.
+Users can access the SaaS Apps and On-Premises applications using same credentials.
+The Azure AD provides the authentication for cloud apps.
+Windows AD provides the authentication for On-Premises applications.
+
+- Federated Authentication
+
+User accounts only are synchronized from On-premises Windows Active Directory Domain Services (ADDS) to Azure AD and the Passwords are not synchronized.
+
+Azure AD is federated with Enterprise Active Directory Federation Services (ADFS).
+Azure AD connect is used for synchronization.
+On-Premises Azure AD provides the Authentication.
+Azure AD accepts SAML Tokens from ADFS server.
+This method is most widely used.
+
+- Synchronized Authentication w\o Pwd Hash
+
+User accounts only are synchronized from On-premises Windows Active Directory Domain Services (ADDS) to Azure AD and Passwords are not synced.
+
+Azure AD connect is used for synchronization.
+Users should use two credentials one for Azure Apps and another one for On-Premises Application.
+To access the cloud apps, authentication is provided by Azure AD.
+To access On-Premises application Windows AD provides the Authentication.
+
+-  Directory Sync requirements
+The users will still need to have an identity in the cloud. This identity will need to be maintained and updated periodically.
+
+This identity may be any one of the types that we discussed, but we might have to use the synchronized identity.
+
+This evaluation is important to define the technical requirements for how user identities will be created and maintained in the cloud.
+
+Most of the organizations use Windows Active Directory that is an on-premises identity source and it needs to be synchronized with Azure AD.
+
+Synchronization Requirements Cntd...
+Requirements are different for different ORG, and to understand them, make sure to answer following questions:
+
+Do they have one AD forest, multiple, or none?
+How many Azure AD directories will need to be synchronized?
+Do they currently have a synchronization tool on-premises?
+If yes, do their users have a virtual directory/integration of identities?
+Do they have any other directory on-premises that need to be synchronized?
+Do we need to be doing any GALSync?
+What is the current state of UPNs in the organization?
+Do they have a different directory that users authenticate against?
+
+Synchronization Tool
+Now that you understand the important information that you need to have for the designing of Hybrid solution, let us know learn how to synchronize the objects from On-premises to Azure AD
+
+Azure AD Connect is the widely used tool for synchronization.
+
+Synchronization Tools
+Following are few widely use Synchronization Tools in the Hybrid solution:
+
+Azure AD Connect(AAD Connect)
+Windows Azure Active Directory Sync(Dirsync)
+Azure AD Sync
+Azure AD Connect is the best way to connect your on-premises directory with Azure AD.
+
+Also, this is a great time to upgrade to Azure AD Connect from Windows Azure Active Directory Sync (DirSync) or Azure AD Sync, as these tools are deprecated
+
+Azure AD Connect
+
+AAD Connect is used to integrate your on-premises directories with Azure AD.
+
+It makes the users more productive by providing a common identity for accessing both cloud and on-premises resources.
+Also, provides an easy deployment experience for synchronization to an Administrator.
+AAD Connect can be downloaded from AAD Connect
+It should be installed in the On-premises Server from where users & groups need to be synched with Azure AD tenant.
+
+AAD Connect - Components
+
+Azure Active Directory Connect is made up of three primary components:
+
+1. Synchronization services - Responsible for
+creating users, groups, and other objects.
+validating identity information for your on-premises with the cloud.
+
+2. Active Directory Federation Services - is an optional part of Azure AD Connect and can be used
+to configure a hybrid environment using an on-premises ADFS infrastructure.
+by organizations to address complex deployments, such as SSO, smart card or 3rd party MFA.
+
+3. AAD Connect Health - serves as a single place to
+monitor the health of key identity components and synchronization services.
+view alerts, usage analytics, monitor performance, and other information to make informed decisions.
+
+Prerequisites for AAD - Connect
+Before you install Azure AD Connect, there are a few things that you need:
+
+1. Azure AD
+Azure Subscription.
+A verified custom domain is recommended.
+Licensed Azure AD tenant for more than 500k objects, such as Office 365, AAD Basic, Premium, or EMS.
+
+2. On-premises data
+Use IdFix to identify errors such as duplicates and formatting problems in the directory.
+Review and evaluate sync features you can enable in Azure AD.
+
+3. On-premises AD
+The AD schema version and forest functional level must be Windows Server 2003 or later.
+The domain controller used by Azure AD must be writable.
+It is not supported for use on-premises forests/domains using SLDs (Single Label Domains) and "dotted" (name contains a period ".") NetBios names.
+It is recommended to enable the Active Directory Recycle bin.
+If you plan for password writeback, then the Domain Controllers must be on Windows Server 2008 (with latest SP) or later.
+
+4. Azure AD Connect server
+The server must be using Windows Server standard or Enterprise edition.
+The server must have a full GUI installed.
+Azure AD Connect must be installed on Windows Server 2008 or later.
+The server must have .NET Framework 4.5.1 or later and Microsoft PowerShell 3.0 or later installed.
+The server must not have PowerShell Transcription Group Policy enabled.
+
+5. Azure AD Connect server - ADFS
+If ADFS is being deployed, then ADFS or WAP servers must be installed Windows Server 2012 R2 or later.
+Windows remote management must be enabled on these servers for remote installation.
+If ADFS is being deployed, SSL Certificates and custom domain are required.
+If MFA is enabled, the URL https://secure.aadcdn.microsoftonline-p.com must be added to the trusted sites list.
+
+6. SQL Requirement for AAD Connect
+Azure AD Connect requires a SQL Server database to store identity data.
+
+By default, a SQL Server 2012 Express LocalDB is installed.
+SQL Server Express has a 10GB size limit that enables to manage ~100,000 objects.
+To manage a higher volume of directory objects SQL Server edition is needed.
+It supports all flavors of Microsoft SQL Server from SQL Server 2008 (with latest Service Pack) to SQL Server 2016 SP1.
+Case-insensitive SQL collation must be used.
+One sync engine per SQL instance is a must.
+Microsoft Azure SQL Database is not supported as a database.
+
+7. Accounts
+
+An Azure AD Global Administrator account for the Azure AD tenant and this account must be a school or organization account and cannot be a Microsoft account.
+If you use express settings or upgrade from DirSync, you must have an Enterprise Administrator account for your local Active Directory.
+Accounts in Active Directory if you use the custom settings installation path.
+8. Connectivity
+
+The DNS server must be able to resolve names both to your on-premises Active Directory and the Azure AD endpoints.
+In the Firewalls, the required ports must be opened for Azure AD Connect Ports
+
+Installation Types
+Azure AD Connect supports two types of installation:
+
+Express
+Customized
+Express - Most commonly used,
+
+for a single Active Directory forest on-premises.
+for less than 100,000 objects in the on-premises AD.
+Custom - Mostly used when,
+
+there is more than one forest
+the domains in the forest are not reachable from the Connect server.
+it is required to use federation or pass-through authentication for user sign-in.
+there are more than 100,000 objects
+group-based filtering or OU-based filtering is needed
+
+Introducing AAD Premium
+
+99.9% of SLAs that are applicable for AAD basic are also applicable for Premium editions.
+
+In this module, you will learn about AAD premium features such as,
+
+Self-Service Password Reset
+Self-Service Group Management
+Multi-Factor Authentication
+Application Proxy
+Cloud App Discovery
+
+1. Self service Password Reset
+Azure AD Self-Service Password Reset(SSPR) combines a set of capabilities that allow users to manage their own password from any device, location and at any time. All while maintaining compliance with security policies.
+
+This feature is essential for Hybrid solutions to,
+enhance the End User Experience
+reduce the dependency on the service desk
+
+Features of SSPR
+Self-service password change
+Self-service account unlock
+Self-service password reset
+Password management activity reports
+Password Writeback allows management of on-premises passwords from the cloud.
+
+Azure SSPR Workflow
+
+Steps involved in Password reset:
+
+User enters a user ID and passes to Azure AD using Application login page.
+Azure AD verifies if the user is allowed to use the feature SSPR for an assigned Azure AD license.
+Checks if the user’s password is managed on premises (federated or password hash synchronized).
+If writeback is deployed and the user’s password is managed on premises, then the user is allowed to proceed to authenticate and reset their password.
+
+2. Self-Service Group Management
+
+Self-service group management enables users to create and manage security groups or Office 365 groups in Azure AD.
+
+This feature is not available for mail-enabled security groups or distribution lists.
+
+Self-service group management currently comprises two essential scenarios:
+
+Delegated group management
+Self-service group management
+
+3. Azure AD Application Proxy
+Azure AD Application Proxy provides single sign-on (SSO) and secure remote access for web applications hosted on-premises.
+
+Azure AD Application Proxy supports different types of internal applications such as:
+
+Web applications that use Integrated Windows Authentication for authentication
+Web applications that use form-based or header-based access
+Web APIs that you want to expose to rich applications on different devices
+Applications hosted behind a Remote Desktop Gateway
+Rich client apps that are integrated with the Active Directory Authentication Library (ADAL)
+
+Features of Application Proxy
+Azure AD Application Proxy provides
+
+a simple, secure, and cost-effective solution
+
+SSO to applications that use,
+
+1. **Integrated Windows Authentication (IWA)** - using Kerberos Constrained Delegation 
+2. **Claims-aware applications**  - using federated trust
+No need to change on-premises network configuration and Application
+
+Users can use the MyApps portal to get single sign-on to both SaaS apps in the cloud and other on-premise apps.
+
+Published apps can get cloud-scale security and Azure security features like conditional access and two-step verification.
+
+On-premises solutions typically require to set up and maintain DMZs, edge servers, or other complex infrastructures. Such servers are not needed for application proxy.
+
+Components of Application Proxy
+Connector:
+It is a lightweight agent that sits on a Windows Server inside the network.
+It facilitates the traffic flow from the Application Proxy service in the cloud to your application on-premises.
+It only uses outbound connections, so you don't have to open any inbound ports or put anything in the DMZ.
+The connectors are stateless and pull information from the cloud as necessary.
+External endpoint.
+The external endpoint is how the users reach the applications from outside network.
+It can be a URL or through the MyApps portal.
+When users go to one of these endpoints, they authenticate in Azure AD and then are routed through the connector to the on-premises application.
+
+Working of Application Proxy
+
+User Authentication:
+
+The user accesses the application through the Application Proxy service and is directed to the Azure AD sign-in page for authentication.
+After successful sign-in, a token is generated and sent to the client device.
+Request to Connector:
+
+The client sends the token to the Application Proxy service, which retrieves the user principal name (UPN) and security principal name (SPN) from the token, and directs the request to the Application Proxy connector.
+If you have configured single sign-on, the connector performs any additional authentication required on behalf of the user.
+Response to User:
+
+The connector sends the request to the on-premises application.
+The response is sent through Application Proxy service and connector to the user.
+
+4. Cloud App Discovery
+Cloud App Discovery enables Administrator to discover cloud applications that are used by the employees in the organization.
+
+With Cloud App Discovery, you can:
+
+Discover applications in use.
+Measure usage by the number of users, traffic volume and number of web requests to the application.
+Identify which users are using an application.
+Export data for addition offline analytics.
+Prioritize and integrate applications easily to enable Single Sign-on and user management.
+
+Working of Cloud App Discovery
+
+In Cloud app discovery,
+
+Cloud App Discovery Agent running in the VMs to detect the cloud apps
+Data retrieval is accomplished by agents that run on computers in the environment.
+App usage information that is captured by the agents is sent over a secure, encrypted channel to the cloud app discovery service.
+Cloud app discovery service evaluates the data and generates reports that can be used to analyze the environment.
+
+Introducing Azure MFA
+In the last topic, we learned about few of the Azure AD premium features. In this module, we will learn in depth about Azure Multi-Factor Authentication (MFA).
+
+Multi-factor authentication (MFA) can be configured in two ways,
+
+Azure MFA in the cloud (cloud MFA)
+MFA Server on-premises
+Deciding on which flavor of Azure MFA, we must answer a few questions like:
+
+What am I trying to secure?
+Where are the users located?
+What features do I need?
+
+What am I Trying to Secure?
+Are the first-party Microsoft apps the one that you are trying to secure?
+
+Are SaaS apps in the app gallery the one that you are trying to secure?
+
+Are web applications published through the Azure AD App Proxy?
+
+Are IIS applications not published through Azure AD App Proxy?
+
+Does it use Remote access such as VPN and RDG?
+
+MFA in the cloud must be used for 2nd and 3rd scenario.
+MFA Server must be used for the 4th scenario.
+Either option can be adopted for 1st and 5th scenario.
+
+Where are the Users Located?
+Azure Active Directory
+
+Azure AD and on-premises AD using federation with AD FS
+
+Azure AD and on-premises AD using DirSync, Azure AD Sync, Azure AD Connect - no password sync
+
+Azure AD and on-premises AD using DirSync, Azure AD Sync, Azure AD Connect - with password sync
+
+On-premises Active Directory
+
+Cloud MFA for 1st and 4th scenario
+MFA Server for 5th scenario
+Either can be adopted for 2nd and 3rd scenario
+
+What are the features needed?
+Number of feature are available ,here is few features,
+
+Mobile app verification code as a second factor
+
+Phone call as second factor
+
+One-way SMS as second factor
+
+Two-way SMS as second factor
+
+Hardware Tokens as second factor
+
+App passwords for Office 365 clients that don’t support MFA
+
+PIN mode
+
+Remember MFA for trusted devices
+
+Cloud MFA for 6th and 8th scenario
+Server MFA for 4th and 5th scenario
+Either option can be used for other scenarios
+
+Azure MFA Overview
+By now you should have got an idea about how to select the MFA type. Now, lets try to understand more about Azure MFA.
+
+Azure MFA is Microsoft's two-step verification solution that adds a critical second layer of security to user sign-ins and transactions.
+
+It works by requiring any two or more of the following verification methods:
+
+Something you know (typically a password)
+Something you have (a trusted device that is not easily duplicated, like a phone)
+Something you are (biometrics)
+
+Why Azure MFA?
+It is an easy to use, scalable, and reliable two step identity verification solution to safeguard your applications and access to data.
+
+Easy to Use - It is simple to set up and offers extra protection allowing users to manage their own devices.
+Scalable - It uses the power of the cloud and integrates with your on-premises AD and custom apps. This protection is even extended to your high-volume, mission-critical scenarios.
+Always Protected - It provides strong authentication using the highest industry standards.
+Reliable - Microsoft guarantees 99.9% availability of Azure MFA.
+
+Two-Step Verification Methods
+When a user signs in, an additional verification is sent to the user.
+
+The following are a list of methods that can be used for this second verification.
+
+Phone call: is placed to user’s registered phone.
+Text message: is sent to a user’s mobile phone with a six-digit code.
+Mobile app notification: is sent to a user’s smartphone. If necessary, user enters a PIN and verifies on the mobile app.
+Mobile app verification code: that changes every 30 seconds is displayed on a mobile app. The user can view most recent code and enters it on the sign-in page.
+Third-party OATH tokens: Azure MFA Server can be configured to accept third-party verification methods.
+
+Workflow of MFA
+
+MFA uses two level of Authentication,
+
+First Level,
+
+  User Enters User's credentials
+MFA provider sends the verification code to the registered mobile device
+
+Second Level
+
+  User enters the verification code
+Finally user can access the resources
+
+Azure IDM - Course Summary
+Congratulations on making it this far. By now you should be familiar with AAD concepts such as,
+
+Managing users and groups.
+Implementing Azure AD Connect.
+Synchronizing your on-premise AD with AAD.
+Integrating Applications with AAD,
+Implementing and managing MFA.
+
+
+Main Quiz
+
+1)  If you create a user in Azure AD, It is called as __________________ Identity
+A)  Domain (doubt)
+
+2)  You are the administrator for your company’s Azure Active Directory (Azure AD) tenant, and on-prem Active Directory domain. A partner published a multi-tenant Software as a Service (SaaS) application, and gave your company access to the SaaS app. You configure access to several HR users in your company.
+Later, a team member in HR moves to a new department and no longer needs access to the partner’s app. You need to remove access to the app for this user, without affecting access for other users. The user must still be able to access other Line-of-Business (LOB) SaaS apps. What should you do?
+A)  Delete the team member from the Azure AD tenant.
+
+3)  RBAC can be used
+A)  For controlling application access permission and administration
+
+4)  What is a benefit of Role Basic Access Control (RBAC) in Microsoft Azure?
+A)  granular management permissions assignment
+
+5)  How long does password writeback take to work?
+A)  Immediately 
+
+6)  What types of accounts does password writeback work for?
+A)  All the options
+
+7)  The basic domain name is primarily intended to be used as a bootstrapping mechanism until a custom domain name is verified`
+A)  true 
+
+8)  The basic domain of Azure AD is in the form of 
+A)  abc123.onmicrosoft.com
+
+9)  Your company has one Azure subscription. You create 5 Resource Groups within the subscription: RG1, RG2, RG3, RG4, and RG5. You want to give a partner named John the right to manage all of the resources within RG3 fully. John’s Live ID is john@outlook.com. John should not be able to manage the resources in any other resource group. What should you do?
+A)  Add John to your Azure Active Directory. Browse to RG3 and add John’s Azure logon as an Onwer!!!!
+
+10) You plan to implement self-service group management in Microsoft Azure. Who is responsible for approving requests from users to join a group?
+A)  Owner 
+
+11) You are the Global Administrator for your company’s Windows Azure tenant. You assign two of your coworkers as Global Administrators. You click the Azure AD Privileged Identity Management link and walk through the security wizard. You add one of the coworkers to the role of Privileged Role Administrator Later, the coworker attempts to access the Azure AD Privileged Identity Management service and cannot access it. You need to ensure that your coworker has access to this service. What should you do?
+A)  Instruct the user to activate the role
+
+12) To manage the Azure Ad, the required privilege is 
+A)  Global administrator
+
+13) What feature of Privileged Identity Management allows you to define extended permissions for a user over a limited period?
+A)  Assignment
+
+14) You are deciding between using an on-prem Multi-factor Authentication (MFA) service, and a cloud-based service hosted in Azure. Which of the following features are available only in the on-prem MFA service?
+A)  Fraud Alert 
+
+15) You are the administrator of your company’s Azure subscription, and Azure Active Directory (Azure AD) tenant. Your company has an on-prem Active Directory. Your boss asks you to research, allowing the company users to access the Line-of-business (LOB) Software as a Service (SaaS) applications using Conditional Access rules. You need to make sure your tenant meets the pre-requisites for Conditional Access to SaaS apps. What is the lowest Azure subscription level required to enable Conditional Access to SaaS apps?
+A)  Premium
+
+16) Contoso.com is your verified custom domain, then the UPN of the user1 will be
+A)  user1@contoso.com
+
+only 9 correct
+
+

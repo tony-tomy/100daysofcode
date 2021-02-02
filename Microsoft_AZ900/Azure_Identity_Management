@@ -662,7 +662,7 @@ A)  Domain (doubt)
 
 2)  You are the administrator for your company’s Azure Active Directory (Azure AD) tenant, and on-prem Active Directory domain. A partner published a multi-tenant Software as a Service (SaaS) application, and gave your company access to the SaaS app. You configure access to several HR users in your company.
 Later, a team member in HR moves to a new department and no longer needs access to the partner’s app. You need to remove access to the app for this user, without affecting access for other users. The user must still be able to access other Line-of-Business (LOB) SaaS apps. What should you do?
-A)  Delete the team member from the Azure AD tenant.
+A)  Delete the team member assignment to the app in azure portal. 
 
 3)  RBAC can be used
 A)  For controlling application access permission and administration

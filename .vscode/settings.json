@@ -1,4 +1,7 @@
 {
     "python.pythonPath": "C:\\Users\\tonyt\\.msvscode.hdinsight\\hdinsightJupyter\\Scripts\\python.exe",
-    "jupyter.jupyterLaunchTimeout": 240000
+    "jupyter.jupyterLaunchTimeout": 240000,
+    "files.watcherExclude": {
+        "**/target": true
+    }
 }

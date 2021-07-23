@@ -1,0 +1,278 @@
+Basics
+
+Cloud Computing is a way for delivering services or resources on-demand.
+
+- National Institute of Standards and Technology (NIST)
+
+Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing 
+resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal 
+management effort or service provider interaction.
+
+Cloud Components
+The components are broadly classified into Frontend Components and Backend Components.
+
+Frontend Components
+Clients: Clients are the devices through which the end users interact. They are divided into three broad categories: mobile, thin and 
+thick clients.Smartphones and tablets constitute mobile clients, while computers without an internal hard drive is a thin client, and 
+thick clients are your typical computers.
+
+Backend Components
+Datacenter: It is a server or a collection of servers.
+Distributed Servers: These servers are spread across multiple locations.
+Storage, security and other such infrastructures add to the backend list.
+Through a network layer, cloud establishes the connection between the frontend and backend devices.
+
+Cloud Characteristics
+
+1. Elasticity
+2. On-demand
+3. Provider-pooled computing resources
+4. Metered service usage
+5. Broad network access
+
+Cloud computing is enabled through these key factors.
+
+Cloud Datacenters
+Virtualization
+Cloud APIs
+Cloud storage
+
+Virtualization
+
+The process of creating a virtual environment in a resource, to enable execution of services without interfering with other activities done by the resource.
+
+An ability that allows you to share the physical instance of an application or resource with multiple users.
+
+Virtualization - Features
+Prominent features of virtualization include:
+
+Partitioning: You can partition a resource to support many applications and hardware.
+Isolation: Every virtual instance is isolated from one another as well as from the resource.
+Encapsulation: You can encapsulate a virtual instance as a single entity to easily identify the service it offers.
+
+The interaction between the host server/machine and the virtual machine is facilitated by software called Hypervisor (VMM).
+
+Hypervisor distributes the hardware resources such as CPU, memory to the virtual environments.
+
+A virtual server is a virtual machine running on a server.
+
+Virtual Machine Monitor (aka) Hypervisor, manages the virtual machine existing on a single host machine.
+
+Virtual infrastructure management component runs on top of hypervisor, it deals with allocation of resources such as providing information for provisioning virtual infrastructure, support for defining operational rules.
+
+Virtualization Platform is the software that runs on the physical server, used to create host VMs such as VMware vSphere, Citrix and XenServer.
+
+1. Hardware Virtualization
+
+Hardware virtualization or server virtualization is the concept where you generally create a virtual machine on top of physical hardware. The hypervisor manages the virtual environment.
+
+Types
+Full virtualization
+A technique in which user service requests are separated from physical hardware. The OS and the necessary software run on top of the 
+virtual machine. The Guest OSs are unaware of virtualization.
+VMware Workstation, Virtual Box, and Hyper-V are few products that support full virtualization.
+
+Para virtualization
+Para-Virtualization is a technique that offers a software interface to the virtual machines. This interface will be similar but not 
+identical to the underlying hardware-software interface. It is used to execute critical tasks in the host as against the virtual host.
+Guest OS recognizes the presence of the hypervisor and communicates directly with it.
+Xen, Oracle VM for X86 are some of few examples.
+
+Emulation virtualization
+
+Software Virtualization
+Software or application virtualization encapsulates or abstracts the programs/applications from the underlying hardware on which it is 
+executed.
+It enables applications to run in environments not suitable for the native application.
+It reduces system integration and administration costs as it helps to maintain a common software baseline across multiple computers.
+
+Storage Virtualization
+A concept where multiple physical storages are grouped to appear as single storage is known as storage virtualization.
+
+Desktop Virtualization
+A concept that stores the users desktop on a remote server allowing the user to access it from any device or any location is Desktop virtualization or client virtualization.
+
+Cloud Service Models
+
+The three main service models include:
+
+Infrastructure as a Service (IaaS): As the name suggests, it provides computing infrastructure and other resources such as virtual-machines, block or file-based storage, load balancers, IP addresses, virtual networks etc.
+
+Example: Azure virtual machines, Amazon EC2, Rackspace.
+
+Platform as a Service (PaaS): As the name suggests, it provides you computing platforms which typically includes operating system, programming language execution environment, database, web server etc.
+
+Example: AWS Elastic Beanstalk, Windows Azure, Heroku etc.
+
+Software as a Service (SaaS): Provides on-demand software and there is no need to worry about installation and setup of the application.
+
+Example: Microsoft office 365, salesforce.com.
+
+Identity as a service (IDaaS) is a SaaS-based identity and access management offering.
+
+IDaaS
+Identity as a Service (IDaaS) is the authentication infrastructure that is hosted and managed by a third-party service provider.
+
+Types of identities available are:
+
+Internal Users: Internal users are part of an organization such as employees and maintenance personnel.
+
+External Users: External users are those who are using the product or service implemented by an organization such as business partners.
+
+Consumers: Users who use authentication mechanisms to utilize the application such as Facebook.
+
+Core aspects of IDaaS:
+Identity Governance and Administration (IGA): Provision cloud users and enable password reset functionality.
+
+Access: User authentication, SSO, and such authorization based integration.
+
+Intelligence: Identity access log monitoring and reporting.
+
+DaaS
+Data as a service is another cloud service model which is a little bit more ambiguous than some of the other cloud service models.
+
+It refers to the fact that data stored in the cloud is available over the network remotely on demand, anytime of day using any type of 
+device where data is stored on cloud service provider infrastructure.
+The data can be included of anything such as files, entire databases, photographs, videos, website data. So it's quite ambiguous and 
+generic in that way. Geographic location is irrelevant because when it comes to storing data in the cloud, cloud providers have the 
+option of replicating data between their data centers around the globe, thus making the data that the user needs locally available.
+
+Google Drive is the file storage solution in the cloud just like Microsoft Onedrive is. Now these type of offerings might be considered 
+Infrastructure as a Service because they are storage, but on a more broad scope we referred to it as Data as a Service.
+
+Flickr is a popular web site on the Internet for photography where photography enthusiast can upload photographs they have taken and 
+they can discuss the particulars related to that. And it's all stored online, hence in the cloud. So this is considered Data as a 
+Service.
+
+BPaaS (Business process as a service) is another cloud service model that is anything required for the business to function, although 
+it may not be related to the nature of the business. For example of a business process might include payment card processing, if you want your customers to be able to purchase our goods of services with the debit card or credit card, that payment has to be processed somewhere somehow. So you might outsource that and have it run in the cloud.
+
+Business Process as a Service is considered a higher-level cloud service model that sits upon things like SaaS, PaaS, IaaS and like 
+all cloud services, business processes that are running in the cloud are delivered remotely over the network.
+
+CaaS
+CaaS (communication as a service) is another another cloud service model that involves anything like phones, emails, messaging, video conferencing which are outsourced, handled and also responsible by cloud provider.
+
+So the service would be remotely available over the network. Now in some cases when it comes to CaaS, you might still have physical hardware on premises. For example, you might have cameras for video conferencing, you might have voiceover IP telephones, physically at your site. But their configuration and how they are managed would be handled in the cloud. So voiceover IP is a good example of CaaS being hosted and being the responsibility of the cloud provider.
+
+Instant Messaging is another great example, we wouldn't have to have servers under our control that would allow Instant Messaging, that would be the responsibility of the cloud provider.
+
+A cloud deployment model is used to represent a specific cloud environment type, differentiated based on the type of users availing the cloud models.
+
+The four common models are -
+
+1. Public Cloud : Public cloud is a cloud environment owned by a third-party cloud provider that enables availability of resources such as applications, virtual machines, etc., to the general public over the internet.
+
+Few of such providers are Amazon Web Services, Microsoft Azure.
+Benefits of Public Cloud
+Scalability: On-demand availability of resources.
+Cost Effective: Expenditure reduced due to centralized management of resources.
+Reliability: Backup support enabled in case of failures.
+Flexibility: Offers all services such as IaaS, PaaS, and SaaS.
+Location Independent: Services are enabled to consumers anywhere and anytime.
+
+2. Private Cloud : Private cloud is also recognized as an internal cloud or corporate cloud.
+
+Usually built and owned within an organization and is a secured cloud-based environment accessible only for the organization.
+
+Benefits of Private Cloud
+Higher Security and Privacy: Achieved using access restrictions to connections made to resources.
+Legal Compliance: Can be deployed in accordance with any retention and access-control policies.
+
+3. Hybrid Cloud : Hybrid cloud environment is the combination of both private and public clouds.
+
+Organizations use a Hybrid cloud to deploy private clouds for critical workloads and a public cloud to host less critical (or less sensitive) workloads.
+
+Better Control: Since private cloud can be accessed only by a single organization, that organization will configure and manage it based on their needs.
+An e-commerce website could be an ideal example. It can be hosted within a private cloud for better security, while its brochure site can be hosted within a public cloud for cost-effectiveness.
+
+4. Community Cloud : A community cloud is a multi-tenant platform allowing several groups with the same purpose to work on a single platform.
+
+Similar to a public cloud but with access restricted to a limited set of people.
+Owned jointly by the community members or by a third-party cloud provider.
+The community members typically own the responsibility for defining and evolving the cloud environment.
+
+How Cloud Storage Works?
+The data from your cloud-enabled device is uploaded into the cloud through a third party application such as Dropbox.
+The uploaded data reaches a master control data server located in a data center owned by your cloud service provider. The master server maintains a copy of your data in various storage servers.
+The data is stored across many machines in the cloud geographically, where you can retrieve it using APIs or web-based protocols.
+
+Cloud Storage Security
+Cloud storage providers enable security of the data by adopting various methods:
+
+Encryption: A complex algorithm is used to encode your data, users will need the encryption key to decode the data.
+
+Authentication: Protects access to data by enforcing users to create username and password. Multiple levels of authorization such as multi-factor authentication will be used as appropriate.
+
+Cloud Storage Benefits
+A reliable and secure system to back up your essential files.
+Files stored in the cloud can be retrieved remotely.
+Files are accessible from anywhere.
+An affordable way of protecting important data.
+An assurance of restoration of data from any unwanted failure or data loss.
+No need to install storage equipment.
+Offers enough mobility in the workflow of a business or company.
+
+Cloud Storage Risks
+Irrespective of the many benefits, cloud storage, comes with a few notable risks as well:
+
+Data security (data is vulnerable when it is transferred to and from the cloud).
+Accessibility depends on network connectivity.
+Cost depends on the usage.
+
+Cloud application programming interface serves as a layer between users, cloud services, and resources.
+
+It interacts with the cloud infrastructure to assist with Computing, Storage and Network resources for requested cloud applications or services.
+
+Cloud APIs vary according to the provided services, as follows:
+
+Infrastructure as a Service (IaaS): Infrastructure APIs help in the provision of computing and storage resources.
+
+Software as a Service (SaaS): SaaS APIs enable connectivity and interaction with the application layer.
+
+Platform as a Service (PaaS): PaaS APIs provide back-end architecture, functionality for the applications.
+
+Here are some common scenarios that will be benefited from cloud migration.
+
+If your application is experiencing increased traffic and it is difficult to meet the demand.
+
+When your clients need faster deployment and access to applications ( cloud increases focus on development rather than infrastructure implementation).
+
+When it’s becoming more difficult and expensive to keep up with your growing storage needs.
+
+Benefits startups (cloud computing shifts IT expenditure to a pay-as-you-go model).
+
+Costing is broadly categorized as:
+CAPEX (Capital Expense)
+
+OPEX (Operational Expense)
+
+Given here are certain scenarios that illustrate the usage of CAPEX and OPEX:
+
+In traditional Internal IT Infrastructure environment where everything is set up and managed internally, high CAPEX and OPEX are incurred.
+
+In case of a colocation facility, where a location that hosts the infrastructure is owned or rented from a third party, high CAPEX and a slightly lower OPEX is incurred.
+
+Consider an environment where services are managed by outsourcing them, it incurs reduced CAPEX and increased OPEX.
+
+Now, if you consider a public cloud in which the infrastructure is fully outsourced, it incurs only OPEX and CAPEX is cutoff.
+
+Given here are some commonly used cloud models:
+
+Free Payment Model: Majorly used in marketing or advertising type of companies where consumers will be able to register and use the service freely. It helps the companies to market their product based on the usage metrics.
+
+Plan Payment Model: Subscription-based usage, where users will be allowed to access the cloud for a specific period/cost.
+
+Pay as you use: As the name suggests in this model, you will pay based on what you have used.
+
+Shared Responsibility Model: AWS
+AWS has devised three responsibility models for infrastructure services, container services, and abstract services.
+
+In the infrastructure model, AWS is responsible for the security of the cloud, and any data that goes into the cloud becomes the customer's responsibility.
+
+In the container model, AWS takes the additional responsibility for the OS, network configuration, platform and application management.
+
+In the abstract model, AWS takes the whole responsibility except for the customer-side data and data encryption.
+
+
+

@@ -1,0 +1,363 @@
+
+Azure Data Lake Storage
+
+Azure data lake store is a highly scalable, distributed, parallel file system that is designed to work with various analytic frameworks, 
+and has the capability of storing varied data from several sources.
+
+Azure Data Lake Store
+Microsoft describes Azure Data Lake Store (ADLS) as a hyperscale repository for big data analytics workloads that stores data in its native format. ADLS is a Hadoop File System compatible with Hadoop Distributed File System (HDFS) that works with the Hadoop ecosystem.
+
+ADLS:
+
+Provides unlimited data storage in different forms.
+Is built for running large scale analytic workloads optimally.
+Allows storing of relational and non-relational data, and the data schema need not be defined before data is loaded.
+Keeps three copies of a particular data to enable high availability of data provision.
+
+Azure Data Lake - Architecture Components
+
+The ADLS architecture constitutes three components:
+
+Analytics Service
+HDInsight
+Diversified Storage
+
+Analytics Service- to build various data analytic job services, and execute them parallelly.
+HDInsight- for managing clusters after ingesting large volumes of data clusters, by extending various open sources such as Hadoop, Spark, Pig, Hive, and so on.
+Diversified Storage- to store diversified data such as structured, unstructured, and semi-structured data from diverse data sources.
+
+Azure Data Lake Storage Working
+
+Raw Data --> Data Factory --> Data Lake --> Data Bricks --> SQL Data Warehouse, Power BI, Analysis and services
+                ingest          Store       Data Enrich         Model and Service
+
+Data Lake Storage Gen 1
+
+Data Lake Storage Gen 1 is an Apache Hadoop file system compatible with HDFS that works with the Hadoop ecosystem. Existing HDInsight 
+applications or services that use the WebHDFS API can easily integrate with Data Lake Storage Gen 1.
+
+Key Features of Data Lake Store Gen 1
+Built for Hadoop: Data stored in ADLS Gen 1 can be easily analyzed by using Hadoop analytic frameworks such as Pig, Hive, and MapReduce. Azure HDInsight clusters can be provisioned and configured to directly access the data stored in ADLS Gen 1.
+Unlimited storage: ADLS Gen 1 does not impose any limit on file sizes, or the amount of data to be stored in a data lake. Files can range from kilobyte to petabytes in size, making it a preferred choice to store any amount of data.
+Performance-tuned for big data analytics: A data lake spreads parts of a file over multiple individual storage servers. Therefore, when performing data analytics, it improves read throughput when reading files in parallel.
+Enterprise-ready, Highly-available, and Secure: Data assets are stored durably by making extra copies to guard against any unexpected failures. Enterprises can use ADLS Gen 1 in their solutions as an important part of their existing data platform.
+All Data: ADLS Gen 1 can store any type of data in its native format without requiring prior transformations, and it does not perform any special handling of data based on the type of data.
+
+Azure Data Lake Store Gen 2
+ADLS Gen 2 is built on top of Azure blob storage, dedicated to big data analytics, which is the result of converging both the storage service (blob storage and ADLS Gen 1) capabilities.
+
+ADLS Gen 2 is specifically designed for enterprise big data analytics that enables managing massive amounts of data. A fundamental component of ADLS Gen 2 is that it uses hierarchical namespace addition to blob storage, and organizes objects/files into a hierarchy of directories for efficient data access.
+
+ADLS Gen 2 addresses all the drawbacks in areas such as performance, management, security, and cost effectiveness which were compromised in the past in cloud-based analytics.
+
+Key Features of ADLS Gen 2
+Hadoop-compatible access: The new Azure Blob File System (ABFS) driver is enabled within all Apache Hadoop environments, including Azure Databricks, Azure HDInsight, and SQL Data Warehouse, to access data stored in ADLS Gen2.
+
+A superset of POSIX permissions: The security model for ADLS Gen2 supports ACL and POSIX permissions, along with extra granularity specific to ADLS Gen2.
+
+Cost effective: ADLS Gen2 offers low-cost storage capacity and transactions as data transitions through its entire life cycle.
+
+Comparing Data Lake Store and Blob Storage
+        Data Lake Store	                                                                                                                 Blob Storage
+Purpose	: Optimized and dedicated storage for big data analytics workloads                                                              |    General purpose object store for a variety of storage scenarios.
+Use cases:	Supports streaming analytics and machine learning data, such as log files, IoT data, massive datasets, and click streams.   |	Supports any type of text or binary data, such as application backend, backup data, media storage for streaming and general purpose data.
+File system :	ADLS accounts contain folders, which in turn contain data stored as files.                                              |   Storage accounts have containers, which in turn has data in the form of blobs.
+Data Operations - Authentication : Based on Azure Active Directory Identities.	                                                        |   Based on shared secrets - Account Access Keys and Shared Access Signature Keys.
+Size limits	: No limits on account sizes, file sizes or number of files.	                                                            |   Has certain limits regarding no of accounts, and storage capacity. Refer to link(https://docs.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account)
+
+Streamed Data Management
+The image in the previous card illustrates how streamed data is managed by using ADLS in three different layers:
+
+Data generation
+
+Storage
+
+Data processing
+
+Data is generated from various sources such as cloud, local machines, or logs.
+Data is stored in a data lake store which uses different analytic jobs such as Hadoop, Spark, or Pig to analyze the data.
+After data analysis, the data is processed for use.
+
+Data Lake Store Pricing
+The cost of ADLS Gen 1 depends on how much you store, and, the size and volume of transactions and outbound data transfers.
+
+Azure allows storing data prices in two ways; pay as you go, and monthly commitment packages
+
+ADLS Gen 2 is the most productive storage, and its pricing depends on the file structure, and redundancy you choose
+
+Azure Data Lake Store Gen 1 by using PowerShell
+A data lake storage instance can be created by using Azure PowerShell.
+
+The PowerShell command to create data lake store account is:
+
+New-AzureRmDataLakeStoreAccount -ResourceGroupName $resourcegroupname -Name $dlsname -Location "East US" -DisableEncyption
+To access the PowerShell,
+
+Select >_ from the top menu in the Azure portal home page.
+
+Creating ADLS Gen 1 by using CLI
+Azure CLI is one of the options with which you can manage data lake store.
+
+The following command is a sample CLI command to create a data lake storage Gen 1 account:
+
+az dls fs create --account $account_name --path /mynewfolder --folder
+The above CLI command creates a data lake store Gen 1 account, and a folder named mynewfolder at the root of the data lake storage Gen 1 account.
+
+Note: The --folder parameter ensures that the command creates a folder, if not, it creates an empty file named mynewfolder, at the root as default.
+
+Data Lake Store Gen 2 Creation
+To create a data lake Storage V2 account:
+
+Login to the Azure portal, and navigate to the storage account resource.
+Add storage account and provide the resource group name, storage account name, location, and performance (standard or premium).
+Select the account type as Storage V2, which is a Gen 2 type of account.
+Select the replication based on your requirement, such as LRS, GRS, or RA-GRS, and proceed to next for advanced options.
+Enable the hierarchical namespace to organize the objects or files for efficient data access.
+Proceed to next, validate, and create the storage account.
+
+Getting Data into Data Lake Store
+You can get your data into your data lake store account in two ways,
+
+Through direct upload method or Adlcopy
+Set up a pipeline by using data factory, and process data from various sources.
+
+Copying Data into ADLS
+After successful creation of the data lake storage account (Gen 1 or Gen 2), navigate to the resource page.
+
+To ingest data into the storage account through offline copy (directly uploading data from portal),
+
+Navigate to the storage account instance page.
+Select Data explorer. The storage account files explorer page appears.
+Choose the upload option from the menu, and from the source, select the files you want to be stored in your account.
+Upload the files by selecting Add the select files.
+
+Data Upload by using Azure CLI
+The CLI command to upload data into the data lake storage account is:
+
+az dls fs upload --account $account_name --source-path "/path" --destination-path "/path"
+Provide the storage account name, source path, and destination path in the above CLI command.
+
+Example:
+
+az dls fs upload --account mydatalakestoragegen1 --source-path "C:\SampleData\AmbulanceData\vehicle1_09142014.csv" --destination-path "/mynewfolder/vehicle1_09142014.csv"
+
+AdlCopy Tool
+ADLS Gen 1 provides a command line tool AdlCopy to copy data from the following sources:
+
+From azure storage blobs to data lake storage Gen 1 account.
+
+Note: You cannot use AdlCopy to copy data from ADLS Gen 1 to blob.
+
+Between two data lake storage Gen 1 accounts.
+
+You should have AdlCopy tool installed in your machine. To install, use link.
+
+AdlCopy syntax:
+
+AdlCopy /Source <Blob or Data Lake Storage Gen1 source> /Dest <Data Lake Storage Gen1 destination> /SourceKey <Key for Blob account> /Account <Data Lake Analytics account> /Units <Number of Analytics units> /Pattern
+
+Moving Data by using AdlCopy
+Let's assume that data is being copied between two data lake stores named Adls1 and Adls2, where the source is Adls1 and destination is Adls2.
+
+The following example command will perform the copy activity:
+
+AdlCopy /Source adl://adls1.azuredatalakestore.net/testfolder/sampledata.csv /dest adl://adls2.azuredatalakestore.net/testfolder
+Specify the source, destination instances URL, and the data file that needs to be copied.
+
+Note: To get the instances URL, navigate to the instance dashboard.
+
+Azure Data Lake Analytics
+Azure data lake analytics is an analytics job service that writes queries, extracts valuable insights from any scale of data, and simplifies big data.
+
+It can handle jobs of any scale in a cost-effective manner, where you pay for a job only when it is running.
+
+Data Lake Analytics works with ADLS for high performance, throughput, and parallelization. It works with Azure Storage blobs, Azure SQL Database, and Azure Warehouse.
+
+Manage Data Sources in Data Lake Analytics
+Data Lake Analytics supports two data sources:
+
+Data lake store
+Azure storage
+Data explorer is used to browse the above data sources, and to perform basic file management operations.
+
+To add any of the above data sources,
+
+Login to the Azure portal, and navigate to the Data Lake Analytics page.
+Click data sources, and then click add data sources.
+To add a Data Lake Store account, you need the account name and access to the account, to query it.
+
+To add Azure Blob storage, you need the storage account and the account key.
+
+Setting Up Firewall Rule
+You can enable access to trusted clients only by specifying an IP address or defining a range of IP addresses, by setting up the firewall rules to cut off access to your data lake analytics at network level.
+
+To setup a firewall rule,
+
+Login to the Azure portal and navigate to your data lake analytics account.
+On the left menu choose firewall.
+Provide the values for the fields by specifying the IP addresses.
+Click OK.
+
+U-SQL Overview
+Data lake analytics service runs jobs that query the data to generate an output for analysis, where these jobs consist of scripts written in a language called U-SQL.
+
+U-SQL is a query language that extends the familiar, simple, declarative nature of SQL; combined with the expressive power of C#, and uses the same distributed runtime that powers Microsoft's internal exabyte-scale data lake.
+
+Built-in Extractors in U-SQL
+Extractors are used to extract data from common types of data sources. U-SQL includes the following built-in extractors:
+
+Extractors.Text - an extractor for generic text file data sources.
+Extractors.Csv - a special version of the Extractors.Text extractor specifically for comma-delimited data.
+Extractors.Tsv - a special version of the Extractors.Text extractor specifically for tab-delimited data.
+
+Extractor Parameters
+The built-in extractors support several parameters you can use to control how data is read. The following are some of the commonly used parameters:
+
+delimiter- It is a char type parameter that specifies the column separator character whose default column separator value is comma (','). It is only used in Extractors.Text().
+
+rowDelimiter- It is a string type parameter whose max length is 1, which specifies the row separator in a file whose default values are "\r\n" (carriage return, line feed).
+
+skipFirstNRows- It is an Int type parameter whose default value is 0, which specifies the number of rows to skip in a file.
+
+silent- It is a boolean type parameter whose default value is false, which specifies that the extractor ignore and skip rows that have a different number of columns than the requested number.
+
+Built-in Outputters in U-SQL
+U-SQL provides a built-in outputter class called Outputters. It provides the following built-in outputters to transform a rowset into a file or set of files*:
+
+Outputters.Text()- Provides outputting a rowset into a variety of delimited text formats.
+Outputters.Csv()- Provides outputting a rowset into a comma-separated value (CSV) file of different encodings.
+Outputters.Tsv()- Provides outputting a rowset into a tab-separated value (TSV) file of different encodings.
+
+Sample code vides are present in " Azure Data Lakes Analaytics ".
+
+U-SQL Catalog Overview
+Azure data lake analytics allows you to create a catalog of U-SQL objects that are stored in databases within the data lake store.
+
+The following are some of the objects you can create in any database:
+
+Table: represents a data set of data that you want to create, such as creating a table with certain data.
+Views: encapsulates queries that abstract tables in your database, such as writing a view that consists of select statements which retrieve data from the mentioned tables.
+Table valued function: writes custom logic to retrieve the desired data set for queries.
+Procedures: encapsulates the code that performs certain tasks regularly, such as writing a code to insert data into tables or other regular operations which are executed repeatedly.
+
+External Tables
+Along with managed tables, U-SQL catalogs can also include external tables which reference tables in azure instances such as SQL data warehouse, SQL database or SQL Server in Azure virtual machines.
+
+This is useful when you have to use U-SQL to process data that is stored in an existing database in Azure.
+
+To create an external table, use the CREATE DATA SOURCE statement to create a reference to an external database, and then use the CREATE EXTERNAL TABLE statement to create a reference to a table in that data source.
+
+Security Mechanism for Data Lake Store
+Security mechanisms that you can implement to secure a data lake store include:
+
+Authentication
+Azure provides multi-factor authentication capability that ensures an additional layer of security for sign ins and transactions, and allows to set up authentication with the use of sign in codes that are received through an SMS.
+
+It also facilitates authentication from any clients by using standard open protocols such as OAuth or OpenID
+
+Authorization
+Authorization is implemented by Role-based Authorization Control (RBAC ) which is a built-in feature for Microsoft Azure which facilitates account management.
+
+It implements POSIX ACL to access data from the data lake storage.
+
+You can apply granular levels of authorization for data lake resources by assigning user roles and security groups by using Access Control or IAM.
+
+Database roles and permissions
+You can implement database roles, permissions, and granular row level security to ensure that databases are secure, by adding roles and permissions to the users.
+
+Network Isolation
+ADLS Gen1 enables accessing your data store at the network level where you can allow access by establishing firewalls and defining an IP address range for trusted clients. With an IP address range, only clients that have an IP address within the defined range can connect to Data Lake Storage Gen1.
+
+Data Protection
+Data Lake Storage Gen1 protects data throughout its life cycle. For data in transit, the industry-standard Transport Layer Security (TLS 1.2) protocol is used to secure data over the network.
+
+Securing Data Lake Store
+ADLS Gen 1 implements an access control model as default, that derives permissions from the RBAC file system stored in the data lake store.
+
+The permissions that can be used on files and folders are Read, Write and Execute:
+                        File	                                                Folder
+Read	:Can read the contents of a file.                                	Requires Read and Execute permissions to list the contents of the folder.
+Write	:Can write or append to a file.                                  	Requires Write and Execute permissions to create child items in a folder.
+Execute	:Does not mean anything in the context of Data Lake Storage Gen 1.	Required to traverse the child items of a folder.
+
+Data Ingestion
+While ingesting data from the source to the data lake store Gen 1, it is important to consider factors (bottlenecks) such as source hardware, and network connectivity.
+
+Performance Criteria
+Database size, concurrency, and response time are important metrics, depending on which the data lake store should be fine tuned.
+
+Configure data ingestion tools for maximum parallelization:
+
+Once the source hardware and network connectivity bottlenecks are addressed, you can configure ingestion tools such as:
+
+Structuring your dataset- When data is stored in ADLS Gen 1, the file size, folder structure, and number of files have an impact on performance. For better performance, it is recommended to organize data into larger files, than have many small files.
+
+Organizing time series data in folders- For Azure data lake analytics workloads, partition-pruning of time-series data enables some queries to read only a subset of the data. This improves performance.
+
+Log Analytics
+Log analytics in Azure play a prominent role in creating service alerts, and controlling the cost of Azure data lake implementations.
+
+Log analytics collect telemetry and other data which enables its automated alerting capability.
+Implementing log analytics in Azure does not require any configuration, since it is already integrated with other Azure services.
+To enable log analytics, create a workspace and collect all the metrics and data that are being emitted from various activities.
+While implementing log analytics, ensure that the agents are installed on virtual machines.
+
+Log Analytics Query Language
+Log analytics query language is a simple and interactive query provided by Microsoft to facilitate log searches.
+
+It is used to identify valuable insights from the data by querying, combining, aggregating, joining, and performing other tasks on your data in log analytics.
+
+Log analytics query language enable you to specify conditions, implement joins, and facilitate smart analytics.
+
+Example: Building a single collaborative log analytic visualization that provides various analytical outcomes in a single dashboard, to help administrators monitor and define strategy.
+
+Implementing Log Analytics
+After signing up in the Azure portal, create log analytics workspaces, and use it to analyze the logs.
+
+To create the log analytics workspace,
+
+In the Azure portal, search for log analytics by clicking All Services.
+
+Select Log Analytics Workspaces, and click Add.
+
+Enter values in the name, subscription, resource group, location and pricing tier fields.
+
+Click OK.
+
+You can run log searches to analyze data, or to configure collection of monitoring telemetry data.
+
+Summary
+The concepts covered in this course were:
+
+Data lake store and its capabilities.
+Data lake store (gen 1 and gen 2) provisioning, and ingesting data into the store.
+Data lake analytics and managing it.
+Data analysis by using U-SQL, and retrieving the desired data sets.
+Securing and monitoring data in a store.
+
+Hands-on 1 : U-SQL Job
+Execute a simple U-SQL job to get a hands-on experience of analyzing data:
+
+Create an ADLS Gen 1 account.
+Create an Azure data lake analytics instance with the above storage account.
+Upload the data files that need to be analyzed, into the storage account.
+Navigate to the data lake analytics instance page.
+Add a new job and write an U-SQL program that extracts data for analyzing, and export it to an output file.
+Submit the job and navigate to your data lake storage account.
+Verify if the output file you generated can analyze the data or not.
+Note: Azure incurs additional costs to create ADLS accounts and analytics instances. Proceed to the hands-on based on your interest.
+
+Hands-on 2
+Try creating objects for your database:
+
+Create an ADLS Gen 1 account.
+Create an Azure data lake analytics instance with the above storage account.
+Upload the data files that need to be analyzed, into the storage account.
+Navigate to the data lake analytics instance page.
+Add a new job and create views for your database, which returns the desired dataset.
+Export the data set into an output file by writing a query.
+Submit the job and navigate to your data lake storage account.
+Verify if the output file you generated can analyze the data or not.
+Note: Try to create table value functions and procedure objects in a similar manner, which results in processing the desired datasets.
+
+

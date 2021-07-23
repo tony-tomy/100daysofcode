@@ -1,0 +1,445 @@
+Azure Databases
+
+Overview of Data Services in Azure
+Nowadays most of the applications rely on the relational databases for data storage.
+
+Azure offers two types of solutions for relational data services.
+
+Azure SQL database (PaaS): It provides compatibility with most SQL Server features. This service removes the need for you to manage the underlying operating system and database-server platform. It is also considered as the database as a service (DBaaS).
+
+Database (IaaS): This enables you to deploy Azure IaaS virtual machines on top of which you can run an instance of the relational database management system, such as MySQL, SQL Server, Oracle 11c and list goes on...
+
+Azure Services that Offers Support for Relational data
+Azure provides many services for managing relational data such as:
+
+Azure SQL data warehouse, a completely managed relational data as a service.
+
+Azure Data Factory Service, offers extraction, transformation, and loading functionality of data.
+
+Azure Data Analytics, delivers analysis services based on any combination of unstructured, semi-structured, and structured data.
+
+Azure SQL Database (PaaS) Vs SQL Server (IaaS)
+Azure SQL Database(PaaS):
+Minimized overhead and cost when compared with an on-premises virtual machine.
+Provisioning time is very less than SQL server (IaaS)
+No full support for the virtual network in Azure SQL database (PaaS)
+Contains fewer features than SQL server in a virtual machine.
+SQL Server (IaaS):
+Low overhead and cost, as it doesn't require infrastructure support.
+Provisioned with full virtual network support for SQL server in a virtual machine.
+Note: If you're running a virtual machine only for SQL database, it is recommended to migrate your database to Azure SQL database due to its lower cost and faster provisioning.
+
+Differences between SQL Server and Microsoft Azure SQL Database
+Azure SQL database and SQL server differ in various aspects such as:
+
+1.Size Limitations: SQL server has no upper limit for database size it can extend up to 500,000 TB, whereas Azure SQL database has maximum database size limit up to 4 TB which comes in premium service tier.
+
+2.Connection Limitations: SQL server is more flexible than Azure SQL database in establishing and maintaining connections. Some such scenarios are:
+
+SQL database doesn't support windows authentication.
+SQL database requires @<server> as appended to the login username in connection strings.
+SQL server supports static and dynamic port allocation.
+
+3.Features Support: SQL database differs in supporting many of the SQL server features. Some of them are listed below.
+Agent Service (cannot use the SQL Server Agent service to schedule and run jobs on SQL Database.)
+
+Audit (Records of server and database events are not featured in SQL database auditing.)
+
+Backup and Restore (SQL Database supports an automated backup schedule that creates transactionally consistent backups in the form of BACPAC files created in Azure storage.)
+
+File Streaming (SQL database uses azure blob storage for unstructured data, whereas FILESTREAM and FileTable are not supported in SQL database as SQL server does.)
+
+Azure SQL Database Architecture
+
+You 'll be having an Azure subscription as the top layer in which you have a resource group. Within the resource group, you'll be having the server instances and databases. On top of the SQL database server, it contains the master database and isolated users database.
+
+Migrate from On-Premises to Azure
+Migrating your application data from on-premises SQL Server to Azure SQL database is provisioned through some data import and export tools.
+
+DAC package (Data-tier Application) is one of the data import and export wizards. It's a package where you can directly upload into Azure SQL server
+
+It contains your data and the entire schema of your database and also generates the schema, Transact-SQL scripts.
+
+So you can generate a script for your entire database, and then execute that script against Azure SQL, and it will create the entire schema up for your database.
+
+PowerShell Installation
+PowerShell installation for Ubuntu machines:
+
+Execute the below commands consecutively
+
+# Get the Microsoft repository Keys
+wget -q https://packages.microsoft.com/config/ubuntu/14.04/packages-microsoft-prod.deb
+
+# Enroll to the Microsoft repository GPG keys
+sudo dpkg -i packages-microsoft-prod.deb
+
+# Update the list of products
+sudo apt-get update
+
+# Install PowerShell
+sudo apt-get install -y powershell
+
+# Start PowerShell
+pwsh
+
+Azure CLI 2.0 Installation
+Azure CLI 2.0 installation in ubuntu machines:
+
+# Modify the sources list
+AZ_REPO=$(lsb_release -cs)
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
+sudo tee /etc/apt/sources.list.d/azure-cli.list
+
+# Get the Microsoft signing key
+curl -L https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+
+# Install Azure CLI
+sudo apt-get update
+sudo apt-get install apt-transport-https azure-cli
+
+# Run Login command with the username and password
+az login -u $username -p $password
+
+Provisioning Azure SQL Database
+Provisioning Azure SQL database requires two main steps:
+
+You have to provision the database explicitly
+You have to first provision a server (name should be a unique one) on which the database runs.
+
+PowerShell commands
+The PowerShell commands to deploy the Azure SQL database are:
+
+To build a SQL server:
+
+$sqlServer = New-AzureRmSqlServer -ServerName $sqlServerName -SqlAdministratorCredentials $creds -Location $sqlServerLocation -ResourceGroupName $resourceGroupName -ServerVersion $sqlServerVersion
+To Create an empty database in the server:
+
+$CurrentDatabase = New-AzureRmSqlDatabase -ResourceGroupName $resourceGroupName -ServerName $sqlServerName -DatabaseName $databaseName -Edition $databaseEdition -RequestServiceObjectiveName $databaseServiceLevel
+
+Azure CLI commands
+Azure CLI commands to deploy the Azure SQL database are:
+
+To build the server:
+
+az sql server create --name $servername --resource-group $resourcegroupName --location $Location --admin-user $username --admin-password $password
+To Create an empty database in the server:
+
+az sql db create --resource-group $resourceGroupName --server $serverName --name $databaseName --service-objective $databaseServiceLevel
+
+Lab 01 : Azure Databases: Azure SQL Database deployment
+
+01. Creation of Server 
+servername=azsampleserverinv
+Location="eastus"
+username="Mad_max"
+password="M@xSpass@199C0mplex"
+az sql server create --name $servername --resource-group $resource --location $Location --admin-user $username --admin-password $password
+
+List all the servers 
+az sql server list -o table -g $resource
+
+02. Using Azure CLI, configure firewall rules for the above created server, which should be open to all network addresses:
+
+az sql server firewall-rule create -g $resource -s $servername -n myrule --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255
+
+03. Deploy an Azure SQL database instance with the blank database
+
+az sql db create -g $resource -s $servername -n mydb --edition Basic                            not possible--max-size 100
+
+04. Connect the database that has SQL server installed, with the connection string, and manage the database.
+
+az sql db show-connection-string --client sqlcmd --name $name (give your database name in place of $name)
+az sql db show-connection-string --client sqlcmd --name mydb
+output : "sqlcmd -S tcp:<servername>.database.windows.net,1433 -d mydb -U <username> -P <password> -N -l 30"
+
+Migrate from On-Premises to Azure
+
+Overview of Tools for Azure SQL Database
+There are several tools available for managing Azure specific aspects and Database specific aspects.
+
+Tools for managing Azure specific aspects are:
+
+Azure Portal
+Azure PowerShell
+Azure CLI
+Azure Resource Managers Templates
+Tools for managing Database specific aspects are:
+
+SSMS (SQL Server Management Studio)
+SQLCMD
+Visual Studio
+
+The SQL server object Explorer in Visual Studio allows you to connect to your Azure subscription and its all database instances.
+
+It enables the functionality of working directly in Visual Studio from your Azure portal and makes it feel like a local database.
+
+Command Line Tools for Azure SQL Database
+The Azure SQL database can be accessed through command line tools such as PowerShell and SQLCMD.
+
+Windows PowerShell contains the entire library of PowerShell cmdlets in the UI itself, which are used for administering Azure SQL database.
+
+PowerShell is specifically used for administering and automating the database. This cannot help in querying the data.
+
+Querying the data from the command line is provisioned with SQL-CMD, which is a standard SQL command line administration tool (command-line sequel query editor).
+
+This allows to query data, manipulating data and execute Transact-SQL commands.
+
+Azure SQL Database Security
+Azure enables a different level of security measures for their customers at both Server Level and Database Level.
+
+Server Level means Azure SQL server level, not the subscription level, the security features it includes are:
+
+Access to the SQL database is restricted to certain user roles.
+
+Allows to set up Server firewall rules so that the users with certain IP addresses are permitted to access the database and allowed to manage the database.
+
+Azure SQL databases uses logins at the server level to authenticate user requests, it doesn't support windows integrated authentication.
+
+The master database roles have two roles: loginmanager role (has permissions to create and manage logins), dbmanager role (has permissions to create and manage databases).
+
+At database level some of the security features are:
+
+Extends access to client IP addresses by allowing to add additional firewall rules for individual databases.
+
+GRANT, REVOKE, DENY statements can be executed to assign permissions to database objects for users and roles in the database.
+
+Several database roles permissions are implemented at different levels,
+
+T-SQL Statements to Manage Logins and Users
+T-SQL is an extension to SQL which was populated by Microsoft.
+
+Transact-SQL commands to manage a login is:
+
+CREATE LOGIN $mylogin
+WITH PASSWORD = 'PassWord123'; To create login with password
+ALTER LOGIN $mylogin : To change the password to your login 
+DROP LOGIN $mylogin; To delete the login
+Users get access to the databases through successful Logins.
+
+Transact-SQL commands to manage the users is:
+
+CREATE USER $myuser
+FROM LOGIN $mylogin; To create the user from the login
+DROP USER $myuser; To delete the user
+
+Managing Logins and Users
+
+Export an Azure SQL Database
+If you need to export your database to another platform or archiving it, you can export the database schema and data in a BACPAC file.
+
+A BACPAC file is a ZIP file with .bacpac extension which contains the data from the SQL Server database.
+
+It can be stored in either Azure blob storage or in the on-premises location.
+
+Later the file will be imported back into Azure SQL database or into on-premises SQL server installation.
+
+Considerations for Exporting your Database
+Some specific considerations while exporting your database are:
+
+Ensure that no write activity is going on while exporting.
+If you are exporting the BACPAC file to Azure blob storage the upper limit of the file size is 200GB and the larger files are recommended to store locally.
+Archiving to Azure premium storage by BACPAC file is not supported.
+if the export operation from Azure SQL database exceeds 20hours, it refers to be canceled.
+
+Importing a Database
+Importing a Database from on-premises SQL Server to Azure SQL database is done by wrapping up everything in a BACPAC file.
+You need to create a Microsoft Azure storage account which is required to access your data in the cloud through BACPAC files.
+Create a .bacpac file containing all your data from your on-premises SQL server and upload it to the blob container in the Azure storage account. Then you can import the uploaded .bacpac file into SQL database.
+
+Self-Service Restore
+Azure SQL database backs up your databases automatically in three types such as:
+
+Full Backup: SQL server technology backs up the whole database including your transaction logs and the whole data can be recovered after the full backup restore.
+
+Differential Backup: A differential backup backs up the most recent data which is remained after the full backup. It offers to take regular data backups, which eliminates the risk of data loss.
+
+Transaction Log Backup: It helps to back up the logs at frequent intervals which reduces the work loss exposure and to truncate the transaction log.
+
+Backup Properties
+Backup Storage: SQL database offers up to 200% of your provisioned database size as your backup storage with zero additional cost.
+
+Backup Schedule: After the creation of the database the first full backup will be initiated immediately. After that, all further backups are invoked automatically and managed in the background.
+
+Backup Retention: The retention period for SQL database backup is based on the database service-tier. For Basic service tier, the daily restore point is retained for 7 days, if it is the Standard / premium service tier you can restore to a specific point in time within 35 days.
+
+Geo-Replication is one of the Azure SQL features which allows making readable replicas to your database in same or different data centers*.
+
+Geo-Replication option is available for all databases and service tiers in all region. If it is enabled, the application initiates to a secondary database.
+
+Note: Up to four secondary databases are supported in the same or different data centers, which are used for read-only access queries.
+
+Monitoring Databases
+
+Auditing
+The SQL database auditing helps in tracking the database events and maintains the audit log, which will use the Azure storage account to store it in.
+
+Auditing maintains the regulatory compliance, helps in understanding the database activities and traces out the anomalies or security violations.
+
+You can define the auditing policies for the individual databases and servers.
+
+You can use SQL database auditing to:
+
+Retain an audit trail on specific events and database actions, categories also can be defined to be audited.
+
+preconfigure reports to get started quickly with activity and event reporting.
+
+Analyze reports and find suspicious events and unusual activities.
+
+Threat Detection
+Azure SQL database threat detection is an extension layer of security for the databases, which helps in detecting and responding to the potential threats by generating security alerts on anomalous activities.
+
+Azure security center gets alerts integrated with the threat detection, which includes the details of suspicious activities.
+
+Setting up threat detection:
+
+Launch the Azure portal (https://portal.azure.com)
+Navigate to the configure page of Azure SQL database to which you need to protect.
+Select Advanced threat protection and enable it.
+Choose the threat detection types and check-in the options.
+Provide the emails to receive security alerts against anomalous database activities under threat detection settings in send alerts to box.
+
+Alert Rules
+Alerts based on monitoring metrics or events can be received to customers and the alert gets active to send the notification when the value of an alert rule cuts an assigned threshold.
+
+Steps for Setting up alert rules for your Azure SQL database*.
+
+Launch the Azure portal (https://portal.azure.com)
+Navigate to configure page of Azure SQL database to which you want to configure alerts.
+Navigate to Alerts (classic) under Monitoring section and select Add metric alert.
+Provide the alert name, description and choose the alert metric.
+Configure the alert metric by adding rules with a condition, the threshold and period, save the settings.
+
+Database Metrics
+Metric is the specific parameter on which the alerts are invoked.
+
+The metrics available specifically for a SQL database are: Blocked by firewall, Failed connections, Successful connections, CPU percentage, deadlocks and the list goes on. You can see these metrics while auditing or adding alerts.
+
+The SQL database alert values and thresholds are based on the type of a metric.
+
+Dynamic Management Views
+Microsoft SQL database introduced dynamic management views to diagnose performance problems, which might be caused by blocked or long-running queries, poor query plans.
+
+SQL database enables three types of dynamic management views:
+
+Database-related dynamic management views
+Execution-related dynamic management views
+Transaction-related dynamic management views
+Here are some common scenarios, how the dynamic management views are used to detect performance problems:
+
+Query performance can be monitored by retrieving the average CPU time utilized as the long-running queries consume more system resources.
+
+Query plans can be monitored by retrieving the cumulative CPU time as the inefficient query plans increase CPU consumption.
+
+Overview of Azure SQL Data Warehouse
+Azure SQL Data Warehouse is an Azure platform as a service (PaaS) offer, which is a cloud warehousing service.
+
+Like the Azure SQL Database, you don't have to worry about managing the operating system. You are benefited to focus on processing and querying your database.
+
+Azure SQL Warehouse implements Massive parallel processing (MPP) to quickly run complex queries across petabytes of data, where multiple nodes will be working together to process data for queries, as it is a distributed system.
+
+Azure SQL data Warehouse is dependent on distributed storage and compute, as it is splitted into different machines.
+
+It also consolidates different data into a single location and shape, model, transforms, and aggregate data, using simple SQL constructs.
+
+Azure SQL Data Warehouse Vs Traditional Warehouse
+Some reasons to choose cloud SQL Warehouse over traditional warehouse are:
+
+In the cloud, you don’t need large initial capital expenses like on-premises, where it is difficult to manage all the approvals and justify the expense of buying large warehousing machines and licensing.
+
+In the cloud SQL warehouse, you don’t need a lot of recruitment to maintain your hardware solution, the virtualization, or the operating system.
+
+Scaling up/down the storage on demand is very difficult to an on-premises warehouse, where in the cloud these operations are handled quickly and transparently.
+
+A typical classic SQL server implements the symmetric multiprocessing (SMP) system, where it consolidates everything in a single large machine and executes queries.
+
+Azure SQL data warehouse utilizes the massively parallel processing (MPP) as it contains the data from the database and generates the results for a query you require, which was distributed across machines.
+
+Data Warehouse Units (DWU)
+Like DTU for the Azure SQL database, there is DWU for Azure SQL data warehouse, which is the measure of the computing power of database.
+
+The customer is not required to select the specific CPU or RAM or storage, where it is necessary to choose the amount of data warehouse units (DWU), which should be provisioned.
+
+Example: For a 100 DWUs provisioned database, it will take 30min to get the 6tables loaded, whereas for a 500 DWUs provisioned database it takes only 6min to get loaded the same.
+
+Query Orchestration System
+
+Control Node:
+The Control Node receives all the connections, orchestrates the queries and it sends the multiple queries to multiple nodes and gets back with the results as it always collaborates with the multiple Compute Nodes which are part of the MPP system.
+
+Compute Nodes:
+The Compute Nodes perform the following
+
+Reading data off the distribution, perform all the processing and scaling with the DWUs.
+The control node is independent of the number of DWUs present, but the number of Compute Nodes increase with the increase of your DWUs.
+
+Provisioning Azure SQL data Warehouse
+Provisioning Azure SQL Data Warehouse is similar to the provision of the Azure SQL Database.
+
+Create or Select the Server first and set up an admin login, password.
+
+Database name should be unique to a server.
+
+choose the source of the data, which can be a blank database, a sample data warehouse from Microsoft, or a backup from an existing warehouse.
+
+Choose the DWUs according to your business needs, the default warehouse provisioned is 400DWUs.
+
+Provisioning Azure SQL data Warehouse
+Provisioning Azure SQL Data Warehouse is similar to the provision of the Azure SQL Database.
+
+Create or Select the Server first and set up an admin login, password.
+
+Database name should be unique to a server.
+
+choose the source of the data, which can be a blank database, a sample data warehouse from Microsoft, or a backup from an existing warehouse.
+
+Choose the DWUs according to your business needs, the default warehouse provisioned is 400DWUs.
+
+Scaling Up The Database And Try Out Some CRUD Functionalities Using T-SQL 
+
+
+Lab 02 :  Azure Databases: Scale up the SQL Database
+
+01. Creation of Server 
+servername=azdpampleserver
+Location="eastus"
+serverusername="Mad_max"
+serverpassword="M@xSpass@199C0mplex"
+az sql server create --name $servername --resource-group $resource --location $Location --admin-user $serverusername --admin-password $serverpassword
+
+List all the servers 
+az sql server list -o table -g $resource
+
+02. Deploy an Azure SQL database instance with the blank database
+
+az sql db create -g $resource -s $servername -n mydb --edition Basic -c 5
+
+03. Processing T-SQL Queries
+Login to portal : portal , using the credentials generated in the 1st step.
+
+Add the following tables, and insert the values using T-SQL queries, in the same database using the query editor option in the configuration page of the database.
+
+Table 1: Employee Columns: Empname (varchar20) PRIMARY KEY, Empid (int), Age (int), Salary (int), address (varchar20)
+
+Table 2: Company Columns: Companyname (varchar20) PRIMARY KEY, Company_address (varchar20), no_of_employees (int), project (char)
+
+Insert five values in both tables using T-SQL commands, and display both the databases.
+
+ans :
+
+CREATE TABLE Employee (Empname varchar(20) PRIMARY KEY, Empid int, Age int, Salary int, address varchar(20));
+
+CREATE TABLE Company (Companyname varchar(20) PRIMARY KEY, Company_address varchar(20),  no_of_employees int, project char);
+
+INSERT INTO dbo.Employee  
+VALUES ('Amal', 1234, 23, 100000, 'Amal 1234'), ('Amal1', 1235, 23, 100001, 'Amal1 1234')
+    , ('Amal2', 1236, 36, 100002, 'Amal2 1234'), ('Amal3', 1237, 23, 100022, 'Amal3 1234'),
+    ('Amal4', 1238, 23, 101111, 'Amal5 1234');
+
+INSERT INTO dbo.Company  
+VALUES ('Saras', 'Sara 1234', 120, 'E' ), ('Saras1', 'Sara1 1234', 120, 'E')
+    , ('Saras2', 'Sara2 1234', 120, 'E'), ('Saras3', 'Sara3 1234', 120, 'E'),
+    ('Sara4s', 'Sara4 1234', 120, 'E');
+
+04) Scale up the same SQL database from Basic to S0 service objective, using Azure CLI.
+
+az sql db update -g $resource -s $servername -n mydb --edition Standard --capacity 10 --max-size 250GB

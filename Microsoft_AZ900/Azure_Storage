@@ -1,0 +1,810 @@
+
+Azure Storage
+
+Azure Storage is a Microsoft's cloud storage solution for modern enterprises and applications to store data
+
+Advantages of Azure Storage
+
+Scalability: It is easily scalable. You can start with a small size blob and scale to infinite size depending on the demand without affecting the production.
+Durability: Data in Azure storage is very durable with multiple levels of redundancy in which you have just to mention the type of redundancy and Azure does the rest of the work for you.
+Availability: Replication option enables you to store copies of your data in different availability zones, and in the event of zone or node destruction, the data is still available.
+Security: All data in the Storage is encrypted; both in rest and transit. Also, with key vault, only you have control over encryption keys making your data more secure.
+Accessibility: The data in storage can be easily accessed through the available SDKs in a wide variety of languages. Azure Storage supports scripting in Azure PowerShell or Azure CLI.
+Management: Management is easy because Azure takes care of any critical problems and maintenance of the servers.
+
+Intro to Unstructured Storage
+
+Azure unstructured data consists of disk storage, file store, sync, and blob storage
+
+Storage Account: To use any of the Azure Storage services, you need to create a storage account within the Azure account. Resources in this account can be accessed by any language that can make HTTP/HTTPS request.
+Azure Blob: Binary Large Object (BLOB) is a collection of binary data that may be a file, video, text, image, etc. Azure Blob storage is Microsoft's object storage solution for the cloud.
+Container: A container provides a grouping of a set of blobs. All blobs must be in a container. A Storage account can hold an unlimited number of containers. Likeways, a container can store an unlimited number of blobs.
+
+VM Disks: Virtual Machines in Azure use disks as a place to store, which is either Hard Disk Drives (HDD) or Solid-state Drives (SSD), based on the storage account type.
+Standard Storage: Standard Storage account is a type of storage account backed by magnetic drives (HDD) that provide low cost per GB and can be used for all kinds of data (blobs, files, tables).
+Premium Storage: Premium storage has high bandwidth with extremely low latency. It offers less than 1 ms read latency (cache), and uses SSD. Premium Storage supports only Locally Redundant Storage (LRS) Replication
+
+
+Storage Explorer: It is a useful GUI tool to inspect and alter data in Azure Storage. It can be used to upload, download, and manage blobs, files, queues, and tables from any platform, anywhere. It is provided by Microsoft.
+Block Blobs: In block blobs, the blobs are comprised of blocks that are identified by unique block ID. The maximum size of blocks is restricted to 100MB, and each block blob can have 50,000 blocks which are ideal for storing text or binary files, such as documents and media files.
+Page Blobs: Page blobs are the collection of 512-byte pages optimized for random read and write. These are used for storing VHD files of Azure VM as OS and Data disks. The maximum size of page blobs is 8TB.
+Append Blob: This type is used to append blobs that are used for logging scenarios. The maximum size of append blob is 195 GB.
+
+VM Machine Storage
+
+A virtual machine uses three types of disks, they are:
+
+Operating System Disk: It is created along with the virtual machine by Azure. It is generally mounted as C drive, which is 2 GB in size.
+Temporary Disk: This disk holds temporary contents, although, you are not suggested to store anything there. If the VM is redeployed for any reason, the drive is wiped out and starts fresh. The primary function of that temporary disk is simply for the page file.
+Data Disk stores all the data required to be worked upon. This disk is huge and has high performance.
+
+Data Disks are where the working data and all the application data reside. The size of VM decides the number of data disks that can be attached to a VM. Data disks are stored in a BLOB in an Azure storage account.
+
+Data disks could be of type Standard or Premium, both of which may be again managed or unmanaged.
+Standard storage uses HDDs with a maximum IOPS (I/O Operations per second) of 50000 and the number of disks up to 100 (each disk is of 4 GB).
+Premium storage has an unlimited IOPS and has 35 TB of storage and 10 TB of snapshots.
+
+With Managed disks, Azure does all the management such as storage account creation, replication and also makes sure disks are kept secure.
+With unmanaged disks, you will have the additional responsibility of all these administering tasks.
+Pricing is per storage: For Unmanaged model, it uses storage account pricing. For the Managed model, it is simply based on the size of the disk.
+
+Azure CLI 2.0 is known as a command line tool used for accessing the resources in Azure. The CLI is designed to make scripting easy, flexible query data, support long-running operations as non-blocking processes, and more.
+
+Let's check some basic commands:
+
+Creating Storage Account:
+az storage account create --name accName --resource-group ResGrpName --sku standard_LRS --location useast.
+Creating a Container:
+az storage container create --name mycontainer --public-access blob/container
+Use "blob" to allow public read access for blobs. Use "container" to allow public read and list access to the entire container.
+
+Uploading a blob:
+az storage blob upload --container mycontainer --name blobname --file filepath.
+Downloading a blob:
+az storage blob download --resource-group resgrpName --name blobName --file savingPath.
+Deleting a Storage Account:
+az storage account delete --name accname.
+
+Uploading a blob:
+az storage blob upload --container mycontainer --name blobname --file filepath.
+Downloading a blob:
+az storage blob download --resource-group resgrpName --name blobName --file savingPath.
+Deleting a Storage Account:
+az storage account delete --name accname.
+
+Lab 01 :  Create an unmanaged VM and attach data disks to it
+
+assign the resource group as default
+az configure --defaults group=$resource
+
+1)Create a storage account with name as per your wish and create a container with the name vmblob
+az storage account create -n myfrescoaccount -g $resource -l westus --sku Standard_LRS
+
+key=$(az storage account keys list -g $resource -n myfrescoaccount --query [0].value -o tsv)
+
+az storage container create \
+    --account-name myfrescoaccount \
+    --name vmblob \
+    --account-key $key \
+    --auth-mode key
+
+2) Create an unmanaged virtual machine in the resource group created by the katacoda account, with an admin username and admin password, and the following data:
+image = Win2012R2Datacenter  , size = Standard_DS1_V2
+
+az vm create -n unmanagedvm -g $resource --image Win2012R2Datacenter --size Standard_DS1_V2 \
+--use-unmanaged-disk --admin-username frescouser --admin-password frescopwd@12345
+
+3) Attach a new unmanaged data disk of 512 GB to the VM.
+
+az vm unmanaged-disk attach -g $resource --vm-name unmanagedvm --new --size-gb 512
+
+4) Convert the existing unmanaged VM to a managed VM, and restart the VM.
+
+# deallocate the VM
+az vm deallocate --resource-group $resource --name unmanagedvm
+
+# Convert VM to Managed Disks
+az vm convert --resource-group $resource --name unmanagedvm
+
+# Start the VM back up again
+az vm start --resource-group $resource --name unmanagedvm
+
+
+
+Lab 02 : Azure Storage : Upload a Blob to the Storage Account
+
+Create a storage account with blob encryption and only https traffic enabled.
+az storage account create -n myfrescostorageact -g $resource --encryption-services blob --https-only true
+
+key=$(az storage account keys list -g $resource -n myfrescostorageact --query [0].value -o tsv)
+
+Create a blob container in the account.
+az storage container create \
+    --account-name myfrescostorageact \
+    --name blobcontainer \
+    --account-key $key \
+    --auth-mode key
+
+Upload a blob into the container of the storage account
+az storage blob upload \
+    --account-name myfrescostorageact \
+    --container-name blobcontainer \
+    --name index.php \
+    --file index.php \
+    --account-key $key \
+    --auth-mode key
+
+
+Azure File Storage
+
+Azure File Storage provides shared storage for applications using Server Message Block (SMB) 3.0 protocol. Azure file shares can be mounted concurrently by cloud or on-premises deployments.
+Applications that run in Azure cloud services or virtual machines can mount a File storage share to access file data, just as a desktop application. The Azure File shares can be cached on a Windows server using File Sync for faster access.
+Azure Files also support snapshots of file shares. Share snapshots capture the shared state at that point in time which provides a backup during accidental deletions, data corruption, general backup, etc
+
+Typical uses of File Storage are:
+
+Migrating on-premises applications that depend on file shares to run on Azure cloud services or virtual machines.
+Storing shared application settings, e.g., in configuration files.
+Storing diagnostic data like crash dumps, metrics, and logs in a shared location.
+Storing utilities and tools required for administering or developing Azure cloud services or virtual machines.
+
+Azure File Sync
+
+Storage Space is an administrative layer on top of storage pools that are formed by combining some physical hard disks in Windows servers.
+
+From a user perspective, the storage space is represented as disks and volumes. You can access the volume from your operating system by using a drive letter.
+
+Storage spaces are used for the following reasons:
+
+Continuous Availability - Storage pools can be clustered across multiple nodes in the failover cluster. If a node fails, the storage will be seamlessly made available by a different node.
+Multi-tenancy - Storage spaces hosting scenarios that do not require tenant storage isolation will offer multi-tenancy. It follows the familiar Windows security model and hence can be fully integrated with Active Directory Domain Services.
+Simplicity - Storage Spaces are easily managed with Server Manager or Windows PowerShell. It also provides notifications when the amount of available capacity in a storage pool hits a configurable threshold.
+Data Integrity - Storage Spaces includes background scrubbing and intelligent error correction to allow continuous service availability despite storage component failures.
+
+Structured Storage
+
+Azure offers the following Structured Storage Services to store structured and semi-structured data,
+
+Azure Table Storage
+Queue Storage
+Document or Cosmos DB
+Azure SQL DB
+Azure’s Structured Storage is a highly available, resilient and affordable platform (IaaS and PaaS) for storing the business critical data\applications.
+
+Azure Table Storage
+Let's learn one of the crucial and most used structured storage service "Table".
+
+Azure Table storage service is used to store structured NoSQL data in the cloud. Tables form a flexible store for flexible datasets, datasets that do not require complex joins, foreign keys.
+
+Features:
+
+NoSQL datastore accepts authenticated calls from inside and outside the Azure cloud.
+NoSQL provides a key/attribute store with a schemaless design.
+As it is schemaless, it's easy to adapt your data as the needs of your application evolves.
+It is a cost-effective solution.
+Access to Table storage data is fast with the OData protocol.
+Table storage can be accessed directly as
+ http://<storage account>.table.core.windows.net/<table>
+
+Azure tables are ideal to store and query huge set of structured, non-relational data.
+
+Tables storage will scale as demand increases.
+
+Common Scenarios are:
+
+Used in Storing huge amount of structured data that serves` web applications
+Storing datasets that doesn't need complex joins, foreign keys, and stored procedures and can be customized for faster access
+Quickly querying data using a clustered index
+
+Table Storage component
+
+Storage Account is a globally unique entity that is the basis for authentication and it is the parent namespace for the Table service.
+Table is a collection of entities that don't have a forced schema on entities, in which a single table can contain many entities that have a different set of properties.
+Entity is a set of properties, similar to that of rows in a database which can be up to 1 MB in size.
+Properties - They are name-value pairs; each entity can consist of up to 255 properties to store data.
+
+An entity in a table can have up to 255 properties, of which three are system properties:
+
+PartitionKey - Entities with the same partition key can be queried more quickly, and inserted/updated in atomic operations.
+
+RowKey - An entity's row key is its unique identifier within a partition.
+Timestamp - The server manages the value of Timestamp, which cannot be modified.
+The total size of all data in an entity's properties cannot be more than 1 MB.
+The PartitionKey and RowKey must uniquely identify every entity in a table.
+
+Azure Queues
+
+Azure Queue Storage is a storage service used for storing large numbers of messages that can be accessed from anywhere via authenticated calls.
+
+The size of a single message can be 64kb.
+The time for which the messages stay in the queue is 7 Days.
+Queues can extend up to the total capacity limit of Storage account.
+
+Common use cases:
+
+Creating a backlog of work to process asynchronously.
+Passing messages from an Azure web role to an Azure worker role.
+Queue storage can be accessed as http://<account>.queue.core.windows.net/<QueueName>
+
+Azure CLI 2.0 Commands
+To create a Queue:
+az storage queue create --name Qname --account-name myAcc --account-key Mykey.
+To delete the existing Queue:
+az storage queue delete --name Qname --account-name Myacc --account-key Acckey 
+To put a message in a Queue:
+az storage message put --content mymessage --queue-name qname 
+To get a message in Queue:
+az storage message get --queue-name Qname
+To retrieve one or more messages from the front of the queue:
+az storage message peek --queue-name Qname.
+
+To create a table:
+az storage table create --name tablename --account-name Accname --access-key Acckey
+To delete a table:
+az storage table delete --name tablename --account-name Accname --access-key Acckey
+To insert a storage entity into a table:
+az storage entity insert --connection-string $connectionString --entity PartitionKey=AAA RowKey=BBB Content=ASDF2 --table-name tableName
+To update an existing entity:
+az storage entity merge --entity PartitionKey=AAA RowKey=BBB Content=ASDF2 --table-name tableName --account-key accKey --account-name accountName --connection-string $connectionString
+To delete an entity:
+az storage entity delete --partition-key KEY --row-key RKEY --table-name TName.
+
+Lab 03 : CRUD operations on Azure Table Storage
+
+1) Create a storage account with only https traffic enabled
+
+az storage account create -n myfrescostorageact -g $resource --https-only true
+
+key=$(az storage account keys list -g $resource -n myfrescostorageact --query [0].value -o tsv)
+
+2) Create a table named Frescotab in the storage account.
+
+az storage table create --name Frescotab --account-name myfrescostorageact 
+
+3) Operations on Entities
+
+Add two entities apart from PartitionKey and RowKey. For example, customers and contacts.
+
+az storage entity insert --entity PartitionKey=AAA RowKey=BBG customers=XYZ contacts=999 --table-name Frescotab \
+    --account-name myfrescostorageact --account-key $key
+
+Add five or more lines of datasets to the table.
+
+different RowKey inserted.
+
+Update one or more entities by changing the name of customer.
+
+az storage entity merge --entity PartitionKey=AAA RowKey=BBG customers=XXX contacts=999 \
+                        --table-name Frescotab \
+                        --account-key $key \
+                        --account-name myfrescostorageact
+
+Check the updated entities.
+
+az storage entity query --table-name Frescotab --account-key $key --account-name myfrescostorageact
+
+Delete a single line of a dataset.
+
+az storage entity delete --partition-key AAA \
+                         --row-key BBG \
+                         --table-name Frescotab \
+                         --account-key $key \
+                         --account-name myfrescostorageact
+
+Lab 03 : Working with Queues
+
+1) Create a storage account with only https traffic enabled.
+
+az storage account create -n myfrescostorageact -g $resource --https-only true
+
+key=$(az storage account keys list -g $resource -n myfrescostorageact --query [0].value -o tsv)
+
+2) Create a queue storage named testqueue in the storage account.
+
+az storage queue create --name testqueue --account-name myfrescostorageact --account-key $key 
+
+3) Add a message to the created queue (content: frescoPLAY), and read the content without dequeueing it.
+
+az storage message put --content frescoPLAY --queue-name testqueue --account-name myfrescostorageact --account-key $key
+
+az storage message peek --queue-name testqueue --account-name myfrescostorageact --account-key $key
+
+4) Delete all the resources created.
+
+az storage queue delete --name testqueue --account-name myfrescostorageact --account-key $key 
+
+az storage account delete -n myfrescostorageact -g $resource
+
+What are Azure SQL Databases?
+Azure SQL Database is a relational database that is offered as-a-service from Azure offering predictable performance and it is highly scalable, and each database is isolated.
+Also, Azure SQL databases also provide monitoring and alerting as failover options.
+With active geo-replication, the data is backed up in three copies in same or different locations. These secondaries can be used for read-only access.
+After failover, the new primary has a different connection endpoint.
+
+Database Tires 
+
+Basic - for databases that have a single active operation, or for dev and test deployments.
+Standard - for low to medium input/output databases and supports concurrent queries, as well as Azure web applications.
+Premium - The Premium tier is designed for high transaction volumes and input/outputs. It supports multiple concurrent users, and Microsoft recommends that you use this database for mission-critical databases.
+PremiumRS - This tier is recommended for input/output intensive workloads when high availability is not required. But you can use it for high-performance test and dev workloads.
+
+SQL Database renders dynamically scalable performance in two diverse purchasing models - a vCore-based purchasing model and a DTU-based purchasing model.
+
+vCore based model - In this model, you can independently choose the computing and storage resources. It also lets you use the Azure Hybrid Benefit for SQL Server to gain on your savings.
+Database Transaction Units (DTU) based model - This model is based on a combined measure of computing, storage, and IO resources. Performance levels are expressed in terms of DTUs for single databases and elastic DTUs (eDTUs) for elastic pools.
+
+Logical servers in Azure SQL offers both purchasing models: a DTU-based purchasing model and a vCore-based purchasing model.
+Managed Instances in Azure SQL Database offer only the vCore-based purchasing model.
+
+DTU and eDTU
+The performance of SQL Database is based on DTU.
+
+According to Microsoft, a DTU is a unit of measure of the resources that are guaranteed to be available to a single Azure SQL Database at a specific performance level within a single database tier. A DTU combines CPU, memory, data I/O, and transaction I/O.
+Databases can be placed into an elastic pool on a SQL Database server that shares a pool of resources among those databases. The shared pool of resources are measured by elastic Database transition units (eDTU).
+
+The advantages of an elastic pool are:
+
+They are scaled automatically.
+They provide predictable costs.
+They are widely used for varying and unpredictable usage patterns
+
+Determining DTUs for Workloads
+If you are planning to move your on-premises Databases to Azure SQL Database, Azure provides a DTU Calculator to find the approximate DTUs required for setting up the database.
+
+For an existing Azure Database, you can use SQL Data query performance insight. This Query performance insight provides a deeper insight into the resource consumption (DTU's) of Database, the top queries by CPU/Duration/Execution count, which can potentially be tuned for improved performance.
+
+Azure SQL Data Sync
+SQL Data Sync is a service developed on Azure SQL Database that allows you to synchronize the selected data bi-directionally across various SQL Server and SQL databases instances. Let's look into the following video to know more about it.
+
+Azure SQL Database CLI 2.0 Commands
+To create a MySQL Database with given charset and collation rules
+az mysql db create --resource-group testgroup --server-name testsvr --name testdb --charset {valid_charset} --collation {valid_collation}
+To delete a DB:
+az mysql db delete -g testgroup -s testsvr -n testdb
+List all DB in a server:
+az mysql db list -g testgroup -s testsvr
+To show an existing Db:
+az mysql db show -g testgroup -s testsvr -n testdb
+
+Azure Content Delivery Network (CDN)
+
+The Azure Content Delivery Network (CDN) caches static web content at strategically placed locations from the Origin and provide maximum throughput for delivering content to the end users.
+
+Benefits of CDN
+Improved performance and user experience for end users, particularly in applications in which multiple round-trips are required to load content.
+Large scaling and better handling of high instantaneous loads.
+It distributes users requests and serves content directly from edge servers reducing traffic sent to the origin.
+
+CDN Workflow
+
+A user (John) requests a file (file1) using a URL, <endpointname>.azureedge.net.
+DNS routes the request to the POP location, which is geographically closest to the user.
+Now, consider that the edge servers does not have the requested file in their cache memory, then it requests the needed file from the origin.
+Then the origin server returns the required file to the edge server.
+Now the edge server caches the file in the memory and returns to the actual requester (John).
+Then the file remains cached until the Time To Live (TTL) expires. The default TTL for the cache is 7 days.
+Other users can also access the file from that same POP.
+Here, origin can be anything like Azure's - Web App, Cloud Service, Storage account, or any publicly accessible web server.
+
+Scenarios of CDN
+Common Scenarios where CDN can be used:
+Media Services to deliver video worldwide. The video is usually large and requires a lot of bandwidth.
+Scenarios where CDN may be less useful:
+
+For the content with a low hit rate setting.
+For private data, like supply chain ecosystems or large enterprises.
+
+CDN - Planning Factors
+
+Performance – When considering performance, be sure this applies to all intended destinations.
+Location – Select the ones that are more reliable and enhances the performance and viewing experience.
+Scalability – After implementation, it should be easily expandable when it is needed.
+Flexibility – Is the vendor service compatible with every form of technology your end users will potentially utilize? This is likely to include PCs, Mac computers, tablets, and smartphones.
+Support – After signing up, will you receive the level of support you require with a continuous, reliable service?
+Cost-effective – The available services may vary greatly in cost. Make sure that you are not signing up for a long-term service that cannot truly accommodate your needs at a cost-effective price.
+
+Azure CDN CLI 2.0 Commands
+To create a new CDN profile:
+az cdn profile create --name testcdn --resource-group testgrp --sku premium_verizon
+To create an endpoint with the origin as storage:
+az cdn endpoint create --name testcdn --origin storage.blob.core.windows.net --profile-name profile --no-http
+To delete an endpoint:
+az cdn endpoint delete -g group -n endpoint --profile-name profile-name
+To preload content for an endpoint:
+az cdn endpoint load -g group -n endpoint --profile-name profile-name --content-paths '/scripts/app.js' '/styles/main.css'
+content to be preloaded are to be mentioned in the above command.
+To purge the preloaded content:
+az cdn endpoint purge -g group -n endpoint --profile-name profile-name --content-paths '/scripts/app.js' '/styles/*'
+
+Managing Storage
+
+the day-to-day management storage tasks that include:
+
+Backup and data recovery
+Azure Site Recovery (ASR)
+Storage Analytics
+Storage Security
+Backup and Site Recovery are important for implementing a Business continuity and an effective disaster recovery solution.
+
+Azure Backup
+
+Azure Backup is a simple, highly reliable, secure, and cost-effective Backup as a Service (BaaS) solution
+
+Recovery Service Vault
+Where would you backup all your unused or seldom used data? Let's learn where and how.
+
+To back up your files and folders, a vault is needed in the region where you want to store the data.
+
+The Azure Backup service has two types of vaults namely, the Backup vault and the Recovery Services vault, to store and recover the backup data.
+
+It is recommended to use a Recovery Services vault, as it protects resources that are deployed by both Azure Service Management (ASM) and Azure Resource Manager (ARM) methods.
+
+Azure Backup service vaults allow for:
+
+Block-level data de-duplication within and across multiple files and versions of files.
+Compression of files.
+Improves backup speeds and optimizes the Storage.
+
+Deployment Scenarios
+Azure Backup service can be deployed in the following scenarios:
+
+Backup of Azure IaaS VM
+Backup Agent
+Azure Backup Server
+System Center Data Protection Manager (SCDPM)
+All Azure Backup components irrespective of their location can be used to back up data to a Recovery Services vault in Azure.
+
+Azure VM Backup
+Azure Backup Extensions are used to Backup Azure IaaS VMs (for both Windows and Linux).
+
+The Azure Backup service takes the initiative to start the backup job at the scheduled time triggering the backup extension to take a point-in-time snapshot.
+Once the Backup service completes taking the snapshot, the data gets transferred to the vault.
+When this transfer of data is complete, the snapshot taken is removed, and a new recovery point is created.
+The BaaS uses the VMSnapshot extension in Windows, and the VMSnapshotLinux extension in Linux.
+
+Restore Data
+Once you have created your backup, you can use the Backup Agent to Recover Data.
+
+Steps to Restore:
+
+Select Recovery Mode - Identify the server where the backup was created.
+Select Volume and Date- You can restore from any point in time.
+Select Items to Recover- Select the files and folders you wish to restore.
+Specify Recovery Options- You can restore to the original location or another location in the same machine.
+
+Azure Backup can retain your data for a maximum of 99 years to meet regulatory requirements.
+
+Azure Backup doesn't consider the temporary disk of the virtual machine for backup.
+
+Benefits of Azure Backup
+Reasons to use Azure Backup:
+
+Automatic storage management- It automatically allocates and manages backup storage, and uses a pay-as-you-use model.
+Unlimited scaling - It uses the underlying power and scale of the Azure cloud, with its nonintrusive autoscaling capabilities.
+Highly reliable - Data is stored in GRS, which maintains six copies of your data across two Azure datacenters. With a 99.9% service availability.
+Data encryption - Allows for secure transmission and storage of customer data in the public cloud.
+Multiple Storage Options: Azure Backup provides two types of replication locally namely, geo-redundant storage (GRS) and redundant storage (LRS). You can select between these two options based on your requirement.
+Unlimited data transfer - There is no limit on the in and out data transfer.
+Application-consistent backup - i.e., recovery point includes all the required data to restore the backup that avoids additional fixures.
+Long-term retention - You can use Recovery Services vaults for short-term and long-term data retention. It doesn't have any time constraint.
+
+Unsupported Workloads
+You cannot back up the following volumes or drives:
+
+Removable Media - such as USB drives
+Read-only Volumes - volume must be writable for the volume shadow copy service (VSS) to function.
+Offline Volumes- volume must be online for VSS to function.
+Network share- volume must be local to the server to be backed up using online backup.
+Bitlocker-protected volumes- volume must be unlocked before the backup can occur.
+File System Identification- NTFS is the only file system supported.
+
+Azure Site Recovery ASR
+
+Azure Site Recovery ensures business continuity by keeping your apps that are deployed in VMs and physical servers available if a site goes down. This is one way to achieve Bussiness Continuity and Disaster Recovery (BCDR).
+
+ASR provides two types of functionalities such as:
+Replication - handles synchronization of designated systems between a Primary site (PS) and a Secondary site (SS).
+Orchestration - provides orderly failover and failback between the PS and SS sites.
+Secondary Site can be an on-premises data center or on Azure.
+
+Azure Site recovery (ASR) is utilized for the following reasons:
+
+It takes out the requirement for disaster recovery sites via computerizing the replication of the virtual machines in view of approaches that you set and control. Site Recovery is heterogeneous and can secure Hyper-V, VMware, and physical servers.
+Safeguarding of complex workloads like SQL server, Sharepoint, SAP, and Oracle.
+Migration of apps to Azure is just a few clicks away, or opt Azure on a temporary basis when you encounter a surge in demand.
+Site Recovery continuously monitors the state and health of your protected instances.
+
+Replication and Orchestration
+ASR performs Replication and Orchestration for Hyper-V workloads on On-Premises and System Center Virtual Machine Manager (SCVMM) Private cloud.
+It performs only Orchestration for VMware workloads.
+ASR uses Hyper-V replica for Hyper-V VMs.
+Image components and Unified agent for Physical\Linux servers\Vmware workloads.
+
+Azure Site Recovery Scenarios
+Most common scenarios are:
+
+Migrate Azure VM Between Region
+Hyper-V VM to Azure (With VMM)
+Hyper-V VM to Secondary Site (With VMM)
+Hyper-V to Azure (Without VMM)
+Hyper-V VM to Secondary Site Using SAN Replication (Without VMM)
+Vmware/Physical to Azure
+Vmware VM/Physical to Secondary Site
+Migrate Amazon VM to Azure
+
+Azure Site Recovery between Azure Regions
+
+The following deployment steps are common for all the scenarios such as,
+
+Create a vault.
+Enable replication for the VMs you want to migrate, and choose Azure as the source.
+Once the initial replication is complete, you can run a Test failover from one Azure region to another.
+Using the Recovery Plans to describe the scope of Planned, Unplanned and Test Failovers.
+
+Storage Monitoring - Need
+
+Applications that are deployed in PaaS or IaaS can use multiple storage options available, such as Azure Storage Tables, Blobs, Queues, or Files, in addition to relational and document Databases.
+These storages must be analyzed or monitored for any issues, requests and usage patterns so that the business is not affected in any manner.
+Diagnosing and troubleshooting the distributed application is more complex in the cloud environment than in On-Premises.
+In Azure Azure Storage Analytics performs and provide metrics data for a storage account.
+You can also set alerts for any undesired action in the storage account.
+
+Storage Analytics
+For new storage accounts, Analytics metrics are activated by default.
+
+The aggregated data for logging is stored in blobs and for metrics, it is stored in tables. Storage Analytics has a 20TB limit on the amount of stored data.
+Azure Storage Analytics performs and provides metrics data for a storage account which is,
+Metrics for all storage services.
+Logs for blobs, queues, and tables.
+You can configure monitoring via the Azure portal or Windows PowerShell, or Programmatically the storage client libraries.
+To download and store the metrics for a long-term analysis, it can be done by using Storage tools or programmatically only.
+
+Storage Metrics
+When one creates a new storage account, Storage Metrics is enabled by default.
+
+There are two types of metrics:
+
+Aggregate
+Collects metrics such as ingress/egress, availability, latency, and success percentage.
+These metrics are aggregated for the blob, queue, table, and file services.
+Per API
+In addition to the aggregate metrics, collects the same set of metrics for each storage operation in the Azure Storage service API.
+
+Metrics Configuration
+Configure monitoring for a storage account
+
+In Portal, open the dashboard of the Storage Account that you want to configure monitoring.
+Select Diagnostics in the MONITORING section of the menu blade.
+Select the type of metrics data for each service that you wish to monitor, and the retention policy for the data. You can also disable monitoring as well.
+When you finish the monitoring configuration, select Save.
+
+Metrics Chart
+Once you configured the monitoring, Storage Analytic Service starts collecting the Data that takes up to one hour for the data to appear in its Charts as illustrated.
+Hourly Storage metrics are stored with table names as $MetricsHourPrimaryTransactionsBlob and minute metrics as $MetricsMinutePrimaryTransactionsBlob in a similar fashion for Files,Queue,Tables.
+
+Retention Policy
+
+Default Retention period is 7 Days.
+Enabling the retention policy (1 to 365 days) enables automatic deletion at free of cost.
+
+Storage Analytics Logging
+Storage Analytics logs detailed information about successful and failed requests to a storage service, which is utilized to monitor individual requests and then to diagnose issues.
+
+Storage Analytics logging is really not enabled by default for the storage account. It can be enabled through Portal or PowerShell or any other source.
+
+The types of requests logged are:
+
+Successful request
+Failed Requests
+Requests using a SAS
+Requests to analytics data.
+It also logs anonymous request like Successful requests, Failed requests, and server error.
+All the logs are stored in block bobs in a container named $logs and have the name in format.
+<service-name>/YYYY/MM/DD/hhmm/<counter>.log
+
+Logging Configuration
+Storage Analytics logging can be enabled using Portal, Powershell, CLI, and Programmatically.
+
+In Portal, open the dashboard of the Storage Account that you want to configure monitoring.
+Select Diagnostics in the MONITORING section of the menu blade.
+Enable logs for any of the services like blobs, file, table queues for respective read, write or delete.
+Set the required Retention period, default is seven days.
+
+Storage Alert
+Using alerts feature, you can get notified when undesired actions occur.
+
+Alert Action:
+
+It will send an email notification to the service co-administrators and administrator.
+It will send an email to people that you specify as per need.
+It will call a webhook.
+It can start the execution of an Azure Runbook.
+
+Alert Configuration
+To launch the Alert rules blade, keep scrolling down to the MONITORING section of the Menu blade and select Alert rules.
+
+Select Add alert to open the Add an alert rule blade.
+Select a Resource and enter a Name and Description for your new alert rule.
+Select the Metric for which you'd like to add an alert, an alert Condition, and a Threshold.
+Select the Period. Metrics that reach or exceed the Threshold` within the period trigger an alert.
+Configure Email and Webhook notifications.
+
+Cost is associated - Metrics data is written by the Storage Analytics services of a storage account which is billable. For more information, see Storage Analytics and Billing.
+Azure Files supports Storage Analytics metrics, but does not yet support logging.
+Storage accounts with Zone-Redundant Storage (ZRS) replication doesn't support Storage Analytics.
+Storage Analytics has a 20 TB limit which is independent of the total limit for your storage account.
+Default Retention Period is seven days
+
+Storage Analytics CLI 2.0 Commands
+To update the metric settings for a storage account:
+az storage metrics update --retention 7 --services blob/table/queue/files --account-name dnmae --account-key account_key 
+To update the logging settings for a storage account:
+ az storage logging update --log r/w/d --retention 7 --services blob/table/queue --account-key account_key --account-name dname 
+
+Storage Security
+
+Securing storage account - These storage accounts are secured by Access keys. Only specific users can have access to these keys so that they can perform operations on the data present, and also these can be rotated regularly using Azure Key vault.
+Securing access to data - You can control the access to data either by Storage account keys or using Shared Access Signature.
+Encryption in rest - Storage Service Encryption (SSE) is enabled at the storage account level and automatically encrypts and decrypts the data. Also, the data and OS disks are encrypted by Azure Disk Encryption using industry-standard BitLocker encryption technology.
+Encryption in transit - Enabling encryption in transit between client and Azure by using secure HTTPS protocol for communication over the public internet and using SMB 3.0 protocol for file shares.
+
+Storage Account Security
+While creating a storage account, you have the privilege to select the deployment model i.e.Classic or Resource Manager.
+In the classic model, all or nothing has access to resources. So Resource Manager model is recommended to create a storage account because, in this, we can restrict the access as per your need. Controlling it on a more individual level using Role-Based Access Control (RBAC).
+For example: You can give specific users access to the storage account keys, and restricting others just to read the data.
+
+Role Based Access Control (RBAC)
+Each Azure subscription includes an Azure Active Directory (AD) to it. Only the users, applications and groups from that AD can have access to the resources that use resource manager deployment model.
+This type of security is known as Role Based Access Control (RBAC).
+RBAC can be accessed using Azure Portal or CLI or PowerShell and REST APIs.
+
+Roles for Storage
+Various roles can be used for accessing the storage account and data they are:
+
+Owner – They have the ultimate access.
+Contributor - With this access role, a user can have control over access keys. Thus they can have access to data stored, but they can't assign access to others.
+Reader - They can read the properties of the storage account, but they can't access it.
+Storage Account contributor - Users with this role have an undisputed access to all in a storage Account.
+User Access Administrator - They can manage access to the storage account.
+Virtual Machine Contributor - They can manage virtual machines but not to the linked storage account to the VM. But can list the storage account keys, so people having this role can update the data.
+
+Working with Roles
+Following are the key points to remember when working with roles:
+
+Assigning access to the user, group or application is basically assigning a role to the account.
+Depending on the role assigned, the user will have Actions and Not Actions that he can perform and he is bound to them.
+You can define custom roles if your needs are not met by the Azure defined roles.
+The user must be set up in your Azure Active Directory (AD) before you can assign a role to them.
+A report can be generated of who assigned/removed what kind of role to/from whom.
+
+Data Access Security
+Data in the Storage account can be accessed securely using two ways:
+
+Access Keys
+Shared Access Signature (SAS).
+
+Access Keys
+In the previous tasks, we have used Access keys while making requests to the storage account.
+
+When a Storage account is created, two 512-bit keys known as Storage access keys are generated
+
+Using a storage account, keys gains access to the data plane for that storage account.
+
+Managing Access Keys:
+
+Store your access keys securely using Azure Key Vault and don't share them.
+It is recommended to regenerate your access keys regularly.
+Once you regenerate it, update the new keys in Azure resources that access this storage account.
+These keys can be regenerated using the Azure Portal or Azure CLI or PowerShell or Azure REST APIs service.
+
+Shared Access Signature (SAS)
+It is not recommended to share the keys with anyone else. So what would you do if you want to provide access to a user to the required data? For such cases, SAS comes into play.
+A SAS is a URI that grants restricted access rights to Azure Storage resources. This SAS is shared with clients whom you don't want to provide the Access keys but provide the access to resources.
+An account-level SAS can provide access to multiple storage services in Azure Storage. In tables, you can also grant the range of values that are accessible by specifying the partition and row key ranges. You can also restrict the requests made to use a specific protocol (HTTPS or HTTP/HTTPS) using SAS.
+
+Types of Shared Access Signatures:
+A service-level SAS can be used to access specific resources in a storage account.
+An account-level SAS: In addition to access provided by service-level SAS. It can give the ability to create containers, tables, queues, and file shares.
+
+Data Security
+Data in transit - Always encrypt storage data between the client and Azure Storage using the HTTPS protocol, or SMB3.0 while using File Share.
+
+Also, Client-side encryption and HTTPS protocol add additional security during transit.
+Data at rest - Two main Azure features provide encryption at rest.
+Storage Service Encryption (SSE) is enabled at the storage account level and automatically encrypts and decrypts the data. It cannot be disabled.
+Azure Disk Encryption - allows you to encrypt the OS disks and data disks used by a Virtual Machine. For Windows VMs, encryption of drives is done using BitLocker encryption technology. For Linux, the encryption of drives is done using the DM-Crypt technology and they are integrated with Azure key vault allowing you to manage encryption keys.
+
+Cross Origin Resource Sharing
+Cross-origin resource sharing (CORS) is a mechanism that uses additional HTTP headers. The headers tell the browser to allow a web application is running at one domain (origin) to possess permission to access chosen resources from a server at a different domain.
+When an application running in one domain makes an HTTP request for a resource from a different domain; this is called a cross-origin HTTP request. For various security reasons, browsers prevent cross-origin HTTP requests that are started from within the scripts, such as JavaScript.
+To overcome this, Azure allows Cross-Origin Resource Sharing (CORS). Using this, you can specify domains that can access the storage account.
+By default, CORS is disabled on all storage accounts and can be enabled using REST APIs or the storage client library. CORS Rule is an XML.
+
+Sample CORS Rule
+Check out this sample CORS rule.
+
+<Cors>    
+    <CorsRule>
+        <AllowedOrigins>http://www.contoso.com, http://www.fabrikam.com</AllowedOrigins>
+        <AllowedMethods>PUT,GET</AllowedMethods>
+        <AllowedHeaders>x-ms-meta-data*,x-ms-meta-target*,x-ms-meta-abc</AllowedHeaders>
+        <ExposedHeaders>x-ms-meta-*</ExposedHeaders>
+        <MaxAgeInSeconds>200</MaxAgeInSeconds>
+    </CorsRule>
+<Cors>
+
+Creating a Custom Role Using Azure CLI
+The built-in roles in Azure may not meet the needs at times. So Azure provides the flexibility to create your custom roles using Azure Powershell, CLI 2.0, and various SDKs.
+To create a Custom Role, you should have the permission to create like an Owner or User Access Administration.
+Custom roles can be created using:
+az role definition create --role-definition ~/roles/VMoperator.json
+
+Example Custom Rule
+The VMOperator contains:
+
+{
+  "Name": "Virtual Machine Operator",
+  "IsCustom": true,
+  "Description": "Can monitor and restart virtual machines.",
+  "Actions": [
+    "Microsoft.Storage/*/read",
+    "Microsoft.Network/*/read",
+    "Microsoft.Compute/*/read",
+    "Microsoft.Compute/virtualMachines/start/action",
+    "Microsoft.Compute/virtualMachines/restart/action",
+    "Microsoft.Authorization/*/read",
+    "Microsoft.Resources/subscriptions/resourceGroups/read",
+    "Microsoft.Insights/alertRules/*",
+    "Microsoft.Support/*"
+  ],
+  "NotActions": [
+
+  ],
+  "AssignableScopes": [
+    "/subscriptions/11111111-1111-1111-1111-111111111111",
+    "/subscriptions/33333333-3333-3333-3333-333333333333"
+  ]
+}
+
+In the above example, the role named Virtual Machine Operator have read access to all storage, network, compute and start and stop of virtual machines, alert rule access, etc. and it can be used in two subscriptions.
+
+Course Summary
+Finally, you have arrived at the end of the course. You have so far seen the following topics.
+
+Azure Storage
+Unstructured data Storage in Azure - Blobs, files, Disks.
+Structured data Storage in Azure - Tables and Queues.
+A brief introduction of Databases.
+Azure CDN and its importance, how it is useful in delivering content to users.
+Data Backup and Site recovery to ensure business continuity.
+Monitoring Storage Account using Analytics Metrics
+Securing the Storage account using Azure AD, SAS, RBAC, etc.
+
+Lab 04 : Storage Monitoring ( Azure Storage : Working with Metrics and Logs)
+
+1) Create a Storage account with blob encryption and only https traffic enabled
+
+az storage account create -n myfrescostorageact -g $resource --encryption-services blob --https-only true
+
+key=$(az storage account keys list -g $resource -n myfrescostorageact --query [0].value -o tsv)
+
+2) Update the blob metrics, enabling minute metrics, API metrics, and 10 day retention.
+
+az storage metrics update --account-name myfrescostorageact --api true --minute true --retention 10 --services bfqt
+
+Show metrics settings for a storage account. (autogenerated)
+
+az storage metrics show --account-key $key --account-name myfrescostorageact
+
+3) Enable the read, write, and delete logs, and set the retention policy to 10.
+
+az storage logging update --log rwd \
+                          --retention 10 \
+                          --services qt \
+                          --account-key $key \
+                          --account-name myfrescostorageact
+
+Show metrics settings for a storage account.
+
+az storage logging show --account-name myfrescostorageact --services qt
+

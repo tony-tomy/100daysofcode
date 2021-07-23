@@ -1,0 +1,670 @@
+
+Azure Virtual Machine
+
+Virtual Machine Disk
+
+Azure VM uses Standard (HDD) or Premium (SSD) storage to create disks,
+
+Size of the VM determines the number of disks
+Disks are used to store an OS, applications, and data.
+VMs also can have one or more data disks.
+Premium storage requires DS or GS-series of VMs.
+Disks are stored as .Vhd files in the storage accounts.
+All disks are stored as VHDs, and the maximum capacity is 4095 GB.
+
+Deployment Scenarios
+Typical deployment scenarios of VMs are listed below,
+
+Create Test and Dev Environments
+Extending your data center to the cloud
+Hosting certain applications in the cloud that can leverage benefits of the cloud. Example - Seasonal Applications.
+Installing Recovery Site using IaaS-based DRS approach that provides significant costs savings.
+High-performance computing to solve complex problems involving millions of variables or calculations such as an earthquake.
+Big data analysis that involves processing and mining massive datasets.
+
+Planning Considerations
+While planning for the virtual machine deployment, you have to consider the following,
+
+Suitable and Unsuitable Workloads
+Supported and Unsupported Server Roles
+Supported and Unsupported Server Features
+
+1. Suitable Workloads
+Azure VMs can be used for the following Workloads.
+
+Highly available service workloads. E.g., Online Stores.
+Unpredictable Spikes - E.g., News Channels.
+Periodic workloads - E.g., Retail sales spurt during Holiday Season.
+Steady workloads - E.g., Extend or offload existing infrastructure to the cloud.
+
+Unsuitable Workloads
+When Planning Azure VMs, it is also important to understand that not every application or service is a suitable fit for the cloud.
+
+Examples
+
+Low volume or limited growth workloads - such services or applications can be run on commodity hardware on-premise and will be less expensive than in the cloud.
+Regulated environment workloads - Certain data is regulated by an organization or the local government. Such restricted and confidential data must be kept on-premises.
+
+2. Unsupported Server Roles
+Most of the Windows Roles can be enabled on Azure VMs, but few Roles are not supported in Azure VM.
+
+Dynamic Host Configuration Protocol Server
+Hyper-V (Hyper-V role is supported in Azure Ev3 and Dv3 series VMs only)
+Rights Management Services
+Windows Deployment Services
+
+3. Unsupported Server Features
+The following significant features are not supported.
+
+BitLocker Drive Encryption (on the operating system hard disk, may be used on data disks)
+Internet Storage Name Server
+Multipath I/O
+Network Load Balancing
+Peer Name Resolution Protocol
+RRAS
+DirectAccess
+SNMP Services
+Storage Manager for SANs
+Windows Internet Name Service
+Wireless LAN Service
+
+Azure Cost Optimization Tools
+Now you know the consideration, the next major planning factors with any cloud-based service are:
+
+Availability of resources
+Cost optimization.
+To help with estimating the potential costs and to achieve the cost optimization following tools are used:
+
+Pricing Calculator tool enables you to estimate the cost of different workloads and services in Microsoft Azure.
+
+TCO Calculator estimates the cost savings that can be realized by migrating the application workloads to Microsoft Azure.
+
+Pricing Calculator can be used to estimate the costs for Azure VMs.
+
+VM size and Configuration decides the Cost of the VM
+
+VM sizing is based on,
+
+Compute: Capacity required
+Storage: Size, location, and configuration
+Disk: Size, persistence and caching
+VM configuration deals with,
+
+Operating System: Windows Server 2012 R2, Windows Server 2016
+IP Address allocation: Static or Dynamic IP addresses
+Availability: Uptime requirements, geo-distribution, service level agreements, and accessibility.
+Scale set: Type of scaling and threshold
+
+Now we will create VMs using a Custom image. Images can be created for Generation 1 VMs that are in the VHD file format.
+
+Steps to create VM using Custom Image:
+
+On-Premise
+
+Prepare the VM. Make sure the VM has all the roles and features installed.
+Run sysprep to prepare the machine.
+Prepare the VM VHD.
+Azure On-Premise
+
+Create the Storage Container.
+Upload the VHD.
+Create a VM using the uploaded VHD.
+
+VM Creation
+
+Getting Started with VM Creation
+Now that you understand how to plan for VMs, next we will learn various ways of Provisioning VMs.
+
+Tool for deploying VMs:
+
+Azure Portal
+Classic portal: V1 VMs only
+New portal: Both V1 and V2 VMs
+Azure PowerShell
+Azure CLI
+ARM Template
+Versions of VM (V1 and V2) are different from Generations of VM such as G1 and G2.
+
+Azure supports G1 VMs only
+
+OS Image Sources
+Azure Marketplace
+
+Contains recent versions for Windows and Linux distributions
+VM Depot
+
+Community managed Repository of Linux and FreeBSD VM images
+Custom Images
+
+Enterprise OS images with Applications that must be captured from VM in the Organization and uploaded in Azure to create further VMs
+
+ARM Templates
+Resource Manager templates are JSON files that define the resources to be deployed for an Azure solution.
+
+JSON editor or Visual Studio Code can be used to create templates.
+
+Prerequisites to create a template:
+
+Visual Studio Code.
+Azure subscription.
+
+Features and Benefits of ARM Templates
+ARM Templates allow you to deploy identical environments to test staging and production, ensuring high reliability.
+
+Templates can be stored in the Azure Subscription and reused.
+An entire Resource group can be exported as a Template.
+ARM Templates can create resources in parallel.
+ARM Templates can define dependencies among resources.
+ARM Templates can create custom policies to control actions or operations that can be performed on resources.
+Importantly, ARM templates help to reduce human error when deploying complex environments.
+
+ARM template is another way to create one or more Azure VMs quickly.
+
+Steps:
+
+Create the Template: You can create your own template or you can get it from Azure Quickstarts Templates.
+Create the Parameter File: To specify values for the resource parameters that were defined in the template or parameters files.
+Create the Resource Group: All resources, like virtual machines, must be part of a resource group.
+Deploy the Template: Once the template and resource files are ready, use the New-AzureRmResourceGroupDeployment command to implement the resource.
+The template file can be created with a simple text editor and the file type is JSON.
+
+Azure Cloud Shell
+
+Another popular way of managing VMs is using PowerShell or CLI interface. For this, you would need Azure Cloud Shell.
+
+Azure Cloud Shell is an interactive, browser-accessible shell for managing Azure resources.
+
+Features of Azure Cloud Shell:
+
+It is a free shell that can be run directly on the Azure portal.
+It has common Azure tools preinstalled and configured to use with your account.
+Click the Cloud Shell button on the menu in the upper-right of the Azure portal, and you will able to launch both PowerShell and CLI interface.
+
+It gives you the flexibility of choosing the shell experience that best suits the way you work.
+
+Knowing Cloud Shell
+It runs on a temporary machine provided on a per-session, per-user basis.
+It times out after 20 minutes without interactive activity.
+It can only be accessed with a file share attached.
+It uses the same file share for both Bash and PowerShell.
+It is assigned to a one machine per user account basis.
+Permissions are set as a regular Linux user (Bash).
+
+Authentication and Pricing
+Automatic authentication
+
+Cloud Shell securely and automatically authenticates on each session for instant access to your resources through the Azure CLI 2.0.
+Pricing
+
+The machine hosting Cloud Shell is free, with a prerequisite of a mounted Azure file share.
+Regular storage costs apply.
+Use Cloud shell to create and manage the VMs.
+
+Steps to Create VM using PS
+Create Azure Connection
+
+Create resource group
+
+Create networking resources such as subnet, Vnet, NIC, Public IP Address.
+
+Define a credential object
+
+Create a VM configuration
+
+Create virtual machine
+
+PowerShell commands for above steps are uploaded in the Azure storage can be accessed from:
+
+Azure Portal - Storage - frescostepguide - file - Azure VM - VM_Creation_PS.pdf
+
+VM Creation using PS
+Using listed PS commands in the following cards you will be able to create a VM with configuration as below,
+
+ResourceGroup - myResourceGroup
+Location - EastUS
+Subnet - mySubnet
+AddressPrefix- 192.168.1.0/24
+vnet - MYvNET
+AddressPrefix - 192.168.0.0/16
+VMSize - Standard_DS2
+ComputerName - myVM
+OS - Windows Server 2016 datacenter
+
+Linux on Azure
+Microsoft Endorsed some versions of Linux in the Azure Marketplace in which,
+
+The Linux Integration Services (LIS) drivers for Hyper-V and Azure are kernel modules that are contributed directly from MS to the upstream Linux kernel.
+
+The Azure Linux Agent is already pre-installed and the source code can be found on GitHub.
+
+For Non-Endorsed Versions of Linux
+
+You can bring your own Linux image by Creating and uploading a virtual hard disk that contains the Linux OS.
+
+Endorsed distributions
+Azure SLAs applies only to the Endorsed versions
+
+CentOS 6.3+
+CoreOS 494.4.0+
+Debian 7.9+, 8.2+
+Oracle Linux 6.4+, 7.0+
+RHEL 6.7+, 7.1+
+SLES 11, SLES 12+, SLES for SAP11.3+
+Open SUSE 13.2+
+Ubuntu 12.04, 14.04, 16.04
+
+Accessing of Linux VMs
+Once the Linux VMs are created, it is required to access the VM.
+
+Here are the few ways to access the VMs,
+
+Azure Cloud Shell (CLI)
+Bash Shell from Windows 10
+Putty software
+
+
+Managing of Linux using Windows
+A common problem encountered is how to easily manage Linux virtual machines from Windows environments.
+
+Windows 10 now makes it possible to run Linux Bash natively.
+
+Bash on Windows allows you to:
+
+Run common command-line utilities such as grep, sed, and awk.
+Use the Linux-compatible filesystem & heirarchy and access fixed Windows storage mounted under "/mnt/..."
+Install additional Linux tools using apt
+Invoke Windows applications from within Bash
+Invoke Linux applications from within Windows
+Run Bash shell scripts and Linux command-line apps, including:
+Tools: vim, emacs, tmux
+Languages: Javascript/node.js, Ruby, Python, C/C++, C# & F#, Rust, Go
+Services: sshd, MySQL, Apache, lighttpd
+
+
+Installing Bash on Windows 10:
+
+Turn on Developer mode via Settings > Update and Security > For Developers.
+Enable Bash in Windows by adding the Windows feature "Windows Subsystem for Linux (beta)".
+Restart the Windows 10 workstation.
+It can be enabled using PowerShell as:
+
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+Accessing Bash on Windows 10:
+
+Launch the command line and run the command Bash, to enter the Linux subsystem. (or)
+From the Start Menu select Bash on Ubuntu on Windows.
+
+Quiz 01:
+
+1.  You are using the Set-AzureRMVMSourceImage command with the -Version parameter. You wish to ensure that you get the most current image. Which value should you use with the -Version parameter?
+Ans : Latest
+
+2.  "Standard_G1 – Standard_G5 and Standard_GS1 – Standard_GS5 would be considerd for"
+Ans : High Memory and Dense Local Storage
+
+3.  What is the highest number of virtual machines a cloud service can hold?
+Ans : 50
+
+4.  What differentiates Azure Resource Manager PowerShell cmdlets from Service Manager PowerShell cmdlets?
+ans : All ARM poweshell cmdlet include the string 'RM' 
+
+5.  The smallest prescribed virtual machine for a production environment is _______________.
+Ans : A1
+
+Managing Azure Virtual Machines
+Once the VM is created, the following components must be configured to provide consistency and high availability.
+
+IP Addresses
+Availability Set
+Auto Scaling
+
+IP address is assigned to Azure resources to communicate with other Azure resources, on-premises network, and the Internet. It can be allocated in two ways,
+
+Static Allocation
+Dynamic Allocation
+Types of IP Addresses
+
+Public IP addresses - Used for communication with the Internet, including Azure public-facing services.
+E.g.: VMs, Internet-facing LB, VPN GW, and Application GW.
+
+Private IP addresses - Used for communication within an Azure virtual network (VNet), and on-premises network when a VPN is configured.
+E.g.: VMs, Internal LB, and Application GW.
+
+Dynamic allocation is the default method for both Private and Public IP Addresses.
+
+Public IP Allocation
+Dynamic allocation method:
+
+The public IP address is allocated when you start/create the associated resource (like a VM or load balancer).
+The IP address is released when you stop/delete the resource.
+In this method IP address can change.
+
+Static allocation method:
+
+The IP address must be configured in "NIC" properties for the associated resource.
+It is released only when you delete the resource or change its allocation method to dynamic.
+In this method IP address will not change.
+
+Private IP Addresses
+Private IP Addresses
+
+In both (dynamic or static) ways, the IP address is allocated from the address range of the subnet to which the resource is attached.
+
+In Dynamic allocation method the IP address is automatically allocated from the resource's subnet (using DHCP). This IP address can change when the resource is stopped and started.
+
+In Static allocation method, the IP address must be assigned from the allocated subnet and remains the unchanged till the VM is deleted.
+
+Availability of Virtual Machines
+By now, you should know that:
+
+Availability set (AV set) is the Logical Grouping of two or more Azure VMs and their domains.
+AV set protects from planned (updates) and unplanned (hardware) failures.
+Here we will be focusing on Principles, SLAs and Creation of AV set.
+
+Principles of creating Availability sets:
+
+For redundancy, configure multiple VMs in an Availability Set.
+Configure each application tier into separate Availability Sets.
+Combine a Load Balancer with Availability Sets.
+
+SLAs for Availability Sets
+Azure offers the following SLAs if you use Availability set,
+
+For all VMs that have two or more instances deployed in the same Availability Set, Microsoft guarantees - VM Connectivity to at least one instance almost 99.95% of the time.
+
+For any Single Instance VM using premium storage for all disks, Microsoft guarantees - VM Connectivity of at least 99.9%.
+
+Azure Scale Set
+As you know, Scale set makes it easier to build large-scale services targeting high compute, big data, and containerized workloads.
+
+Scale sets are used to deploy and manage a set of identical VMs at the time of requirement.
+
+Azure Resource Explorer
+
+It is particularly useful for viewing Azure scale sets - Individual VMs and their properties.
+
+Azure Resource Explorer is a great tool to view and modify resources that are created in the subscription.
+The tool is web-based and uses the Azure portal login credentials.
+The source for the Resource Explorer tool is available on GitHub.
+
+Guidance for Scale Set
+Both Linux and Windows VM Scale Sets can be configured from the Azure Portal.
+These scale sets are automatically created with load balancer NAT rules to enable SSH or RDP connections.
+Managed disks can have between 0 and 1000 VMs based on platform images OR 0 to 100 VMs based on custom images.
+The maximum, minimum and default number of VMs setting must be based on resource consumption and actions are triggered automatically.
+When the number of VMs is increased or decreased in a scale set, VMs are balanced across update and fault domains to ensure, maximum availability.
+
+Disk Types
+There are three types of Disks:
+
+1. Operating System Disks
+
+Every VM has one attached OS disk.
+It is registered as a SATA drive and labeled as the C: drive by default.
+
+2. Temporary Disk
+
+Every VM has a temporary disk that is automatically created.
+On Windows VM, this disk is labeled as the D: drive by default.
+It is used for storing pagefile.sys.
+It is a non-persistent storage.
+As it is temporary storage, don’t store data on the temporary disk.
+
+3. Data Disks
+
+Every VM can have data disks to store application data or other required data.
+Data disks are registered as SCSI drives and are labeled with a letter that we can choose.
+Data disks are stored in a BLOB in an Azure storage account.
+The size of the VM determines how the size of the temporary disk and the maximum number of disks can be attached.
+
+Managing VM Disk
+Management of VM disk includes the following task,
+
+Attaching Operating System or Data disk
+Removing the Data disk
+Modify the Disk settings, such as,
+Change the Caching behavior
+Increase the size
+Storage Space feature of Azure VM must be leveraged to create the disk of more than 1TB.
+
+Managing Virtual Machines
+Various options are used to manage Azure VMs, some are available for all platforms, and others just for Windows or Linux VM.
+
+Remote Desktop Protocol: Only for Windows
+Secure Shell: Only for Linux
+VM Agents and Extensions: for both Windows and Linux
+
+On-Premises vs Azure Virtual Machines
+In Microsoft Data-centers, Azure Virtual Machines (VMs) are hosted on Windows Server 2012 R2 Hyper-V servers. But these VMs are different from On-Premises VMs in the following aspects:
+
+Console access for Azure VMs can be given by enabling monitoring option.
+Azure supports both Generation 1 and 2 VMs.
+Azure VMs do not support VHDX format.
+Azure VMs do not support OS upgrade.
+Azure VMs depend on the VM size and support more than 1 NICs.
+
+Remote Desktop Protocol
+Remote Desktop Protocol (RDP) enables Windows administrators to establish a graphical user interface session with an Azure virtual machine.
+The portals provide a .rdp file that can be downloaded and saved for initiating an RDP connection to the specified VM.
+Closely associated with the RDP utility is the Remote Desktop Connection Manager.
+This utility provides an interface for grouping and managing multiple VMs through RDP connections.
+
+Secure Shell
+Secure Shell (SSH) is used to connect the Azure Linux VM from Windows Client.
+
+The SSH endpoint is created by default when creating a Linux VM.
+When creating a Linux VM, Secure Shell (SSH) must be enabled.
+A connection must be established from a Windows client by using the Secure Shell (SSH) protocol with a terminal. emulator, such as PuTTY to access Linux VM
+From a Linux client, an administrator may use an SSH client such as OpenSSH.
+
+Azure VM Agent
+The Microsoft Azure Virtual Machine Agent (AM Agent) is a secured, lightweight process that manages VM interaction with the Azure Fabric Controller.
+
+The VM Agent has a primary role in enabling and executing Azure VM extensions.
+
+The Azure VM Agent is installed by default on any Windows VM deployed from an Azure Gallery image.
+
+The Azure VM agent can be downloaded and installed manually.
+
+Azure VM Extensions
+Azure VM extensions are small applications that provide post-deployment configuration and automation tasks on Azure VMs.
+
+Azure VM extensions can be
+
+run by using the Azure CLI, PS, ARM templates, and the Azure portal.
+bundled with a new VM deployment or run against an existing system.
+An Administrator can install multiple extensions on a VM. They are offered by Microsoft and third-party vendors.
+
+Third Party VM Agent Extensions
+The supported third-party VM agent extensions are:
+
+DSC - Azure PowerShell DSC (Desired State Configuration)
+MSEnterpriseApplication - System Center Role Authoring Extension
+BGInfo - Background Info extension
+VMAccessagent - VM Extension to enable Remote Desktop and password reset
+Chefclient - Chef software agent
+PuppetEnterpriseAgent - PuppetLabs agent
+Symantec Endpoint Protection - Antivirus Supported by Symantec
+Trend Micro Deep Security Agent - Trend Micro antivirus
+
+Use Cases of VM Extensions
+There are many different Azure VM extensions available, each with a specific use case.
+
+Some example use cases are:
+
+Configure VM monitoring by using the Microsoft Monitoring Agent VM extension.
+Configure monitoring of your Azure infrastructure with the Datadog extension.
+Apply PowerShell Desired State configurations to a VM by using the DSC extension for Windows.
+Configure an Azure VM by using Chef for Automating Azure VM deployment.
+
+Discover VM Extensions
+To see a complete list, run the following command with the ARM PowerShell module.
+
+Get-AzureRmVmImagePublisher -Location WestUS | Get-AzureRmVMExtensionImageType | Get-AzureRmVMExtensionImage | Select Type, Version
+
+Desired State Configuration (DSC)
+Deploying and maintaining the desired state of your servers and application resources can be tedious and error-prone. Azure supports several configuration management systems.
+
+Desired State Configuration (DSC)
+
+DSC is a VM agent extension and works on both Windows and Linux.
+DSC supports ARM templates, Azure PowerShell, and XPLAT-CLI.
+Desired State Configuration (DSC) with Azure Automation helps consistently deploy, reliably monitor, and automatically update the desired state of all IT resources, at scale from the cloud.
+
+Automation Tools
+Chef and Puppet
+
+Chef and Puppet are other configuration management tools used to automate the entire lifecycle of our Azure infrastructure, from initial provisioning through application deployment.
+Both are popular Linux tools and VM agent extensions.
+Ansible
+
+Ansible is an open source, clientless automation tool.
+It automates software and OS features provisioning, configuration management, and application deployment.
+Ansible includes a suite of modules for interacting with Azure Resource Manager, making possible to create and orchestrate infrastructure in Azure.
+
+Monitoring Overview
+If you're deploying applications in datacenter, you obviously want to make an investment in an enterprise-level monitoring system, such as Microsoft EMS or Operations Manager or any large-scale distributed application monitoring systems.
+
+However, Azure provides that Monitoring capability directly from the portal with no additional or third-party software installation.
+
+Monitoring and Diagnostics
+The administrator enables and configures VM diagnostics from the Monitoring area of the new portal VM blade.
+
+Diagnostic logging can be enabled for
+
+Basic metrics
+Network and web metrics
+.NET metrics
+Windows event system logs
+Windows event security logs
+Windows event application logs
+Diagnostic infrastructure logs
+
+Alerts
+We can receive an Alert based on monitoring metrics or events.
+When the value of an alert rule crosses an assigned threshold, the alert rule becomes active and sends a notification.
+Notification email can be sent to the service administrator and co-administrators or to another administrator based on the configuration.
+Example:
+
+Alert rule can be created which will trigger a mail to an Administrator when the CPU percentage of guest OS value is greater than 75% in a five minute period.
+
+Hands on Labs 
+
+Lab 01: Azure Virtual Machines - Linux VM
+
+Refer : https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-cli?toc=/azure/virtual-machines/linux/toc.json
+
+Deploy VM
+Deploy an ubuntu 18.04 server VM image in the existing resource group using Azure CLI in Basic tier. Execute the following command to get all the ubuntu 18.04 LTS server images:
+
+az vm image list --all -p Canonical -f UbuntuServer -s 18.04-DAILY-LTS -l EastUS
+
+Deploy any of the VM's using their images with the following configuration: 
+VM name: Your choice Location: EastUS Size: B1ls Admin username: your firstname Use the --generate-ssh-key parameter to generate ssh key.
+
+az vm list-sizes --location "westus"
+
+az vm create -n MyVm -g user-hhunxwusxdes \
+    --image ubuntults  --size standard_B1ls \
+    --admin-password P@ssw8rd271212  --admin-username adminazure \
+    --generate-ssh-keys  --location "WestUS"
+
+az vm create \
+  --resource-group user-lrrotcpnpccu \
+  --name myVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --location "WestUS" \
+  --generate-ssh-keys
+
+Execute the following command to make the resource group default: az configure --defaults group=$resource 
+Execute the following command to view the VM: az vm list -g $resource
+
+Open port 80 for web traffic
+By default, only SSH connections are opened when you create a Linux VM in Azure. Use az vm open-port to open TCP port 80 for use with the NGINX web server:
+
+az vm open-port --port 80 --resource-group user-lrrotcpnpccu --name myVM
+
+Connect to your VM
+After deploying the VM, connect to it with the ssh command:
+
+az vm show -d -g user-lrrotcpnpccu -n myVM --query publicIps -o tsv
+
+Connect to virtual machine
+SSH to your VM as normal. Replace publicIpAddress with the public IP address of your VM as noted in the previous output from your VM:
+
+ssh azureuser@publicIpAddress
+
+Lab 02 : Manage IP Address Configuration and Configure Scale Sets to VM
+
+Deploy a Ubuntu 16.04 VM with the below configuration in Basic tier using CLI
+VM name of your wish
+Username: your firstname
+password: your custom password
+Size : Basic_A0
+Location: East US
+
+az vm create \
+  --resource-group myResourceGroup \
+  --name myVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --generate-ssh-keys \
+  --public-ip-address myPublicIpAddress \
+  --public-ip-address-allocation static
+
+Configure scale sets for the VM
+
+ az vmss create \
+  --resource-group user-qzldnfsfadom \
+  --name myScaleSet \
+  --image UbuntuLTS \
+  --location westUS \
+  --upgrade-policy-mode automatic \
+  --admin-username azureuser \
+  --generate-ssh-keys
+
+Try out Enabling Autoscaling by using az monitor cli command by providing the Resource NAME, Resource ID
+
+Lab 03 : Azure virtual machines - Configure Availability sets
+
+Create the availability set with a custom name containing 2 Fault domains and 2 Update domains using azure cli commands
+
+az vm availability-set create -n MyAvSet -g MyResourceGroup --platform-fault-domain-count 2 --platform-update-domain-count 2
+
+Execute the following command to make the resource group as default: 
+
+az configure --defaults group=$resource
+
+Execute the following command to view the availability set for the VM: 
+
+az vm availability-set list
+
+Deploy two ubuntu VMs with the below configuration
+
+Place the both VMs in the availability set created in previous step.
+
+Install the Ubuntu VM using the Azure CLI in the existing resource. Use the image with the following configuration in Basic tier:
+
+az vm create \
+  --resource-group user-brvabppeqwyx \
+  --name myVM \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --availability-set MyAvSet \
+  --location "WestUS" \
+  --generate-ssh-keys \
+  --public-ip-address myPublicIpAddress \
+  --public-ip-address-allocation static
+
+Final Quiz
+
+Q)  Which of the following helps you to easily identify which SKU is most likely to satisfy your performance needs
+A)  ACU - Azure Compute Unit (ACU) provides a way of comparing compute (CPU) performance across Azure SKUs
+
+Q)  Which of the following defines a group of virtual machines that share a common set of hardware, switches, and more than a single point of failure?
+A)  fault domains
+
+Q)  Which of the following defines a group of virtual machines that share a common set of hardware, switches, and more than a single point of failure?
+A)  Fs-series
+

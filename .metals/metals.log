@@ -25,3 +25,12 @@ INFO: Unsupported notification method: $/setTraceNotification
 Feb 02, 2021 11:58:13 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
 INFO: Unsupported notification method: $/setTraceNotification
 [0m2021.02.02 21:46:31 INFO  shutting down Metals[0m
+[0m2021.07.26 21:18:17 INFO  Started: Metals version 0.10.5 in workspace 'D:\Python Workspace\Visual Studio Code\100daysofcode\100daysofcode' for client Visual Studio Code 1.58.2.[0m
+[0m2021.07.26 21:18:19 INFO  time: initialize in 2.07s[0m
+[0m2021.07.26 21:18:20 WARN  Build server is not auto-connectable.[0m
+[0m2021.07.26 21:18:20 WARN  no build tool detected in workspace 'D:\Python Workspace\Visual Studio Code\100daysofcode\100daysofcode'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
+Jul 26, 2021 9:36:11 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Jul 26, 2021 9:36:11 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+[0m2021.07.26 21:36:32 INFO  shutting down Metals[0m
